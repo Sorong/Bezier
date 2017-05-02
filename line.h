@@ -16,6 +16,7 @@ public:
 	void setShader(QOpenGLShaderProgram* program);
 	void render_line();
 	void init_line();
+	void add_vertex(QVector3D vertex);
 	QVector3D at(int index) const;
 	int size() const;
 

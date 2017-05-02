@@ -14,7 +14,7 @@ Line::Line(QMatrix4x4* model, QMatrix4x4* view, QMatrix4x4* projection, QVector3
 }
 
 Line::~Line()
-{
+{	
 	glDeleteVertexArrays(1, &this->vertexarrayobject);
 	glDeleteBuffers(1, &index_buffer);
 	glDeleteBuffers(1, &color_buffer);
@@ -25,7 +25,9 @@ Line::~Line()
 void Line::setPosition(QVector3D pos)
 {
 	this->pos = QVector3D(pos);
+	this->model->translate(this->pos);
 }
+
 
 void Line::setShader(QOpenGLShaderProgram* program)
 {
@@ -38,7 +40,6 @@ void Line::render_line()
 	auto mv = *(this->view) * *(this->model);
 	auto i = this->program->bind();
 	this->program->setUniformValue("mvp", mvp);
-	qDebug() << this->program->uniformLocation("mvp");
 	this->program->setUniformValue("ModelViewMatrix", mv);
 	glBindVertexArray(this->vertexarrayobject);
 	if(this->vertices.size() != 1)
@@ -101,8 +102,15 @@ void Line::init_line()
 	glBindVertexArray(0);
 
 
-	// Modify model matrix.
-	this->model->translate(this->pos);
+}
+
+void Line::add_vertex(QVector3D vertex)
+{
+	glDeleteVertexArrays(1, &this->vertexarrayobject);
+	glDeleteBuffers(1, &index_buffer);
+	glDeleteBuffers(1, &color_buffer);
+	glDeleteBuffers(1, &position_buffer);
+	this->vertices.push_back(vertex);
 }
 
 QVector3D Line::at(int index) const
