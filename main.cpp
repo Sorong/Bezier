@@ -1,8 +1,7 @@
-#include "window.h"
 #include <QtWidgets/QApplication>
+#include "window.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
 	QApplication a(argc, argv);
 	Bezier w;
 	w.show();

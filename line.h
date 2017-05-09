@@ -7,30 +7,31 @@
 #define LINES_H
 
 
-class Line : protected QOpenGLFunctions_3_3_Core
-{
+class Line : protected QOpenGLFunctions_3_3_Core {
 public:
-	Line(QMatrix4x4* model, QMatrix4x4* view, QMatrix4x4* projection, QVector3D color, QVector<QVector3D> points);
+	Line(QMatrix4x4* model, QMatrix4x4* view, QMatrix4x4* projection, QVector3D color, QVector<QVector4D> points);
 	~Line();
-	void setPosition(QVector3D pos);
+	void setPosition(QVector4D pos);
 	void setShader(QOpenGLShaderProgram* program);
-	void render_line();
-	void init_line();
-	void add_vertex(QVector3D vertex);
-	QVector3D at(int index) const;
+	void renderLine();
+	void initLine();
+	void addVertex(QVector4D vertex);
+	QVector4D at(int index) const;
 	int size() const;
+	QVector<QVector4D> getVertices() const;
 
 private:
 
-	QMatrix4x4 *model, *view, *projection;
-	QVector<QVector3D> vertices, colors;
-	QVector<GLushort> indices;
-	QOpenGLShaderProgram *program;
-	QVector3D pos;
-	GLuint vertexarrayobject;
-	GLuint position_buffer;
-	GLuint color_buffer;
-	GLuint index_buffer;
+	QMatrix4x4 *model_, *view_, *projection_;
+	QVector<QVector4D> vertices_;
+	QVector<QVector3D> colors_;
+	QVector<GLushort> indices_;
+	QOpenGLShaderProgram* program_;
+	QVector4D pos_;
+	GLuint vertexarrayobject_;
+	GLuint position_buffer_;
+	GLuint color_buffer_;
+	GLuint index_buffer_;
 };
 
 #endif // LINES_H

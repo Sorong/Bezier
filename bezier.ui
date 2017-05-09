@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Bezier</string>
   </property>
-  <widget class="QWidget" name="centralWidget">
+  <widget class="QWidget" name="central_widget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="BezierScreen" name="bezier">
@@ -35,7 +35,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="widget" native="true">
+     <widget class="QWidget" name="settings_widget_" native="true">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -47,94 +47,134 @@
         <number>9</number>
        </property>
        <item>
-        <widget class="QWidget" name="tWidget" native="true">
+        <widget class="QWidget" name="parameter_widget_" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QLabel" name="tLabel">
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>150</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>15</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>t: 0.00</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-            <property name="margin">
-             <number>15</number>
-            </property>
-            <property name="indent">
-             <number>-1</number>
-            </property>
+           <widget class="QWidget" name="t_widget_" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="t_label_">
+               <property name="minimumSize">
+                <size>
+                 <width>75</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>150</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="baseSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>15</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>t: 0.00</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+               <property name="wordWrap">
+                <bool>false</bool>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <property name="indent">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="t_slider_">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="tracking">
+                <bool>true</bool>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+               <property name="invertedControls">
+                <bool>false</bool>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::NoTicks</enum>
+               </property>
+               <property name="tickInterval">
+                <number>1</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
-           <widget class="QSlider" name="tSlider">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="maximum">
-             <number>10</number>
-            </property>
-            <property name="tracking">
-             <bool>true</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="invertedAppearance">
-             <bool>false</bool>
-            </property>
-            <property name="invertedControls">
-             <bool>false</bool>
-            </property>
-            <property name="tickPosition">
-             <enum>QSlider::NoTicks</enum>
-            </property>
-            <property name="tickInterval">
-             <number>1</number>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="settings_layout_">
+            <item>
+             <widget class="QCheckBox" name="show_sublines_">
+              <property name="text">
+               <string>t-Linien anzeigen</string>
+              </property>
+              <property name="tristate">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="show_derivation_">
+              <property name="text">
+               <string>Hodographen anzeigen</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="raise_elevation_">
+              <property name="text">
+               <string>Gradanhebung</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="pointWidget" native="true">
+        <widget class="QWidget" name="point_widget_" native="true">
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -146,10 +186,10 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
           <item>
-           <widget class="QListWidget" name="listWidget">
+           <widget class="QListWidget" name="list_widget_">
             <property name="font">
              <font>
-              <pointsize>15</pointsize>
+              <pointsize>12</pointsize>
               <weight>50</weight>
               <bold>false</bold>
              </font>
@@ -157,17 +197,17 @@
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="coordWidget" native="true">
+           <widget class="QWidget" name="coord_widget_" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
-              <widget class="QLabel" name="xLabel">
+              <widget class="QLabel" name="x_label_">
                <property name="text">
                 <string>X-Koordinate:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="xCoord">
+              <widget class="QSpinBox" name="x_coord_">
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -183,14 +223,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="yLabel">
+              <widget class="QLabel" name="y_label_">
                <property name="text">
                 <string>Y-Koordinate:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="yCoord">
+              <widget class="QSpinBox" name="y_coord_">
                <property name="minimumSize">
                 <size>
                  <width>50</width>
@@ -206,7 +246,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="addButton">
+              <widget class="QPushButton" name="add_button_">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -250,7 +290,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
+  <widget class="QToolBar" name="main_toolbar_">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -258,8 +298,8 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QStatusBar" name="status_bar_"/>
+  <widget class="QMenuBar" name="menu_bar_">
    <property name="geometry">
     <rect>
      <x>0</x>

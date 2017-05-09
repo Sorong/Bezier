@@ -1,48 +1,79 @@
-#include "window.h"
 #include <QKeyEvent>
-Bezier::Bezier(QWidget *parent)
-	: QMainWindow(parent)
-{
+#include <QMessageBox>
+#include "window.h"
+
+Bezier::Bezier(QWidget* parent)
+	: QMainWindow(parent) {
 	ui.setupUi(this);
 	this->setMinimumHeight(500);
 	//this->setMaximumHeight(375);
-	//QObject::connect(ui.horizontalSlider, SIGNAL(valueChanged(int)), ui.openGLWidget, SLOT(set_t(int)));
-	QObject::connect(ui.tSlider, SIGNAL(valueChanged(int)), this, SLOT(slider_to_label(int)));
-	QObject::connect(ui.addButton, SIGNAL(pressed()), this, SLOT(add_coordinates()));
+	//QObject::connect(ui.horizontalSlider, SIGNAL(valueChanged(int)), ui.openGLWidget, SLOT(setT(int)));
+	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToLabel(int)));
+	QObject::connect(ui.add_button_, SIGNAL(pressed()), this, SLOT(addCoordinates()));
+	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.bezier, SLOT(toggleSublineMode()));
+	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
+	QObject::connect(ui.show_derivation_, SIGNAL(pressed()), this, SLOT(getHodograph()));
 }
 
-Bezier::~Bezier()
-{
+Bezier::~Bezier() {
 
 }
 
-void Bezier::slider_to_label(int i) const
-{
+void Bezier::sliderToLabel(int i) const {
 
-	QString floatAsString;// = QString::number(i / 10.0f, 'g', 4);
-	floatAsString.sprintf("%.2f", i / 10.0f);
-	this->ui.tLabel->setText("t: " + floatAsString);
-	this->ui.bezier->set_t(i);
+	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
+	float_as_string.sprintf("%.2f", i / 10.0f);
+	this->ui.t_label_->setText("t: " + float_as_string);
+	this->ui.bezier->setT(i);
 }
 
-void Bezier::add_coordinates() const
-{
-	XY coords = { static_cast<float>(this->ui.xCoord->value()), static_cast<float>(this->ui.yCoord->value()) };
-	this->ui.bezier->addCoordinate(coords);
-	this->ui.listWidget->addItem(QString("(" + QString::number(coords.x) + "," + QString::number(coords.y) + ")"));
+void Bezier::addCoordinates() const {
+	QVector4D coords = {static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
+	if(this->ui.bezier->addCoordinate(coords)) {
+		this->addToList(coords);
+	} else {
+		QMessageBox messageBox;
+		messageBox.critical(nullptr, "Error", QString("Korrekte Darstellung nicht möglich. Bitte löschen Sie Punkte"));
+		messageBox.setFixedSize(500, 200);
+	}
 }
 
-void Bezier::keyPressEvent(QKeyEvent* event)
-{
-	if(event->key() == Qt::Key_Delete && !ui.listWidget->selectedItems().isEmpty())
-	{
-		auto selected = ui.listWidget->selectionModel()->selectedIndexes();
+void Bezier::keyPressEvent(QKeyEvent* event) {
+	if (event->key() == Qt::Key_Delete && !ui.list_widget_->selectedItems().isEmpty()) {
+		auto selected = ui.list_widget_->selectionModel()->selectedIndexes();
 		auto i = selected.at(0).row();
-		ui.listWidget->takeItem(i);
+		ui.list_widget_->takeItem(i);
 		ui.bezier->removeCoordinateByIndex(i);
-		
-	} else
-	{
+
+	} else {
 		this->ui.bezier->keyPressEvent(event);
+	}
+}
+
+void Bezier::raiseElevation() const {
+	this->ui.bezier->raiseElevation();
+	reloadList();
+}
+
+void Bezier::getHodograph() const {
+	this->ui.bezier->calculateHodograph();
+	reloadList();
+}
+
+void Bezier::addToList(QVector4D coordinate) const {
+	QString out;
+	QTextStream stream(&out);
+	stream.setRealNumberPrecision(2);
+	stream.setRealNumberNotation(QTextStream::FixedNotation);
+	stream << "( x: " << coordinate.x() << ", y: ";
+	stream << coordinate.y() << ")";
+	this->ui.list_widget_->addItem(out);
+}
+
+void Bezier::reloadList() const {
+	auto points = this->ui.bezier->getBasePoints();
+	this->ui.list_widget_->clear();
+	for (auto point : points) {
+		this->addToList(point);
 	}
 }

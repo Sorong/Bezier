@@ -1,2 +1,9 @@
-﻿  bezierscreen.cpp
+﻿  Moc'ing window.h...
+  Moc'ing bezierscreen.h...
+  moc_bezierscreen.cpp
+  moc_window.cpp
+  bezierscreen.cpp
+  main.cpp
+  window.cpp
+  Generating Code...
   Bezier.vcxproj -> D:\Programming\Bezier\x64\Debug\Bezier.exe

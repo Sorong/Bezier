@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -33,28 +34,34 @@ QT_BEGIN_NAMESPACE
 class Ui_BezierClass
 {
 public:
-    QWidget *centralWidget;
+    QWidget *central_widget;
     QVBoxLayout *verticalLayout;
     BezierScreen *bezier;
-    QWidget *widget;
+    QWidget *settings_widget_;
     QHBoxLayout *horizontalLayout;
-    QWidget *tWidget;
+    QWidget *parameter_widget_;
+    QVBoxLayout *verticalLayout_4;
+    QWidget *t_widget_;
     QHBoxLayout *horizontalLayout_3;
-    QLabel *tLabel;
-    QSlider *tSlider;
-    QWidget *pointWidget;
+    QLabel *t_label_;
+    QSlider *t_slider_;
+    QHBoxLayout *settings_layout_;
+    QCheckBox *show_sublines_;
+    QPushButton *show_derivation_;
+    QPushButton *raise_elevation_;
+    QWidget *point_widget_;
     QVBoxLayout *verticalLayout_3;
-    QListWidget *listWidget;
-    QWidget *coordWidget;
+    QListWidget *list_widget_;
+    QWidget *coord_widget_;
     QHBoxLayout *horizontalLayout_2;
-    QLabel *xLabel;
-    QSpinBox *xCoord;
-    QLabel *yLabel;
-    QSpinBox *yCoord;
-    QPushButton *addButton;
-    QToolBar *mainToolBar;
-    QStatusBar *statusBar;
-    QMenuBar *menuBar;
+    QLabel *x_label_;
+    QSpinBox *x_coord_;
+    QLabel *y_label_;
+    QSpinBox *y_coord_;
+    QPushButton *add_button_;
+    QToolBar *main_toolbar_;
+    QStatusBar *status_bar_;
+    QMenuBar *menu_bar_;
 
     void setupUi(QMainWindow *BezierClass)
     {
@@ -66,13 +73,13 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(BezierClass->sizePolicy().hasHeightForWidth());
         BezierClass->setSizePolicy(sizePolicy);
-        centralWidget = new QWidget(BezierClass);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        verticalLayout = new QVBoxLayout(centralWidget);
+        central_widget = new QWidget(BezierClass);
+        central_widget->setObjectName(QStringLiteral("central_widget"));
+        verticalLayout = new QVBoxLayout(central_widget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        bezier = new BezierScreen(centralWidget);
+        bezier = new BezierScreen(central_widget);
         bezier->setObjectName(QStringLiteral("bezier"));
         QSizePolicy sizePolicy1(QSizePolicy::Ignored, QSizePolicy::Ignored);
         sizePolicy1.setHorizontalStretch(0);
@@ -83,146 +90,182 @@ public:
 
         verticalLayout->addWidget(bezier);
 
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setMaximumSize(QSize(16777215, 200));
-        horizontalLayout = new QHBoxLayout(widget);
+        settings_widget_ = new QWidget(central_widget);
+        settings_widget_->setObjectName(QStringLiteral("settings_widget_"));
+        settings_widget_->setMaximumSize(QSize(16777215, 200));
+        horizontalLayout = new QHBoxLayout(settings_widget_);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         horizontalLayout->setContentsMargins(-1, -1, 9, -1);
-        tWidget = new QWidget(widget);
-        tWidget->setObjectName(QStringLiteral("tWidget"));
+        parameter_widget_ = new QWidget(settings_widget_);
+        parameter_widget_->setObjectName(QStringLiteral("parameter_widget_"));
         QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(tWidget->sizePolicy().hasHeightForWidth());
-        tWidget->setSizePolicy(sizePolicy2);
-        horizontalLayout_3 = new QHBoxLayout(tWidget);
+        sizePolicy2.setHeightForWidth(parameter_widget_->sizePolicy().hasHeightForWidth());
+        parameter_widget_->setSizePolicy(sizePolicy2);
+        verticalLayout_4 = new QVBoxLayout(parameter_widget_);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        t_widget_ = new QWidget(parameter_widget_);
+        t_widget_->setObjectName(QStringLiteral("t_widget_"));
+        horizontalLayout_3 = new QHBoxLayout(t_widget_);
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        tLabel = new QLabel(tWidget);
-        tLabel->setObjectName(QStringLiteral("tLabel"));
-        tLabel->setMinimumSize(QSize(50, 0));
-        tLabel->setMaximumSize(QSize(150, 16777215));
+        t_label_ = new QLabel(t_widget_);
+        t_label_->setObjectName(QStringLiteral("t_label_"));
+        t_label_->setMinimumSize(QSize(75, 0));
+        t_label_->setMaximumSize(QSize(150, 16777215));
+        t_label_->setBaseSize(QSize(0, 0));
         QFont font;
         font.setPointSize(15);
         font.setBold(false);
         font.setWeight(50);
-        tLabel->setFont(font);
-        tLabel->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        tLabel->setWordWrap(false);
-        tLabel->setMargin(15);
-        tLabel->setIndent(-1);
+        t_label_->setFont(font);
+        t_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        t_label_->setWordWrap(false);
+        t_label_->setMargin(0);
+        t_label_->setIndent(-1);
 
-        horizontalLayout_3->addWidget(tLabel);
+        horizontalLayout_3->addWidget(t_label_);
 
-        tSlider = new QSlider(tWidget);
-        tSlider->setObjectName(QStringLiteral("tSlider"));
+        t_slider_ = new QSlider(t_widget_);
+        t_slider_->setObjectName(QStringLiteral("t_slider_"));
         QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(tSlider->sizePolicy().hasHeightForWidth());
-        tSlider->setSizePolicy(sizePolicy3);
+        sizePolicy3.setHeightForWidth(t_slider_->sizePolicy().hasHeightForWidth());
+        t_slider_->setSizePolicy(sizePolicy3);
         QFont font1;
         font1.setBold(false);
         font1.setWeight(50);
-        tSlider->setFont(font1);
-        tSlider->setMaximum(10);
-        tSlider->setTracking(true);
-        tSlider->setOrientation(Qt::Horizontal);
-        tSlider->setInvertedAppearance(false);
-        tSlider->setInvertedControls(false);
-        tSlider->setTickPosition(QSlider::NoTicks);
-        tSlider->setTickInterval(1);
+        t_slider_->setFont(font1);
+        t_slider_->setMaximum(10);
+        t_slider_->setTracking(true);
+        t_slider_->setOrientation(Qt::Horizontal);
+        t_slider_->setInvertedAppearance(false);
+        t_slider_->setInvertedControls(false);
+        t_slider_->setTickPosition(QSlider::NoTicks);
+        t_slider_->setTickInterval(1);
 
-        horizontalLayout_3->addWidget(tSlider);
+        horizontalLayout_3->addWidget(t_slider_);
 
 
-        horizontalLayout->addWidget(tWidget);
+        verticalLayout_4->addWidget(t_widget_);
 
-        pointWidget = new QWidget(widget);
-        pointWidget->setObjectName(QStringLiteral("pointWidget"));
-        pointWidget->setMinimumSize(QSize(50, 0));
-        pointWidget->setLayoutDirection(Qt::LeftToRight);
-        verticalLayout_3 = new QVBoxLayout(pointWidget);
+        settings_layout_ = new QHBoxLayout();
+        settings_layout_->setSpacing(6);
+        settings_layout_->setObjectName(QStringLiteral("settings_layout_"));
+        show_sublines_ = new QCheckBox(parameter_widget_);
+        show_sublines_->setObjectName(QStringLiteral("show_sublines_"));
+        show_sublines_->setTristate(false);
+
+        settings_layout_->addWidget(show_sublines_);
+
+        show_derivation_ = new QPushButton(parameter_widget_);
+        show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
+
+        settings_layout_->addWidget(show_derivation_);
+
+        raise_elevation_ = new QPushButton(parameter_widget_);
+        raise_elevation_->setObjectName(QStringLiteral("raise_elevation_"));
+
+        settings_layout_->addWidget(raise_elevation_);
+
+
+        verticalLayout_4->addLayout(settings_layout_);
+
+
+        horizontalLayout->addWidget(parameter_widget_);
+
+        point_widget_ = new QWidget(settings_widget_);
+        point_widget_->setObjectName(QStringLiteral("point_widget_"));
+        point_widget_->setMinimumSize(QSize(50, 0));
+        point_widget_->setLayoutDirection(Qt::LeftToRight);
+        verticalLayout_3 = new QVBoxLayout(point_widget_);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        listWidget = new QListWidget(pointWidget);
-        listWidget->setObjectName(QStringLiteral("listWidget"));
-        listWidget->setFont(font);
+        list_widget_ = new QListWidget(point_widget_);
+        list_widget_->setObjectName(QStringLiteral("list_widget_"));
+        QFont font2;
+        font2.setPointSize(12);
+        font2.setBold(false);
+        font2.setWeight(50);
+        list_widget_->setFont(font2);
 
-        verticalLayout_3->addWidget(listWidget);
+        verticalLayout_3->addWidget(list_widget_);
 
-        coordWidget = new QWidget(pointWidget);
-        coordWidget->setObjectName(QStringLiteral("coordWidget"));
-        horizontalLayout_2 = new QHBoxLayout(coordWidget);
+        coord_widget_ = new QWidget(point_widget_);
+        coord_widget_->setObjectName(QStringLiteral("coord_widget_"));
+        horizontalLayout_2 = new QHBoxLayout(coord_widget_);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        xLabel = new QLabel(coordWidget);
-        xLabel->setObjectName(QStringLiteral("xLabel"));
+        x_label_ = new QLabel(coord_widget_);
+        x_label_->setObjectName(QStringLiteral("x_label_"));
 
-        horizontalLayout_2->addWidget(xLabel);
+        horizontalLayout_2->addWidget(x_label_);
 
-        xCoord = new QSpinBox(coordWidget);
-        xCoord->setObjectName(QStringLiteral("xCoord"));
-        xCoord->setMinimumSize(QSize(50, 0));
-        xCoord->setMinimum(-10);
-        xCoord->setMaximum(10);
+        x_coord_ = new QSpinBox(coord_widget_);
+        x_coord_->setObjectName(QStringLiteral("x_coord_"));
+        x_coord_->setMinimumSize(QSize(50, 0));
+        x_coord_->setMinimum(-10);
+        x_coord_->setMaximum(10);
 
-        horizontalLayout_2->addWidget(xCoord);
+        horizontalLayout_2->addWidget(x_coord_);
 
-        yLabel = new QLabel(coordWidget);
-        yLabel->setObjectName(QStringLiteral("yLabel"));
+        y_label_ = new QLabel(coord_widget_);
+        y_label_->setObjectName(QStringLiteral("y_label_"));
 
-        horizontalLayout_2->addWidget(yLabel);
+        horizontalLayout_2->addWidget(y_label_);
 
-        yCoord = new QSpinBox(coordWidget);
-        yCoord->setObjectName(QStringLiteral("yCoord"));
-        yCoord->setMinimumSize(QSize(50, 0));
-        yCoord->setMinimum(-7);
-        yCoord->setMaximum(7);
+        y_coord_ = new QSpinBox(coord_widget_);
+        y_coord_->setObjectName(QStringLiteral("y_coord_"));
+        y_coord_->setMinimumSize(QSize(50, 0));
+        y_coord_->setMinimum(-7);
+        y_coord_->setMaximum(7);
 
-        horizontalLayout_2->addWidget(yCoord);
+        horizontalLayout_2->addWidget(y_coord_);
 
-        addButton = new QPushButton(coordWidget);
-        addButton->setObjectName(QStringLiteral("addButton"));
+        add_button_ = new QPushButton(coord_widget_);
+        add_button_->setObjectName(QStringLiteral("add_button_"));
         QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy4.setHorizontalStretch(0);
         sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(addButton->sizePolicy().hasHeightForWidth());
-        addButton->setSizePolicy(sizePolicy4);
-        addButton->setMaximumSize(QSize(200, 100));
-        addButton->setBaseSize(QSize(0, 0));
-        addButton->setLayoutDirection(Qt::LeftToRight);
-        addButton->setCheckable(false);
-        addButton->setAutoRepeat(false);
+        sizePolicy4.setHeightForWidth(add_button_->sizePolicy().hasHeightForWidth());
+        add_button_->setSizePolicy(sizePolicy4);
+        add_button_->setMaximumSize(QSize(200, 100));
+        add_button_->setBaseSize(QSize(0, 0));
+        add_button_->setLayoutDirection(Qt::LeftToRight);
+        add_button_->setCheckable(false);
+        add_button_->setAutoRepeat(false);
 
-        horizontalLayout_2->addWidget(addButton);
-
-
-        verticalLayout_3->addWidget(coordWidget);
+        horizontalLayout_2->addWidget(add_button_);
 
 
-        horizontalLayout->addWidget(pointWidget);
+        verticalLayout_3->addWidget(coord_widget_);
 
 
-        verticalLayout->addWidget(widget);
+        horizontalLayout->addWidget(point_widget_);
 
-        BezierClass->setCentralWidget(centralWidget);
-        mainToolBar = new QToolBar(BezierClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        BezierClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
-        statusBar = new QStatusBar(BezierClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        BezierClass->setStatusBar(statusBar);
-        menuBar = new QMenuBar(BezierClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1024, 21));
-        BezierClass->setMenuBar(menuBar);
+
+        verticalLayout->addWidget(settings_widget_);
+
+        BezierClass->setCentralWidget(central_widget);
+        main_toolbar_ = new QToolBar(BezierClass);
+        main_toolbar_->setObjectName(QStringLiteral("main_toolbar_"));
+        BezierClass->addToolBar(Qt::TopToolBarArea, main_toolbar_);
+        status_bar_ = new QStatusBar(BezierClass);
+        status_bar_->setObjectName(QStringLiteral("status_bar_"));
+        BezierClass->setStatusBar(status_bar_);
+        menu_bar_ = new QMenuBar(BezierClass);
+        menu_bar_->setObjectName(QStringLiteral("menu_bar_"));
+        menu_bar_->setGeometry(QRect(0, 0, 1024, 21));
+        BezierClass->setMenuBar(menu_bar_);
 
         retranslateUi(BezierClass);
 
@@ -232,10 +275,13 @@ public:
     void retranslateUi(QMainWindow *BezierClass)
     {
         BezierClass->setWindowTitle(QApplication::translate("BezierClass", "Bezier", 0));
-        tLabel->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
-        xLabel->setText(QApplication::translate("BezierClass", "X-Koordinate:", 0));
-        yLabel->setText(QApplication::translate("BezierClass", "Y-Koordinate:", 0));
-        addButton->setText(QApplication::translate("BezierClass", "Hinzuf\303\274gen", 0));
+        t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
+        show_sublines_->setText(QApplication::translate("BezierClass", "t-Linien anzeigen", 0));
+        show_derivation_->setText(QApplication::translate("BezierClass", "Hodographen anzeigen", 0));
+        raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung", 0));
+        x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate:", 0));
+        y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate:", 0));
+        add_button_->setText(QApplication::translate("BezierClass", "Hinzuf\303\274gen", 0));
     } // retranslateUi
 
 };

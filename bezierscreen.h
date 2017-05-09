@@ -1,55 +1,57 @@
 #ifndef BEZIERSCREEN_H
 #define BEZIERSCREEN_H
+
+#include <memory>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include "line.h"
-#include <memory>
 
-typedef struct XY {
-	float x;
-	float y;
-} XY;
-
-class BezierScreen : public QOpenGLWidget, protected QOpenGLFunctions
-{
+class BezierScreen : public QOpenGLWidget, protected QOpenGLFunctions {
 	Q_OBJECT
 
 public:
 
 
-	BezierScreen(QWidget *parent);
+	BezierScreen(QWidget* parent);
 	virtual ~BezierScreen();
 	void initializeGL() override;
 	void paintGL() override;
 	void resizeGL(int w, int h) override;
-	void addCoordinate(float x, float y);
-	void addCoordinate(XY xy);
-	XY getCoordinateByIndex(int i);
+	bool addCoordinate(float x, float y);
+	bool addCoordinate(QVector4D xy);
+	QVector4D getCoordinateByIndex(int i) const;
 	void removeCoordinateByIndex(int i);
 	void keyPressEvent(QKeyEvent* event) override;
+	QVector<QVector4D> getBasePoints() const;
+
 
 public slots:
-	void set_t(int t);
+	void setT(int t);
+	void raiseElevation();
+	void toggleSublineMode();
+	void calculateHodograph();
 
 private:
-	void init_baseline();
-	void init_sublines();
-	void remove_sublines();
-	bool init_shader() const;
-	void calc_bezier(Line* next);
-	void draw_bezier();
+	void initBaseline();
+	void initSublines();
+	void removeSublines();
+	bool initShader() const;
+	void calcBezier(Line* next);
+	void drawBezier();
 	static int factorial(int n);
 	static int binominal(int n, int k);
-	QMatrix4x4 *model;
-	QMatrix4x4 *view;
-	QMatrix4x4 *projection;
-	QOpenGLShaderProgram *prog;
-	float z_near, z_far, zoom_factor, t;
-	Line *base;
-	QVector<std::shared_ptr<Line>> lines;
-	Line *bezierCurve;
-	QVector<XY> coords;
+
+	bool show_sublines_, show_derivate_, highest_grade_reached_;
+	QMatrix4x4* model_;
+	QMatrix4x4* view_;
+	QMatrix4x4* projection_;
+	QOpenGLShaderProgram* prog_;
+	float z_near_, z_far_, zoom_factor_, t_;
+	Line* base_;
+	QVector<std::shared_ptr<Line>> lines_;
+	Line* bezier_curve_;
+	QVector<QVector4D> coords_;
 };
 
 #endif // BEZIERSCREEN_H
