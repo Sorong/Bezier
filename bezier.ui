@@ -117,7 +117,10 @@
                 </font>
                </property>
                <property name="maximum">
-                <number>10</number>
+                <number>100</number>
+               </property>
+               <property name="singleStep">
+                <number>5</number>
                </property>
                <property name="tracking">
                 <bool>true</bool>
@@ -155,9 +158,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="show_derivation_">
+             <widget class="QCheckBox" name="show_derivation_">
               <property name="text">
-               <string>Hodographen anzeigen</string>
+               <string>Ableitung anzeigen</string>
               </property>
              </widget>
             </item>
@@ -244,6 +247,16 @@
                 <number>7</number>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="weigh_label_">
+               <property name="text">
+                <string>Gewichtung:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="weight_"/>
              </item>
              <item>
               <widget class="QPushButton" name="add_button_">

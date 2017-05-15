@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -47,7 +48,7 @@ public:
     QSlider *t_slider_;
     QHBoxLayout *settings_layout_;
     QCheckBox *show_sublines_;
-    QPushButton *show_derivation_;
+    QCheckBox *show_derivation_;
     QPushButton *raise_elevation_;
     QWidget *point_widget_;
     QVBoxLayout *verticalLayout_3;
@@ -58,6 +59,8 @@ public:
     QSpinBox *x_coord_;
     QLabel *y_label_;
     QSpinBox *y_coord_;
+    QLabel *weigh_label_;
+    QDoubleSpinBox *weight_;
     QPushButton *add_button_;
     QToolBar *main_toolbar_;
     QStatusBar *status_bar_;
@@ -143,7 +146,8 @@ public:
         font1.setBold(false);
         font1.setWeight(50);
         t_slider_->setFont(font1);
-        t_slider_->setMaximum(10);
+        t_slider_->setMaximum(100);
+        t_slider_->setSingleStep(5);
         t_slider_->setTracking(true);
         t_slider_->setOrientation(Qt::Horizontal);
         t_slider_->setInvertedAppearance(false);
@@ -165,7 +169,7 @@ public:
 
         settings_layout_->addWidget(show_sublines_);
 
-        show_derivation_ = new QPushButton(parameter_widget_);
+        show_derivation_ = new QCheckBox(parameter_widget_);
         show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
 
         settings_layout_->addWidget(show_derivation_);
@@ -231,6 +235,16 @@ public:
 
         horizontalLayout_2->addWidget(y_coord_);
 
+        weigh_label_ = new QLabel(coord_widget_);
+        weigh_label_->setObjectName(QStringLiteral("weigh_label_"));
+
+        horizontalLayout_2->addWidget(weigh_label_);
+
+        weight_ = new QDoubleSpinBox(coord_widget_);
+        weight_->setObjectName(QStringLiteral("weight_"));
+
+        horizontalLayout_2->addWidget(weight_);
+
         add_button_ = new QPushButton(coord_widget_);
         add_button_->setObjectName(QStringLiteral("add_button_"));
         QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -277,10 +291,11 @@ public:
         BezierClass->setWindowTitle(QApplication::translate("BezierClass", "Bezier", 0));
         t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
         show_sublines_->setText(QApplication::translate("BezierClass", "t-Linien anzeigen", 0));
-        show_derivation_->setText(QApplication::translate("BezierClass", "Hodographen anzeigen", 0));
+        show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung anzeigen", 0));
         raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung", 0));
         x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate:", 0));
         y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate:", 0));
+        weigh_label_->setText(QApplication::translate("BezierClass", "Gewichtung:", 0));
         add_button_->setText(QApplication::translate("BezierClass", "Hinzuf\303\274gen", 0));
     } // retranslateUi
 

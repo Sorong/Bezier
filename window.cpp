@@ -1,6 +1,9 @@
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <qtextstream.h>
+#include <QVector4D>
 #include "window.h"
+
 
 Bezier::Bezier(QWidget* parent)
 	: QMainWindow(parent) {
@@ -10,9 +13,9 @@ Bezier::Bezier(QWidget* parent)
 	//QObject::connect(ui.horizontalSlider, SIGNAL(valueChanged(int)), ui.openGLWidget, SLOT(setT(int)));
 	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToLabel(int)));
 	QObject::connect(ui.add_button_, SIGNAL(pressed()), this, SLOT(addCoordinates()));
-	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.bezier, SLOT(toggleSublineMode()));
+	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.bezier, SLOT(toggleSublineMode(bool)));
+	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.bezier, SLOT(toggleDerivateMode(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
-	QObject::connect(ui.show_derivation_, SIGNAL(pressed()), this, SLOT(getHodograph()));
 }
 
 Bezier::~Bezier() {
@@ -20,15 +23,16 @@ Bezier::~Bezier() {
 }
 
 void Bezier::sliderToLabel(int i) const {
-
+	const float paramToFloat = i/100.0f;
 	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
-	float_as_string.sprintf("%.2f", i / 10.0f);
+	float_as_string.sprintf("%.2f", paramToFloat);
 	this->ui.t_label_->setText("t: " + float_as_string);
-	this->ui.bezier->setT(i);
+	this->ui.bezier->setT(paramToFloat);
 }
 
 void Bezier::addCoordinates() const {
-	QVector4D coords = {static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
+	QVector4D coords = { static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
+	coords *= this->ui.weight_->value();
 	if(this->ui.bezier->addCoordinate(coords)) {
 		this->addToList(coords);
 	} else {
@@ -55,18 +59,16 @@ void Bezier::raiseElevation() const {
 	reloadList();
 }
 
-void Bezier::getHodograph() const {
-	this->ui.bezier->calculateHodograph();
-	reloadList();
-}
-
 void Bezier::addToList(QVector4D coordinate) const {
 	QString out;
 	QTextStream stream(&out);
 	stream.setRealNumberPrecision(2);
 	stream.setRealNumberNotation(QTextStream::FixedNotation);
-	stream << "( x: " << coordinate.x() << ", y: ";
-	stream << coordinate.y() << ")";
+	auto w = coordinate.w();
+	if(coordinate.w() != 0) {
+		coordinate /= coordinate.w();
+	}
+	stream << "( x: " << coordinate.x() << ", y: " << coordinate.y() << ", Gewichtung: " << w << ")";
 	this->ui.list_widget_->addItem(out);
 }
 

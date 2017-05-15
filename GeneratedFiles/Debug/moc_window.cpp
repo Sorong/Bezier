@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Bezier_t {
-    QByteArrayData data[10];
-    char stringdata0[98];
+    QByteArrayData data[9];
+    char stringdata0[85];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,13 +37,12 @@ QT_MOC_LITERAL(4, 24, 14), // "addCoordinates"
 QT_MOC_LITERAL(5, 39, 13), // "keyPressEvent"
 QT_MOC_LITERAL(6, 53, 10), // "QKeyEvent*"
 QT_MOC_LITERAL(7, 64, 5), // "event"
-QT_MOC_LITERAL(8, 70, 14), // "raiseElevation"
-QT_MOC_LITERAL(9, 85, 12) // "getHodograph"
+QT_MOC_LITERAL(8, 70, 14) // "raiseElevation"
 
     },
     "Bezier\0sliderToLabel\0\0i\0addCoordinates\0"
     "keyPressEvent\0QKeyEvent*\0event\0"
-    "raiseElevation\0getHodograph"
+    "raiseElevation"
 };
 #undef QT_MOC_LITERAL
 
@@ -53,7 +52,7 @@ static const uint qt_meta_data_Bezier[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -61,17 +60,15 @@ static const uint qt_meta_data_Bezier[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x0a /* Public */,
-       4,    0,   42,    2, 0x0a /* Public */,
-       5,    1,   43,    2, 0x0a /* Public */,
-       8,    0,   46,    2, 0x0a /* Public */,
-       9,    0,   47,    2, 0x0a /* Public */,
+       1,    1,   34,    2, 0x0a /* Public */,
+       4,    0,   37,    2, 0x0a /* Public */,
+       5,    1,   38,    2, 0x0a /* Public */,
+       8,    0,   41,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 6,    7,
-    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -87,7 +84,6 @@ void Bezier::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 1: _t->addCoordinates(); break;
         case 2: _t->keyPressEvent((*reinterpret_cast< QKeyEvent*(*)>(_a[1]))); break;
         case 3: _t->raiseElevation(); break;
-        case 4: _t->getHodograph(); break;
         default: ;
         }
     }
@@ -118,13 +114,13 @@ int Bezier::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 4)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 4;
     }
     return _id;
 }

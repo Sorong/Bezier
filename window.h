@@ -15,7 +15,6 @@ public slots:
 	void addCoordinates() const;
 	void keyPressEvent(QKeyEvent* event) override;
 	void raiseElevation() const;
-	void getHodograph() const;
 private:
 	void addToList(QVector4D coordinate) const;
 	void reloadList() const;

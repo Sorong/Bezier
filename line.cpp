@@ -51,6 +51,14 @@ void Line::initLine() {
 	if (program_ == nullptr) {
 		return;
 	}
+	QVector<QVector4D> vertices = this->vertices_;
+	for(auto& vertex: vertices) {
+		if(vertex.w() == 0) {
+			vertex.setW(1);
+		} else {
+			vertex /= vertex.w();
+		}
+	}
 	QVector3D col = this->colors_.at(0);
 	while (this->colors_.size() < this->vertices_.size()) {
 		colors_.push_back({col});
@@ -68,7 +76,7 @@ void Line::initLine() {
 	// Step 1: Create vertex buffer object for position attribute and bind it to the associated "shader attribute".
 	glGenBuffers(1, &this->position_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
-	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(QVector4D), vertices.data(), GL_STATIC_DRAW);
 
 	// Bind it to position.
 	pos = glGetAttribLocation(progId, "position");
@@ -102,6 +110,7 @@ void Line::addVertex(QVector4D vertex) {
 	glDeleteBuffers(1, &color_buffer_);
 	glDeleteBuffers(1, &position_buffer_);
 	this->vertices_.push_back(vertex);
+	initLine();
 }
 
 QVector4D Line::at(int index) const {
@@ -114,4 +123,21 @@ int Line::size() const {
 
 QVector<QVector4D> Line::getVertices() const {
 	return this->vertices_;
+}
+
+QVector4D Line::at(int i) {
+	if(i < 0 || i >= this->vertices_.size()) {
+		throw std::out_of_range("Index out of range");
+	}
+	return this->vertices_.at(i);
+}
+
+QVector4D Line::last() {
+	QVector4D vec;
+	try {
+		vec = this->at((this->vertices_.size() - 1));
+	} catch(std::out_of_range exception) {
+		throw exception;
+	}
+	return this->at((this->vertices_.size() - 1));
 }

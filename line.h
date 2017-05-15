@@ -19,6 +19,8 @@ public:
 	QVector4D at(int index) const;
 	int size() const;
 	QVector<QVector4D> getVertices() const;
+	QVector4D at(int i);
+	QVector4D last();
 
 private:
 

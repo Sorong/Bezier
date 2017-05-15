@@ -24,21 +24,23 @@ public:
 	void removeCoordinateByIndex(int i);
 	void keyPressEvent(QKeyEvent* event) override;
 	QVector<QVector4D> getBasePoints() const;
+	void setT(float t);
 
 
 public slots:
-	void setT(int t);
 	void raiseElevation();
-	void toggleSublineMode();
-	void calculateHodograph();
+	void toggleSublineMode(bool);
+	void toggleDerivateMode(bool);
 
 private:
 	void initBaseline();
 	void initSublines();
 	void removeSublines();
 	bool initShader() const;
-	void calcBezier(Line* next);
+	void calcBezier();
 	void drawBezier();
+	void drawDerivate();
+	void deCasteljau(QVector<QVector4D> &base_coords, QVector<QVector<QVector4D>> &line_coords) const;
 	static int factorial(int n);
 	static int binominal(int n, int k);
 
@@ -51,6 +53,7 @@ private:
 	Line* base_;
 	QVector<std::shared_ptr<Line>> lines_;
 	Line* bezier_curve_;
+	Line* derivate_;
 	QVector<QVector4D> coords_;
 };
 
