@@ -23,6 +23,8 @@ public:
 	QVector4D getCoordinateByIndex(int i) const;
 	void removeCoordinateByIndex(int i);
 	void keyPressEvent(QKeyEvent* event) override;
+	void mousePressEvent(QMouseEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent *event) override;
 	QVector<QVector4D> getBasePoints() const;
 	void setT(float t);
 
@@ -45,6 +47,7 @@ private:
 	static int binominal(int n, int k);
 
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
+	QVector4D viewport;
 	QMatrix4x4* model_;
 	QMatrix4x4* view_;
 	QMatrix4x4* projection_;
@@ -55,6 +58,9 @@ private:
 	Line* bezier_curve_;
 	Line* derivate_;
 	QVector<QVector4D> coords_;
+	QVector4D *drag_;
+	QVector3D dragstart_;
+	QVector3D dragend_;
 };
 
 #endif // BEZIERSCREEN_H

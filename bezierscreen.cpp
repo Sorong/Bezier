@@ -107,6 +107,7 @@ void BezierScreen::paintGL() {
 void BezierScreen::resizeGL(int w, int h) {
 	h = h < 1 ? 1 : h;
 	glViewport(0, 0, w, h);
+	this->viewport = { 0.0f,0.0f,  static_cast<float>(w), static_cast<float>(h) };
 	this->projection_->setToIdentity();
 	this->projection_->perspective(45.0f * this->zoom_factor_, static_cast<float>(w) / h, this->z_near_, this->z_far_);
 }
@@ -203,6 +204,48 @@ void BezierScreen::keyPressEvent(QKeyEvent* event) {
 		this->view_->rotate(2 * zoom_factor_, -2.0, 0, 0);
 		break;
 	}
+}
+
+void BezierScreen::mousePressEvent(QMouseEvent* event) {
+	QRect viewp(viewport.x(), viewport.y() , viewport.z(), viewport.w());
+
+	auto begin = QVector3D(event->x(), event->y(), -10.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
+	auto end = QVector3D(event->x(), height() - event->y(), 1.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
+	dragstart_ = begin;
+	QVector3D direction = (end - begin).normalized();
+	/*qDebug() << "Begin: " << begin << endl;
+	qDebug() << "End: " << end << endl;
+	qDebug() << direction << endl;*/
+	QVector4D *closest = nullptr;
+	float distance = std::numeric_limits<float>::max();
+	for(auto& coord : coords_) {
+		QVector3D coord_3d = coord.toVector3D();
+		float current_distance = coord_3d.distanceToLine(begin, direction);
+		if(current_distance >= 0 && current_distance <= 2 && current_distance < distance) {
+			distance = current_distance;
+			closest = &coord;
+		}
+	}
+	if (closest) {
+		this->drag_ = closest;
+		qDebug() << *closest << endl;
+	}
+
+}
+
+void BezierScreen::mouseReleaseEvent(QMouseEvent* event) {
+	QRect viewp(viewport.x(), viewport.y(), viewport.z(), viewport.w());
+
+	auto begin = QVector3D(event->x(), event->y(), -10.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
+	auto end = QVector3D(event->x(), height() - event->y(), 1.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
+	dragend_ = begin;
+	QVector3D direction = (dragstart_ - dragend_).normalized();
+	*this->drag_ += direction;
+	initializeOpenGLFunctions();
+	makeCurrent();
+	initBaseline();
+	this->derivate_ = nullptr;
+	lines_.clear();
 }
 
 QVector<QVector4D> BezierScreen::getBasePoints() const {
