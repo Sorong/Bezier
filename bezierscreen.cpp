@@ -130,7 +130,7 @@ void BezierScreen::raiseElevation() {
 	new_coords.push_back(coords_.at(0));
 	for (int i = 1, n = coords_.size()-1; i < coords_.size(); i++) {
 		QVector4D new_b = static_cast<float>(i) / (n + 1) * coords_.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * coords_.at(i);
-		new_b.setW(1);
+		//new_b /= new_b.w();
 		new_coords.push_back(new_b);
 	}
 	new_coords.push_back(coords_.at(coords_.size() - 1));
