@@ -45,6 +45,7 @@ BezierScreen::BezierScreen(QWidget* parent) :
 	this->projection_ = new QMatrix4x4;
 	this->prog_ = new QOpenGLShaderProgram;
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+	ray = nullptr;
 }
 
 BezierScreen::~BezierScreen() {
@@ -76,6 +77,9 @@ void BezierScreen::paintGL() {
 	glEnable(GL_POINT_SMOOTH);
 	glLineWidth(2);
 	glPointSize(7);
+	if (ray != nullptr) {
+		ray->renderLine();
+	}
 	if (coords_.isEmpty()) {
 		QPainter painter(this);
 		painter.setPen(Qt::darkRed);
@@ -97,6 +101,7 @@ void BezierScreen::paintGL() {
 	if (this->bezier_curve_ != nullptr) {
 		this->bezier_curve_->renderLine();
 	}
+	
 	if (show_derivate_ && derivate_ != nullptr) {
 		derivate_->initLine();
 		derivate_->renderLine();
@@ -107,7 +112,6 @@ void BezierScreen::paintGL() {
 void BezierScreen::resizeGL(int w, int h) {
 	h = h < 1 ? 1 : h;
 	glViewport(0, 0, w, h);
-	this->viewport = { 0.0f,0.0f,  static_cast<float>(w), static_cast<float>(h) };
 	this->projection_->setToIdentity();
 	this->projection_->perspective(45.0f * this->zoom_factor_, static_cast<float>(w) / h, this->z_near_, this->z_far_);
 }
@@ -207,45 +211,69 @@ void BezierScreen::keyPressEvent(QKeyEvent* event) {
 }
 
 void BezierScreen::mousePressEvent(QMouseEvent* event) {
-	QRect viewp(viewport.x(), viewport.y() , viewport.z(), viewport.w());
-
-	auto begin = QVector3D(event->x(), event->y(), -10.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
-	auto end = QVector3D(event->x(), height() - event->y(), 1.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
-	dragstart_ = begin;
+	dragged_vertex_ = nullptr;
+	QVector2D pos(event->pos());
+	QRect viewp(0, 0, width(), height());
+	QMatrix4x4 click_model = *this->model_;
+	click_model.setColumn(3, { INITPOS });
+	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
-	/*qDebug() << "Begin: " << begin << endl;
-	qDebug() << "End: " << end << endl;
-	qDebug() << direction << endl;*/
+
+
 	QVector4D *closest = nullptr;
 	float distance = std::numeric_limits<float>::max();
-	for(auto& coord : coords_) {
-		QVector3D coord_3d = coord.toVector3D();
-		float current_distance = coord_3d.distanceToLine(begin, direction);
-		if(current_distance >= 0 && current_distance <= 2 && current_distance < distance) {
-			distance = current_distance;
-			closest = &coord;
-		}
-	}
-	if (closest) {
-		this->drag_ = closest;
-		qDebug() << *closest << endl;
-	}
 
+	float radius = 2.0f;
+	float radius2 = radius * radius;
+	for (auto& coord : coords_) {
+		QVector3D L = (coord.toVector3D() - begin);
+		float tca = QVector3D::dotProduct(L, direction);
+		if (tca < 0) {
+			continue;
+		}
+		float d2 = QVector3D::dotProduct(L, L) - tca * tca;
+		if (d2 > radius2) {
+			continue;
+		}
+		float thc = sqrt(radius2 - d2);
+		t_drag_ = tca - thc;
+		dragged_vertex_ = &coord;
+		intersect_to_center_ = coord.toVector3D() - begin;
+	}
+	if (ray != nullptr) {
+		delete ray;
+	}
+	
+	initializeOpenGLFunctions();
+	makeCurrent();
+	ray = new Line(this->model_, this->view_, this->projection_, { RED }, { begin, end });
+	ray->setPosition({ INITPOS });
+	ray->setShader(this->prog_);
+	ray->initLine();
+	update();
+}
+
+void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
+	QVector2D pos(event->pos());
+	QRect viewp(0, 0, width(), height());
+	QMatrix4x4 click_model = *this->model_;
+	click_model.setColumn(3, { INITPOS });
+	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
+	QVector3D direction = (end - begin).normalized();
+	auto length = intersect_to_center_.length();
+	float w = dragged_vertex_->w();
+	*dragged_vertex_ = begin + length*direction;
+	dragged_vertex_->setW(w);
+	qDebug() << "new pos = " << *dragged_vertex_;
+	makeCurrent();
+	initBaseline();
+	lines_.clear();
 }
 
 void BezierScreen::mouseReleaseEvent(QMouseEvent* event) {
-	QRect viewp(viewport.x(), viewport.y(), viewport.z(), viewport.w());
 
-	auto begin = QVector3D(event->x(), event->y(), -10.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
-	auto end = QVector3D(event->x(), height() - event->y(), 1.0f).unproject(*this->view_* *this->model_, *this->projection_, viewp);
-	dragend_ = begin;
-	QVector3D direction = (dragstart_ - dragend_).normalized();
-	*this->drag_ += direction;
-	initializeOpenGLFunctions();
-	makeCurrent();
-	initBaseline();
-	this->derivate_ = nullptr;
-	lines_.clear();
 }
 
 QVector<QVector4D> BezierScreen::getBasePoints() const {
