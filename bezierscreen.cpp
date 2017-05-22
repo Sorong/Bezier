@@ -255,6 +255,9 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 }
 
 void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
+	if(dragged_vertex_ == nullptr) {
+		return;
+	}
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
 	QMatrix4x4 click_model = *this->model_;
