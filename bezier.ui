@@ -256,7 +256,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QDoubleSpinBox" name="weight_"/>
+              <widget class="QDoubleSpinBox" name="weight_">
+               <property name="minimum">
+                <double>0.010000000000000</double>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="add_button_">
@@ -318,7 +322,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

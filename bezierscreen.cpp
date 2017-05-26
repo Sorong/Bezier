@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include "bezierscreen.h"
 
+
 #define SHADERPATH "/shader/"
 #define ZNEAR 0.1f
 #define ZFAR 100.0f
@@ -227,7 +228,7 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	float radius = 2.0f;
 	float radius2 = radius * radius;
 	for (auto& coord : coords_) {
-		QVector3D L = (coord.toVector3D() - begin);
+		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
 			continue;
@@ -239,7 +240,9 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 		float thc = sqrt(radius2 - d2);
 		t_drag_ = tca - thc;
 		dragged_vertex_ = &coord;
-		intersect_to_center_ = coord.toVector3D() - begin;
+		intersect_to_center_ = coord.toVector3DAffine() - begin;
+		qDebug() << "clicked:" << coord;
+		qDebug() << intersect_to_center_;
 	}
 	if (ray != nullptr) {
 		delete ray;
@@ -268,7 +271,8 @@ void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
 	auto length = intersect_to_center_.length();
 	float w = dragged_vertex_->w();
 	*dragged_vertex_ = begin + length*direction;
-	dragged_vertex_->setW(w);
+	dragged_vertex_->setW(1);
+	*dragged_vertex_ *= w;
 	qDebug() << "new pos = " << *dragged_vertex_;
 	makeCurrent();
 	initBaseline();

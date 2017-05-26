@@ -242,6 +242,7 @@ public:
 
         weight_ = new QDoubleSpinBox(coord_widget_);
         weight_->setObjectName(QStringLiteral("weight_"));
+        weight_->setMinimum(0.01);
 
         horizontalLayout_2->addWidget(weight_);
 
@@ -278,7 +279,7 @@ public:
         BezierClass->setStatusBar(status_bar_);
         menu_bar_ = new QMenuBar(BezierClass);
         menu_bar_->setObjectName(QStringLiteral("menu_bar_"));
-        menu_bar_->setGeometry(QRect(0, 0, 1024, 21));
+        menu_bar_->setGeometry(QRect(0, 0, 1024, 26));
         BezierClass->setMenuBar(menu_bar_);
 
         retranslateUi(BezierClass);
