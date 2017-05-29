@@ -43,7 +43,7 @@ private:
 	void calcBezier();
 	void drawBezier();
 	void drawDerivate();
-	void deCasteljau(QVector<QVector4D> &base_coords, QVector<QVector<QVector4D>> &line_coords) const;
+	void deCasteljau(QVector<QVector4D> &base_coordinates, QVector<QVector<QVector4D>> &line_coordinates) const;
 	static int factorial(int n);
 	static int binominal(int n, int k);
 
@@ -57,7 +57,7 @@ private:
 	QVector<std::shared_ptr<Line>> lines_;
 	Line* bezier_curve_;
 	Line* derivate_;
-	QVector<QVector4D> coords_;
+	QVector<QVector4D> coordinates_;
 	float t_drag_;
 	QVector4D *dragged_vertex_;
 	QVector3D intersect_to_center_;
