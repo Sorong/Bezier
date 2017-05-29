@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QPainter>
 #include <QKeyEvent>
-#include "bezierscreen.h"
+#include "glview.hpp"
 
 
 #define SHADERPATH "/shader/"
@@ -81,7 +81,7 @@ void BezierScreen::paintGL() {
 	if (ray != nullptr) {
 		ray->renderLine();
 	}
-	if (coords_.isEmpty()) {
+	if (coordinates_.isEmpty()) {
 		QPainter painter(this);
 		painter.setPen(Qt::darkRed);
 		painter.setFont(QFont("Arial", 20));
@@ -94,7 +94,7 @@ void BezierScreen::paintGL() {
 		initSublines();
 		drawDerivate();
 	}
-	
+
 	this->base_->renderLine();
 	for (auto& l : lines_) {
 		l->renderLine();
@@ -102,7 +102,7 @@ void BezierScreen::paintGL() {
 	if (this->bezier_curve_ != nullptr) {
 		this->bezier_curve_->renderLine();
 	}
-	
+
 	if (show_derivate_ && derivate_ != nullptr) {
 		derivate_->initLine();
 		derivate_->renderLine();
@@ -124,18 +124,18 @@ void BezierScreen::setT(float t) {
 }
 
 void BezierScreen::raiseElevation() {
-	if(coords_.size() <= 2) {
+	if (coordinates_.size() <= 2) {
 		return;
 	}
-	QVector<QVector4D> new_coords;
-	new_coords.push_back(coords_.at(0));
-	for (int i = 1, n = coords_.size()-1; i < coords_.size(); i++) {
-		QVector4D new_b = static_cast<float>(i) / (n + 1) * coords_.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * coords_.at(i);
+	QVector<QVector4D> new_coordinates;
+	new_coordinates.push_back(coordinates_.at(0));
+	for (int i = 1, n = coordinates_.size() - 1; i < coordinates_.size(); i++) {
+		QVector4D new_b = static_cast<float>(i) / (n + 1) * coordinates_.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * coordinates_.at(i);
 		//new_b /= new_b.w();
-		new_coords.push_back(new_b);
+		new_coordinates.push_back(new_b);
 	}
-	new_coords.push_back(coords_.at(coords_.size() - 1));
-	this->coords_ = new_coords;
+	new_coordinates.push_back(coordinates_.at(coordinates_.size() - 1));
+	this->coordinates_ = new_coordinates;
 	makeCurrent();
 	initBaseline();
 	lines_.clear();
@@ -146,7 +146,7 @@ void BezierScreen::initBaseline() {
 		delete this->base_;
 	}
 	QVector<QVector4D> start_coordinates;
-	for (auto& coordinate : this->coords_) {
+	for (auto& coordinate : this->coordinates_) {
 		QVector4D current = coordinate;
 		start_coordinates.push_back(current);
 	}
@@ -164,12 +164,12 @@ bool BezierScreen::addCoordinate(float x, float y) {
 bool BezierScreen::addCoordinate(QVector4D xyzw) {
 	initializeOpenGLFunctions();
 	makeCurrent();
-	this->coords_.push_back(xyzw);
+	this->coordinates_.push_back(xyzw);
 	initBaseline();
 	this->derivate_ = nullptr;
 	lines_.clear();
-	if(highest_grade_reached_) {
-		this->coords_.pop_back();
+	if (highest_grade_reached_) {
+		this->coordinates_.pop_back();
 	}
 	return !highest_grade_reached_;
 }
@@ -178,7 +178,7 @@ bool BezierScreen::addCoordinate(QVector4D xyzw) {
 void BezierScreen::removeCoordinateByIndex(int i) {
 	initializeOpenGLFunctions();
 	makeCurrent();
-	coords_.removeAt(i);
+	coordinates_.removeAt(i);
 	initBaseline();
 	lines_.clear();
 	update();
@@ -216,18 +216,18 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
 	QMatrix4x4 click_model = *this->model_;
-	click_model.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
+	click_model.setColumn(3, {INITPOS});
+	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
 
 
-	QVector4D *closest = nullptr;
+	QVector4D* closest = nullptr;
 	float distance = std::numeric_limits<float>::max();
 
 	float radius = 2.0f;
 	float radius2 = radius * radius;
-	for (auto& coord : coords_) {
+	for (auto& coord : coordinates_) {
 		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
@@ -247,30 +247,30 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	if (ray != nullptr) {
 		delete ray;
 	}
-	
+
 	initializeOpenGLFunctions();
 	makeCurrent();
-	ray = new Line(this->model_, this->view_, this->projection_, { RED }, { begin, end });
-	ray->setPosition({ INITPOS });
+	ray = new Line(this->model_, this->view_, this->projection_, {RED}, {begin, end});
+	ray->setPosition({INITPOS});
 	ray->setShader(this->prog_);
 	ray->initLine();
 	update();
 }
 
 void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
-	if(dragged_vertex_ == nullptr) {
+	if (dragged_vertex_ == nullptr) {
 		return;
 	}
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
 	QMatrix4x4 click_model = *this->model_;
-	click_model.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_* click_model, *this->projection_, viewp);
+	click_model.setColumn(3, {INITPOS});
+	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
 	auto length = intersect_to_center_.length();
 	float w = dragged_vertex_->w();
-	*dragged_vertex_ = begin + length*direction;
+	*dragged_vertex_ = begin + length * direction;
 	dragged_vertex_->setW(1);
 	*dragged_vertex_ *= w;
 	qDebug() << "new pos = " << *dragged_vertex_;
@@ -299,19 +299,19 @@ void BezierScreen::toggleDerivateMode(bool state) {
 }
 
 QVector4D BezierScreen::getCoordinateByIndex(int i) const {
-	if (coords_.isEmpty() || i > coords_.size() - 1) {
+	if (coordinates_.isEmpty() || i > coordinates_.size() - 1) {
 		return {0, 0, 0, 0};
 	}
-	return coords_.at(i);
+	return coordinates_.at(i);
 }
 
 void BezierScreen::initSublines() {
 	calcBezier();
-	if(lines_.isEmpty()) {
+	if (lines_.isEmpty()) {
 		return;
 	}
-	if(!show_sublines_) {
-		
+	if (!show_sublines_) {
+
 		lines_.at(lines_.size() - 1)->initLine();
 	} else {
 		for (auto& l : lines_) {
@@ -340,12 +340,12 @@ bool BezierScreen::initShader() const {
 void BezierScreen::calcBezier() {
 	QVector3D col[] = {{RED},{GREEN},{MAGENTA}};
 	int col_index = 0;
-	QVector<QVector4D> base_coords = this->coords_;
-	QVector<QVector<QVector4D>> line_coords;
-	deCasteljau(base_coords, line_coords);
-	for(auto& line_coord : line_coords) {
+	QVector<QVector4D> base_coordinates = this->coordinates_;
+	QVector<QVector<QVector4D>> line_coordinates;
+	deCasteljau(base_coordinates, line_coordinates);
+	for (auto& line_coord : line_coordinates) {
 		std::shared_ptr<Line> curr(new Line(this->model_, this->view_, this->projection_, col[col_index++ % 3], line_coord));
-		curr->setPosition({ INITPOS });
+		curr->setPosition({INITPOS});
 		curr->setShader(this->prog_);
 		this->lines_.push_back(std::shared_ptr<Line>(curr));
 	}
@@ -356,35 +356,35 @@ void BezierScreen::drawBezier() {
 		delete this->bezier_curve_;
 		this->bezier_curve_ = nullptr;
 	}
-	if(this->coords_.size() <= 2) {
+	if (this->coordinates_.size() <= 2) {
 		return;
 	}
 	QVector<QVector4D> points;
 	highest_grade_reached_ = false;
-	int n = this->coords_.length() - 1;
+	int n = this->coordinates_.length() - 1;
 	if (n <= 0) {
 		return;
 	}
 	for (int tAsInt = 0; tAsInt <= 100; tAsInt += 5) {
-		float t = tAsInt/100.f;
+		float t = tAsInt / 100.f;
 		QVector<float> bernsteinpolynoms;
 		float beziertest = 0;
 		for (int k = 0; k <= n; k++) {
 			auto polynom = binominal(n, k) * pow(t, k) * pow(1 - t, n - k);
 			beziertest += polynom;
 			bernsteinpolynoms.push_back(polynom);
-			
+
 		}
-		if (beziertest*100 <= 99) {
+		if (beziertest * 100 <= 99) {
 			this->highest_grade_reached_ = true;
 			return;
 		}
 		QVector4D point(0, 0, 0, 0);
 		for (auto j = 0; j <= n; j++) {
-			auto current = this->coords_.at(j);
-			point += current*bernsteinpolynoms.at(j);
+			auto current = this->coordinates_.at(j);
+			point += current * bernsteinpolynoms.at(j);
 		}
-		point /= point.w();
+	//	point /= point.w();
 		points.push_back(point);
 	}
 	this->bezier_curve_ = new Line(this->model_, this->view_, this->projection_, {BLACK}, points);
@@ -398,21 +398,23 @@ void BezierScreen::drawDerivate() {
 		delete this->derivate_;
 		this->derivate_ = nullptr;
 	}
-	if (this->coords_.isEmpty() || this->lines_.isEmpty()) { return; }
+	if (this->coordinates_.isEmpty() || this->lines_.isEmpty()) {
+		return;
+	}
 	QVector<QVector4D> points;
 	QVector<float> bernsteinpolynoms;
 
-	auto n = coords_.size()-1;
+	auto n = coordinates_.size() - 1;
 	for (auto j = 0; j < n; j++) {
-		auto polynom = binominal((n-1), j) * pow(t_, j) * pow(1 - t_, (n-1) - j);
+		auto polynom = binominal((n - 1), j) * pow(t_, j) * pow(1 - t_, (n - 1) - j);
 		bernsteinpolynoms.push_back(polynom);
 	}
 
 	QVector4D point(0, 0, 0, 0);
-	for (auto j = 0; j < coords_.size() - 1; j++) {
-		auto b1 = this->coords_.at(j + 1);
-		auto b2 = this->coords_.at(j);
-		auto current = (b1/b1.w()) - (b2/b2.w());
+	for (auto j = 0; j < coordinates_.size() - 1; j++) {
+		auto b1 = this->coordinates_.at(j + 1);
+		auto b2 = this->coordinates_.at(j);
+		auto current = (b1 / b1.w()) - (b2 / b2.w());
 		point = current * bernsteinpolynoms.at(j);
 		points.push_back(point);
 	}
@@ -423,33 +425,33 @@ void BezierScreen::drawDerivate() {
 	}*/
 	QVector4D start_point = this->lines_.last()->last();
 	QVector4D last_point(0, 0, 0, 0);
-	for(auto& curpoint : points) {
+	for (auto& curpoint : points) {
 		last_point += curpoint;
 	}
 	//last_point.normalize();
 	//last_point *= 2;
 	start_point /= start_point.w();
 	last_point += start_point;
-	this->derivate_ = new Line(this->model_, this->view_, this->projection_, { RED }, { start_point, last_point });
-	this->derivate_->setPosition({ INITPOS });
+	this->derivate_ = new Line(this->model_, this->view_, this->projection_, {RED}, {start_point, last_point});
+	this->derivate_->setPosition({INITPOS});
 	this->derivate_->setShader(this->prog_);
 }
 
-void BezierScreen::deCasteljau(QVector<QVector4D> &base_coords, QVector<QVector<QVector4D>> &line_coords) const {
+void BezierScreen::deCasteljau(QVector<QVector4D>& base_coordinates, QVector<QVector<QVector4D>>& line_coordinates) const {
 	QVector<QVector4D> new_line_points;
 
-	for (int i = 0; i < base_coords.size() - 1; i++) {
-		auto first_w = base_coords.at(i);
-		auto second_w = base_coords.at(i + 1);
-		auto b_i = (1 - this->t_) * base_coords.at(i) + t_ * base_coords.at(i + 1);
+	for (int i = 0; i < base_coordinates.size() - 1; i++) {
+		auto first_w = base_coordinates.at(i);
+		auto second_w = base_coordinates.at(i + 1);
+		auto b_i = (1 - this->t_) * base_coordinates.at(i) + t_ * base_coordinates.at(i + 1);
 		new_line_points.push_back(b_i);
 	}
 	if (new_line_points.isEmpty()) {
 		return;
 	}
-	line_coords.push_back(new_line_points);
+	line_coordinates.push_back(new_line_points);
 	if (new_line_points.size() > 1) {
-		deCasteljau(new_line_points, line_coords);
+		deCasteljau(new_line_points, line_coordinates);
 	}
 }
 
@@ -465,7 +467,7 @@ int BezierScreen::binominal(int n, int k) {
 		return 0;
 	}
 	auto denominator = (factorial(n - k) * factorial(k));
-	if(denominator <= 0) {
+	if (denominator <= 0) {
 		return 0;
 	}
 	return (factorial(n) / denominator);

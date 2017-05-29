@@ -4,12 +4,12 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_bezier.h"
 
-class Bezier : public QMainWindow {
+class MainView : public QMainWindow {
 	Q_OBJECT
 
 public:
-	Bezier(QWidget* parent = 0);
-	~Bezier();
+	MainView(QWidget* parent = 0);
+	~MainView();
 public slots:
 	void sliderToLabel(int i) const;
 	void addCoordinates() const;

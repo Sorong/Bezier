@@ -33,6 +33,24 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Source Files\View">
+      <UniqueIdentifier>{754af464-f209-4a7d-a797-e9be4c9119a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\View">
+      <UniqueIdentifier>{99ffbb5b-0bee-4a1e-8fb5-6fac634f46f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model">
+      <UniqueIdentifier>{2fc53f75-6b0e-46a1-88d7-0939af567c43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model">
+      <UniqueIdentifier>{3dbdc466-88a8-4926-94ec-e569ce66aa92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Util">
+      <UniqueIdentifier>{1c846988-e825-4db2-adf8-93bdc35aa500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{a2a5b55b-18e3-4e3c-87e4-8a4ac60a9bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,26 +59,29 @@
     <ClCompile Include="GeneratedFiles\qrc_bezier.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="bezierscreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bezierscreen.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_glview.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bezierscreen.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_glview.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mainview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mainview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="glview.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="mainview.cpp">
+      <Filter>Source Files\View</Filter>
     </ClCompile>
     <ClCompile Include="line.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="beziercalculator.cpp">
+      <Filter>Source Files\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,11 +91,11 @@
     <CustomBuild Include="bezier.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="bezierscreen.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="glview.hpp">
+      <Filter>Header Files\View</Filter>
     </CustomBuild>
-    <CustomBuild Include="window.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="mainview.hpp">
+      <Filter>Header Files\View</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +103,10 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="line.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="beziercalculator.hpp">
+      <Filter>Header Files\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,96 @@
+#include "beziercalculator.hpp"
+
+
+
+BezierCalculator::BezierCalculator()
+{
+}
+
+
+BezierCalculator::~BezierCalculator()
+{
+}
+
+void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, int t) const {
+	QVector<QVector4D> new_line_points;
+
+	for (int i = 0; i < src_coordinates.size() - 1; i++) {
+		auto b_i = (1 - t) * src_coordinates.at(i) + t * src_coordinates.at(i + 1);
+		new_line_points.push_back(b_i);
+	}
+	if (new_line_points.isEmpty()) {
+		return;
+	}
+	dest_coordinates.push_back(new_line_points);
+	if (new_line_points.size() > 1) {
+		deCasteljau(new_line_points, dest_coordinates, t);
+	}
+}
+
+bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates) const {
+	if(src_coordinates.size() <= 2) {
+		dest_coordinates = src_coordinates;
+		return true;
+	}
+	auto n = src_coordinates.size() - 1;
+	for (auto tAsInt = 0; tAsInt <= 100; tAsInt+=5) {
+		auto t = tAsInt / 100.f;
+		QVector<float> bernsteinpolynoms;
+		float beziertest = 0;
+		for (int k = 0; k <= n; k++) {
+			auto polynom = binominal(n, k) * pow(t, k) * pow(1 - t, n - k);
+			beziertest += polynom;
+			bernsteinpolynoms.push_back(polynom);
+
+		}
+		if (beziertest * 100 <= 99) {
+			return false;
+		}
+		QVector4D point(0, 0, 0, 0);
+		for (auto j = 0; j <= n; j++) {
+			auto current = src_coordinates.at(j);
+			point += current * bernsteinpolynoms.at(j);
+		}
+		//point /= point.w(); TODO: necessary?
+		dest_coordinates.push_back(point);
+	}
+	return true;
+}
+
+QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinates, int t) const {
+	QVector<QVector4D> points;
+	QVector<float> bernsteinpolynoms;
+
+	auto n = src_coordinates.size() - 1;
+	for (auto j = 0; j < n; j++) {
+		auto polynom = binominal((n - 1), j) * pow(t, j) * pow(1 - t, (n - 1) - j);
+		bernsteinpolynoms.push_back(polynom);
+	}
+
+	QVector4D point(0, 0, 0, 0);
+	QVector4D derivate(0, 0, 0, 0);
+	for (auto j = 0; j < src_coordinates.size() - 1; j++) {
+		auto b1 = src_coordinates.at(j + 1);
+		auto b2 = src_coordinates.at(j);
+		auto current = (b1 / b1.w()) - (b2 / b2.w());
+		derivate += current * bernsteinpolynoms.at(j);
+	}
+	return derivate;
+}
+int BezierCalculator::factorial(int n) const {
+	if (n <= 1) {
+		return 1;
+	}
+	return n * factorial(n - 1);
+}
+
+int BezierCalculator::binominal(int n, int k) const {
+	if (n < k) {
+		return 0;
+	}
+	auto denominator = (factorial(n - k) * factorial(k));
+	if (denominator <= 0) {
+		return 0;
+	}
+	return (factorial(n) / denominator);
+}
