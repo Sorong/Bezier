@@ -11,7 +11,7 @@ BezierCalculator::~BezierCalculator()
 {
 }
 
-void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, int t) const {
+void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float t) const {
 	QVector<QVector4D> new_line_points;
 
 	for (int i = 0; i < src_coordinates.size() - 1; i++) {
@@ -57,7 +57,7 @@ bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates,
 	return true;
 }
 
-QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinates, int t) const {
+QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinates, float t) const {
 	QVector<QVector4D> points;
 	QVector<float> bernsteinpolynoms;
 
@@ -77,6 +77,19 @@ QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinate
 	}
 	return derivate;
 }
+
+void BezierCalculator::raiseElevation(QVector<QVector4D>& src_coordinates) const {
+	QVector<QVector4D> new_coordinates;
+	new_coordinates.push_back(src_coordinates.at(0));
+	for (int i = 1, n = src_coordinates.size() - 1; i < src_coordinates.size(); i++) {
+		QVector4D new_b = static_cast<float>(i) / (n + 1) * src_coordinates.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * src_coordinates.at(i);
+		//new_b /= new_b.w();
+		new_coordinates.push_back(new_b);
+	}
+	new_coordinates.push_back(src_coordinates.at(src_coordinates.size() - 1));
+	src_coordinates = new_coordinates;
+}
+
 int BezierCalculator::factorial(int n) const {
 	if (n <= 1) {
 		return 1;
