@@ -41,12 +41,9 @@ private:
 	void initSublines();
 	void removeSublines();
 	bool initShader() const;
-	void calcBezier();
+	void drawDeCasteljau();
 	void drawBezier();
 	void drawDerivate();
-	void deCasteljau(QVector<QVector4D> &base_coordinates, QVector<QVector<QVector4D>> &line_coordinates) const;
-	static int factorial(int n);
-	static int binominal(int n, int k);
 	BezierCalculator bezier_calculator_;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4* model_;
