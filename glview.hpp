@@ -6,6 +6,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include "line.h"
+#include "beziercalculator.hpp"
 
 class BezierScreen : public QOpenGLWidget, protected QOpenGLFunctions {
 	Q_OBJECT
@@ -46,7 +47,7 @@ private:
 	void deCasteljau(QVector<QVector4D> &base_coordinates, QVector<QVector<QVector4D>> &line_coordinates) const;
 	static int factorial(int n);
 	static int binominal(int n, int k);
-
+	BezierCalculator bezier_calculator_;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4* model_;
 	QMatrix4x4* view_;

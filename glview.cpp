@@ -127,15 +127,7 @@ void BezierScreen::raiseElevation() {
 	if (coordinates_.size() <= 2) {
 		return;
 	}
-	QVector<QVector4D> new_coordinates;
-	new_coordinates.push_back(coordinates_.at(0));
-	for (int i = 1, n = coordinates_.size() - 1; i < coordinates_.size(); i++) {
-		QVector4D new_b = static_cast<float>(i) / (n + 1) * coordinates_.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * coordinates_.at(i);
-		//new_b /= new_b.w();
-		new_coordinates.push_back(new_b);
-	}
-	new_coordinates.push_back(coordinates_.at(coordinates_.size() - 1));
-	this->coordinates_ = new_coordinates;
+	bezier_calculator_.raiseElevation(coordinates_);
 	makeCurrent();
 	initBaseline();
 	lines_.clear();
@@ -342,7 +334,8 @@ void BezierScreen::calcBezier() {
 	int col_index = 0;
 	QVector<QVector4D> base_coordinates = this->coordinates_;
 	QVector<QVector<QVector4D>> line_coordinates;
-	deCasteljau(base_coordinates, line_coordinates);
+	bezier_calculator_.deCasteljau(base_coordinates, line_coordinates, this->t_);
+	//deCasteljau(base_coordinates, line_coordinates);
 	for (auto& line_coord : line_coordinates) {
 		std::shared_ptr<Line> curr(new Line(this->model_, this->view_, this->projection_, col[col_index++ % 3], line_coord));
 		curr->setPosition({INITPOS});
@@ -401,38 +394,11 @@ void BezierScreen::drawDerivate() {
 	if (this->coordinates_.isEmpty() || this->lines_.isEmpty()) {
 		return;
 	}
-	QVector<QVector4D> points;
-	QVector<float> bernsteinpolynoms;
-
-	auto n = coordinates_.size() - 1;
-	for (auto j = 0; j < n; j++) {
-		auto polynom = binominal((n - 1), j) * pow(t_, j) * pow(1 - t_, (n - 1) - j);
-		bernsteinpolynoms.push_back(polynom);
-	}
-
-	QVector4D point(0, 0, 0, 0);
-	for (auto j = 0; j < coordinates_.size() - 1; j++) {
-		auto b1 = this->coordinates_.at(j + 1);
-		auto b2 = this->coordinates_.at(j);
-		auto current = (b1 / b1.w()) - (b2 / b2.w());
-		point = current * bernsteinpolynoms.at(j);
-		points.push_back(point);
-	}
-	QVector<QVector<QVector4D>> vector;
-	//deCasteljau(points, vector);
-	/*if(vector.isEmpty()) {
-		return;
-	}*/
 	QVector4D start_point = this->lines_.last()->last();
-	QVector4D last_point(0, 0, 0, 0);
-	for (auto& curpoint : points) {
-		last_point += curpoint;
-	}
-	//last_point.normalize();
-	//last_point *= 2;
 	start_point /= start_point.w();
+	auto last_point = bezier_calculator_.calculateDerivate(this->coordinates_, this->t_);
 	last_point += start_point;
-	this->derivate_ = new Line(this->model_, this->view_, this->projection_, {RED}, {start_point, last_point});
+	this->derivate_ = new Line(this->model_, this->view_, this->projection_, {RED}, {start_point, last_point.normalized()*2});
 	this->derivate_->setPosition({INITPOS});
 	this->derivate_->setShader(this->prog_);
 }
