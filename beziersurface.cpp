@@ -18,7 +18,9 @@ void BezierSurface::init(QVector4D *position) {
 		auto n = 0;
 		for (; n < horizonal_length; n++) {
 			this->vertices_.push_back(this->coordinates_.at(m).at(n));
-			this->base_points_.push_back(std::make_shared<Icosahedron>(model_, &this->coordinates_.at(m).at(n)));
+			const QVector4D &test = this->coordinates_.at(m).at(n);
+			QVector4D *ptr = const_cast<QVector4D*>(&test);
+			this->base_points_.push_back(std::make_shared<Icosahedron>(model_, ptr));
 			if(n != horizonal_length - 1) {
 				this->indices_.push_back((m * horizonal_length + n));
 				this->indices_.push_back(m * horizonal_length + n + 1);
@@ -54,7 +56,7 @@ void BezierSurface::init(QVector4D *position) {
 	// Step 2: Create vertex buffer object for color attribute and bind it to...
 	glGenBuffers(1, &this->color_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
-	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_DYNAMIC_DRAW);
 
 	// Bind it to color.
 	pos = glGetAttribLocation(progId, "color");
@@ -69,7 +71,6 @@ void BezierSurface::init(QVector4D *position) {
 		ico->addShader(*this->programs_.at(0));
 		ico->setColor({ 1,1,1 });
 		ico->init();
-		ico->scale(0.05);
 	}
 	// Unbind vertex array object (
 }
@@ -83,6 +84,9 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		glBindVertexArray(0);
 	}
 	for(auto& ico : base_points_) {
+		ico->setModelMatrix(this->model_);
+		ico->translateToReference();
+		ico->scale(0.15);
 		ico->render(projection, view);
 	}
 }
@@ -111,6 +115,14 @@ void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> coordinates) {
 	this->coordinates_ = coordinates;
 }
 
-const QVector4D* BezierSurface::get(int index) const {
+QVector4D* BezierSurface::get(int index) const {
 	return this->base_points_.at(index)->getReference();
+}
+
+int BezierSurface::size() const {
+	return this->base_points_.size();
+}
+
+void BezierSurface::setClicked(int index) const {
+	this->base_points_.at(index)->setColor({ 1,0,0 });
 }
