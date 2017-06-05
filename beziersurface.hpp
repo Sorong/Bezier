@@ -15,8 +15,9 @@ public:
 	void setS(float s);
 	void addCoordinates(QVector<QVector4D> coordinates);
 	void setCoordinates(QVector < QVector<QVector4D>> coordinates);
-	const QVector4D* get(int index) const;
-	int size();
+	QVector4D* get(int index) const;
+	int size() const override;
+	void setClicked(int index) const;
 private:
 	QVector<QVector<QVector4D>> coordinates_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;

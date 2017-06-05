@@ -67,7 +67,7 @@ private:
 	Line* bezier_curve_;
 	Line* derivate_;
 	QVector<QVector4D> coordinates_;
-	QVector4D *dragged_vertex_;
+	QVector4D* dragged_vertex_;
 	QVector3D intersect_to_center_;
 	BezierSurface *test;
 };

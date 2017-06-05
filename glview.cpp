@@ -189,8 +189,29 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
-	float radius = 2.0f;
+	float radius = 0.2f;
 	float radius2 = radius * radius;
+
+	for (auto i = 0; i < this->test->size(); i++) {
+		QVector4D *coord = test->get(i);
+		QVector3D L = (coord->toVector3DAffine() - begin);
+		float tca = QVector3D::dotProduct(L, direction);
+		if (tca < 0) {
+			continue;
+		}
+		float d2 = QVector3D::dotProduct(L, L) - tca * tca;
+		if (d2 > radius2) {
+			continue;
+		}
+		float thc = sqrt(radius2 - d2);
+		auto t_drag = tca - thc;
+		//dragged_vertex_ = coord;
+		intersect_to_center_ = coord->toVector3DAffine() - begin;
+		test->setClicked(i);
+		qDebug() << "clicked:" << coord;
+		qDebug() << intersect_to_center_;
+		break;
+	}
 	for (auto& coord : coordinates_) {
 		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);

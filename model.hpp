@@ -13,7 +13,7 @@ public:
 	virtual void init(QVector4D *position = nullptr) = 0;
 	virtual void render(QMatrix4x4& projection, QMatrix4x4& view) = 0;
 	QVector4D at(int index) const;
-	int size() const;
+	virtual int size() const;
 	const QVector<QVector4D>& getVertices() const;
 	QVector4D last() const;
 	void addShader(QOpenGLShaderProgram &prog);

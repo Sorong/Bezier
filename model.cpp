@@ -26,8 +26,8 @@ Model::~Model()
 }
 
 void Model::setPosition(const QVector4D& position) {
+	this->pos_ = position;
 	this->model_.translate(pos_.toVector3D());
-	this->pos_ = pos_;
 }
 
 QVector4D Model::at(int index) const {

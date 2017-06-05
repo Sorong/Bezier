@@ -6,7 +6,7 @@ Icosahedron::Icosahedron(): Model(), reference_vertex_(nullptr) {
 }
 
 
-Icosahedron::Icosahedron(QMatrix4x4& model, const QVector4D* reference_vertex) : Model(model), reference_vertex_(reference_vertex) {
+Icosahedron::Icosahedron(QMatrix4x4& model, QVector4D* reference_vertex) : Model(model), reference_vertex_(reference_vertex) {
 	setRadius(1);
 	if(reference_vertex != nullptr) {
 		this->setPosition(*reference_vertex);
@@ -85,7 +85,7 @@ void Icosahedron::init(QVector4D *position) {
 	// Step 2: Create vertex buffer object for color attribute and bind it to...
 	glGenBuffers(1, &this->color_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
-	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_DYNAMIC_DRAW);
 
 	// Bind it to color.
 	pos = glGetAttribLocation(prog_id, "color");
@@ -99,8 +99,6 @@ void Icosahedron::init(QVector4D *position) {
 
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);
-	
-	this->model_.translate(reference_normalized);
 }
 
 void Icosahedron::render(QMatrix4x4& projection, QMatrix4x4& view) {
@@ -115,6 +113,51 @@ void Icosahedron::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	}
 }
 
+void Icosahedron::reinit() {
+	if (this->vertexarrayobject_) {
+		glDeleteVertexArrays(1, &this->vertexarrayobject_);
+		glDeleteBuffers(1, &index_buffer_);
+		glDeleteBuffers(1, &color_buffer_);
+		glDeleteBuffers(1, &position_buffer_);
+	}
+	this->colors_.fill(this->color_);
+	auto prog_id = this->programs_.at(0)->bind();
+	GLuint pos;
+
+
+	// Step 0: Create vertex array object.
+	glGenVertexArrays(1, &this->vertexarrayobject_);
+	glBindVertexArray(this->vertexarrayobject_);
+
+	// Step 1: Create vertex buffer object for position attribute and bind it to the associated "shader attribute".
+	glGenBuffers(1, &this->position_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);
+
+	// Bind it to position.
+	pos = glGetAttribLocation(prog_id, "position");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	// Step 2: Create vertex buffer object for color attribute and bind it to...
+	glGenBuffers(1, &this->color_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+
+	// Bind it to color.
+	pos = glGetAttribLocation(prog_id, "color");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	// Step 3: Create vertex buffer object for indices. No binding needed here.
+	glGenBuffers(1, &this->index_buffer_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->index_buffer_);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
+
+	// Unbind vertex array object (back to default).
+	glBindVertexArray(0);
+}
+
 void Icosahedron::setModelMatrix(QMatrix4x4& model) {
 	this->model_ = model;
 }
@@ -127,19 +170,21 @@ void Icosahedron::setRadius(float i) {
 
 void Icosahedron::setColor(QVector3D color) {
 	this->color_ = color;
-	if (this->vertexarrayobject_) {
-		glDeleteVertexArrays(1, &this->vertexarrayobject_);
-		glDeleteBuffers(1, &index_buffer_);
-		glDeleteBuffers(1, &color_buffer_);
-		glDeleteBuffers(1, &position_buffer_);
-	}
-	init();
+	this->colors_.fill(color);
+	glBindVertexArray(this->vertexarrayobject_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, colors_.size() * sizeof(QVector4D), colors_.data());
+	glBindVertexArray(0);
 }
 
 void Icosahedron::scale(float ratio) {
 	this->model_.scale(ratio);
 }
 
-const QVector4D* Icosahedron::getReference() const {
+void Icosahedron::translateToReference() {
+	this->model_.translate(reference_vertex_->toVector3DAffine());
+}
+
+QVector4D* Icosahedron::getReference() const {
 	return this->reference_vertex_;
 }
