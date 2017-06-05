@@ -68,11 +68,11 @@ void BezierScreen::initializeGL() {
 	this->view_->setToIdentity();
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
-	test = new BezierSurface(*this->model_, { INITPOS });
+	surface = new BezierSurface(*this->model_, { INITPOS });
 	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{{ -2,2,0,1 },{ 2,2,0,1 } ,{ 4,2,0,1 } },{{ -2,3,0,1 },{ 2,3,0,1 },{ 4,3,0,1 } } };
-	test->setCoordinates(test2);
-	test->addShader(*this->prog_);
-	test->init();
+	surface->setCoordinates(test2);
+	surface->addShader(*this->prog_);
+	surface->init();
 }
 
 void BezierScreen::paintGL() {
@@ -80,14 +80,12 @@ void BezierScreen::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
-	/*glLineWidth(2);
-	glPointSize(7);*/
 	if (lines_.isEmpty()) {
 		initSublines();
 		drawDerivate();
 	}
-	if(test != nullptr) {
-		test->render(*this->projection_, *this->view_);
+	if(surface != nullptr) {
+		surface->render(*this->projection_, *this->view_);
 	}
 
 	this->base_->renderLine();
@@ -192,8 +190,8 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	float radius = 0.2f;
 	float radius2 = radius * radius;
 
-	for (auto i = 0; i < this->test->size(); i++) {
-		QVector4D *coord = test->get(i);
+	for (auto i = 0; i < this->surface->size(); i++) {
+		QVector4D *coord = surface->get(i);
 		QVector3D L = (coord->toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
@@ -205,30 +203,30 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 		}
 		float thc = sqrt(radius2 - d2);
 		auto t_drag = tca - thc;
-		//dragged_vertex_ = coord;
+		dragged_vertex_ = coord;
 		intersect_to_center_ = coord->toVector3DAffine() - begin;
-		test->setClicked(i);
+		surface->setClicked(i);
 		qDebug() << "clicked:" << coord;
 		qDebug() << intersect_to_center_;
 		break;
 	}
-	for (auto& coord : coordinates_) {
-		QVector3D L = (coord.toVector3DAffine() - begin);
-		float tca = QVector3D::dotProduct(L, direction);
-		if (tca < 0) {
-			continue;
-		}
-		float d2 = QVector3D::dotProduct(L, L) - tca * tca;
-		if (d2 > radius2) {
-			continue;
-		}
-		float thc = sqrt(radius2 - d2);
-		auto t_drag = tca - thc;
-		dragged_vertex_ = &coord;
-		intersect_to_center_ = coord.toVector3DAffine() - begin;
-		qDebug() << "clicked:" << coord;
-		qDebug() << intersect_to_center_;
-	}
+	//for (auto& coord : coordinates_) {
+	//	QVector3D L = (coord.toVector3DAffine() - begin);
+	//	float tca = QVector3D::dotProduct(L, direction);
+	//	if (tca < 0) {
+	//		continue;
+	//	}
+	//	float d2 = QVector3D::dotProduct(L, L) - tca * tca;
+	//	if (d2 > radius2) {
+	//		continue;
+	//	}
+	//	float thc = sqrt(radius2 - d2);
+	//	auto t_drag = tca - thc;
+	//	dragged_vertex_ = &coord;
+	//	intersect_to_center_ = coord.toVector3DAffine() - begin;
+	//	qDebug() << "clicked:" << coord;
+	//	qDebug() << intersect_to_center_;
+	//}
 	initializeOpenGLFunctions();
 	makeCurrent();
 	update();
@@ -254,6 +252,7 @@ void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
 	makeCurrent();
 	initBaseline();
 	lines_.clear();
+	surface->reinit();
 }
 
 void BezierScreen::mouseReleaseEvent(QMouseEvent* event) {

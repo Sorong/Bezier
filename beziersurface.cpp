@@ -14,9 +14,12 @@ void BezierSurface::init(QVector4D *position) {
 	}
 	auto horizonal_length = this->coordinates_.at(0).size();
 	auto vertical_length = this->coordinates_.size();
+	this->curves_.clear();
 	for (auto m = 0; m < vertical_length; m++) {
 		auto n = 0;
+		this->curves_.push_back(std::make_shared<BezierCurve>(model_, pos_));
 		for (; n < horizonal_length; n++) {
+	
 			this->vertices_.push_back(this->coordinates_.at(m).at(n));
 			const QVector4D &test = this->coordinates_.at(m).at(n);
 			QVector4D *ptr = const_cast<QVector4D*>(&test);
@@ -72,6 +75,16 @@ void BezierSurface::init(QVector4D *position) {
 		ico->setColor({ 1,1,1 });
 		ico->init();
 	}
+	int i = 0;
+	for(auto& curve : curves_) {
+		curve->setColor({ 1,0,0 });
+		curve->addShader(*this->programs_.at(0));
+		curve->setBaseCoordinates(const_cast<QVector<QVector4D>*>(&this->coordinates_.at(i)));
+		curve->init(); i++;
+	}
+	if(position) {
+		this->setPosition(*position);
+	}
 	// Unbind vertex array object (
 }
 
@@ -86,8 +99,12 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	for(auto& ico : base_points_) {
 		ico->setModelMatrix(this->model_);
 		ico->translateToReference();
-		ico->scale(0.15);
+		ico->scale(0.2);
 		ico->render(projection, view);
+	}
+	for(auto& curve : curves_) {
+		curve->setModelMatrix(this->model_);
+		curve->render(projection, view);
 	}
 }
 
@@ -96,8 +113,10 @@ void BezierSurface::reinit(QVector4D* pos) {
 	glDeleteBuffers(1, &index_buffer_);
 	glDeleteBuffers(1, &color_buffer_);
 	glDeleteBuffers(1, &position_buffer_);
-	init(pos);
 	this->base_points_.clear();
+	this->vertices_.clear();
+	this->indices_.clear();
+	init(pos);
 }
 
 void BezierSurface::setT(float t) {
@@ -108,10 +127,25 @@ void BezierSurface::setS(float s) {
 	this->s_ = s;
 }
 
-void BezierSurface::addCoordinates(QVector<QVector4D> coordinates) {
+void BezierSurface::addHorizontalCoordinates(QVector<QVector4D> &coordinates) {
+	if(coordinates.size() != this->coordinates_.size()) {
+		std::out_of_range("Invalid size, the surface cannot be increased");
+	}
+	for (auto i = 0; i < coordinates.size(); i++) {
+		
+		this->coordinates_[i].push_back(coordinates.at(i));
+	}
 }
 
-void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> coordinates) {
+void BezierSurface::addVerticalCoordinates(QVector<QVector4D> &coordinates) {
+	if (coordinates.size() != this->coordinates_.at(0).size()) {
+		std::out_of_range("Invalid size, the surface cannot be increased");
+	}
+	this->coordinates_.push_back(coordinates);
+}
+
+
+void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> &coordinates) {
 	this->coordinates_ = coordinates;
 }
 
