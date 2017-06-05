@@ -28,7 +28,7 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "glview.hpp"
+#include <glview.hpp>
 
 QT_BEGIN_NAMESPACE
 
@@ -289,7 +289,7 @@ public:
 
     void retranslateUi(QMainWindow *BezierClass)
     {
-        BezierClass->setWindowTitle(QApplication::translate("BezierClass", "MainView", 0));
+        BezierClass->setWindowTitle(QApplication::translate("BezierClass", "Bezier", 0));
         t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
         show_sublines_->setText(QApplication::translate("BezierClass", "t-Linien anzeigen", 0));
         show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung anzeigen", 0));

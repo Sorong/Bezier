@@ -78,7 +78,7 @@ QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinate
 	return derivate;
 }
 
-void BezierCalculator::raiseElevation(QVector<QVector4D>& src_coordinates) const {
+void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) const {
 	QVector<QVector4D> new_coordinates;
 	new_coordinates.push_back(src_coordinates.at(0));
 	for (int i = 1, n = src_coordinates.size() - 1; i < src_coordinates.size(); i++) {

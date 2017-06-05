@@ -138,6 +138,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="beziercalculator.cpp" />
+    <ClCompile Include="beziercurve.cpp" />
+    <ClCompile Include="beziersurface.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_glview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -168,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="mousehandler.cpp" />
+    <ClCompile Include="icosahedron.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainview.hpp">
@@ -211,7 +216,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beziercalculator.hpp" />
-    <ClInclude Include="line.h" />
+    <ClInclude Include="beziercurve.hpp" />
+    <ClInclude Include="beziersurface.hpp" />
+    <ClInclude Include="line.hpp" />
+    <ClInclude Include="model.hpp" />
+    <ClInclude Include="mousehandler.hpp" />
+    <ClInclude Include="icosahedron.hpp" />
     <CustomBuild Include="glview.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing glview.hpp...</Message>
