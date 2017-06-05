@@ -2,6 +2,7 @@
 #include "model.hpp"
 #include "icosahedron.hpp"
 #include <memory>
+#include "beziercurve.hpp"
 
 class BezierSurface : public Model
 {
@@ -13,14 +14,16 @@ public:
 	void reinit(QVector4D *pos = nullptr);
 	void setT(float t);
 	void setS(float s);
-	void addCoordinates(QVector<QVector4D> coordinates);
-	void setCoordinates(QVector < QVector<QVector4D>> coordinates);
+	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);
+	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
+	void setCoordinates(QVector < QVector<QVector4D>> &coordinates);
 	QVector4D* get(int index) const;
 	int size() const override;
 	void setClicked(int index) const;
 private:
 	QVector<QVector<QVector4D>> coordinates_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
+	QVector<std::shared_ptr<BezierCurve>> curves_;
 	float t_, s_;
 };
 
