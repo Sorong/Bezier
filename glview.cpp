@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include "glview.hpp"
+#include "icosahedron.hpp"
 
 
 #define SHADERPATH "/shader/"
@@ -17,7 +18,7 @@
 #define BLACK 0.0f, 0.0f, 0.0f
 #define BLUE 0.0f, 0.0f, 1.0f
 #define CYAN 0.0f, 1.0f, 1.0f
-#define GRAY 0.4f, 0.4f, 0.4f
+#define GRAY 0.6f, 0.6f, 0.6f
 #define GREEN 0.0f, 1.0f, 0.0f
 #define MAGENTA 1.0f, 0.0f, 1.0f
 #define RED 1.0f, 0.0f, 0.0f
@@ -46,7 +47,6 @@ BezierScreen::BezierScreen(QWidget* parent) :
 	this->projection_ = new QMatrix4x4;
 	this->prog_ = new QOpenGLShaderProgram;
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
-	ray = nullptr;
 }
 
 BezierScreen::~BezierScreen() {
@@ -68,7 +68,11 @@ void BezierScreen::initializeGL() {
 	this->view_->setToIdentity();
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
-
+	test = new BezierSurface(*this->model_, { INITPOS });
+	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{{ -2,2,0,1 },{ 2,2,0,1 } ,{ 4,2,0,1 } },{{ -2,3,0,1 },{ 2,3,0,1 },{ 4,3,0,1 } } };
+	test->setCoordinates(test2);
+	test->addShader(*this->prog_);
+	test->init();
 }
 
 void BezierScreen::paintGL() {
@@ -76,23 +80,14 @@ void BezierScreen::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
-	glLineWidth(2);
-	glPointSize(7);
-	if (ray != nullptr) {
-		ray->renderLine();
-	}
-	if (coordinates_.isEmpty()) {
-		QPainter painter(this);
-		painter.setPen(Qt::darkRed);
-		painter.setFont(QFont("Arial", 20));
-		painter.drawText(0, 0, width(), height(), Qt::AlignCenter, "Keine Punkte vorhanden!");
-		painter.end();
-		update();
-		return;
-	}
+	/*glLineWidth(2);
+	glPointSize(7);*/
 	if (lines_.isEmpty()) {
 		initSublines();
 		drawDerivate();
+	}
+	if(test != nullptr) {
+		test->render(*this->projection_, *this->view_);
 	}
 
 	this->base_->renderLine();
@@ -123,31 +118,15 @@ void BezierScreen::setT(float t) {
 	this->lines_.clear();
 }
 
-void BezierScreen::raiseElevation() {
-	if (coordinates_.size() <= 2) {
-		return;
-	}
-	bezier_calculator_.raiseElevation(coordinates_);
+void BezierScreen::removeCoordinateByIndex(int i) {
+	initializeOpenGLFunctions();
 	makeCurrent();
+	coordinates_.removeAt(i);
 	initBaseline();
 	lines_.clear();
+	update();
 }
 
-void BezierScreen::initBaseline() {
-	if (this->base_ != nullptr) {
-		delete this->base_;
-	}
-	QVector<QVector4D> start_coordinates;
-	for (auto& coordinate : this->coordinates_) {
-		QVector4D current = coordinate;
-		start_coordinates.push_back(current);
-	}
-	this->base_ = new Line(this->model_, this->view_, this->projection_, {BLUE}, start_coordinates);
-	this->base_->setPosition({INITPOS});
-	this->base_->setShader(this->prog_);
-	this->base_->initLine();
-	drawBezier();
-}
 
 bool BezierScreen::addCoordinate(float x, float y) {
 	return this->addCoordinate({x,y,0,1});
@@ -166,15 +145,13 @@ bool BezierScreen::addCoordinate(QVector4D xyzw) {
 	return !highest_grade_reached_;
 }
 
-
-void BezierScreen::removeCoordinateByIndex(int i) {
-	initializeOpenGLFunctions();
-	makeCurrent();
-	coordinates_.removeAt(i);
-	initBaseline();
-	lines_.clear();
-	update();
+QVector4D BezierScreen::getCoordinateByIndex(int i) const {
+	if (coordinates_.isEmpty() || i > coordinates_.size() - 1) {
+		return {0, 0, 0, 0};
+	}
+	return coordinates_.at(i);
 }
+
 
 void BezierScreen::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
@@ -208,7 +185,7 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
 	QMatrix4x4 click_model = *this->model_;
-	click_model.setColumn(3, {INITPOS});
+	click_model.setColumn(3, { INITPOS });
 	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
@@ -225,22 +202,14 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 			continue;
 		}
 		float thc = sqrt(radius2 - d2);
-		t_drag_ = tca - thc;
+		auto t_drag = tca - thc;
 		dragged_vertex_ = &coord;
 		intersect_to_center_ = coord.toVector3DAffine() - begin;
 		qDebug() << "clicked:" << coord;
 		qDebug() << intersect_to_center_;
 	}
-	if (ray != nullptr) {
-		delete ray;
-	}
-
 	initializeOpenGLFunctions();
 	makeCurrent();
-	ray = new Line(this->model_, this->view_, this->projection_, {RED}, {begin, end});
-	ray->setPosition({INITPOS});
-	ray->setShader(this->prog_);
-	ray->initLine();
 	update();
 }
 
@@ -251,7 +220,7 @@ void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
 	QMatrix4x4 click_model = *this->model_;
-	click_model.setColumn(3, {INITPOS});
+	click_model.setColumn(3, { INITPOS });
 	auto begin = QVector3D(pos, -10.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(*this->view_ * click_model, *this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
@@ -274,9 +243,22 @@ QVector<QVector4D> BezierScreen::getBasePoints() const {
 	return this->base_->getVertices();
 }
 
+
+void BezierScreen::raiseElevation() {
+	if (coordinates_.size() <= 2) {
+		return;
+	}
+	bezier_calculator_.degreeElevation(coordinates_);
+	makeCurrent();
+	initBaseline();
+	lines_.clear();
+}
+
+
 void BezierScreen::toggleSublineMode(bool state) {
 	this->show_sublines_ = state;
 	lines_.clear();
+	update();
 }
 
 void BezierScreen::toggleDerivateMode(bool state) {
@@ -285,12 +267,40 @@ void BezierScreen::toggleDerivateMode(bool state) {
 	update();
 }
 
-QVector4D BezierScreen::getCoordinateByIndex(int i) const {
-	if (coordinates_.isEmpty() || i > coordinates_.size() - 1) {
-		return {0, 0, 0, 0};
+
+bool BezierScreen::initShader() const {
+	QString path = QDir::currentPath() + SHADERPATH;
+	QString vert = ".vert";
+	QString frag = ".frag";
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "simple" + vert })) {
+		return false;
 	}
-	return coordinates_.at(i);
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "simple" + frag })) {
+		return false;
+	}
+	return this->prog_->link();
 }
+
+void BezierScreen::initBaseline() {
+	if (this->base_ != nullptr) {
+		delete this->base_;
+	}
+	QVector<QVector4D> start_coordinates;
+	for (auto& coordinate : this->coordinates_) {
+		QVector4D current = coordinate;
+		start_coordinates.push_back(current);
+	}
+	this->base_ = new Line(this->model_, this->view_, this->projection_, {BLUE}, start_coordinates);
+	this->base_->setPosition({INITPOS});
+	this->base_->setShader(this->prog_);
+	this->base_->initLine();
+	drawBezier();
+}
+
+
+
+
+
 
 void BezierScreen::initSublines() {
 	drawDeCasteljau();
@@ -311,18 +321,6 @@ void BezierScreen::removeSublines() {
 	this->lines_.clear();
 }
 
-bool BezierScreen::initShader() const {
-	QString path = QDir::currentPath() + SHADERPATH;
-	QString vert = ".vert";
-	QString frag = ".frag";
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, {path + "simple" + vert})) {
-		return false;
-	}
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, {path + "simple" + frag})) {
-		return false;
-	}
-	return this->prog_->link();
-}
 
 void BezierScreen::drawDeCasteljau() {
 	QVector3D col[] = {{RED},{GREEN},{MAGENTA}};
@@ -349,7 +347,7 @@ void BezierScreen::drawBezier() {
 	QVector<QVector4D> points;
 	highest_grade_reached_ = false;
 	highest_grade_reached_ = !bezier_calculator_.calculateBeziercurve(this->coordinates_, points);
-	if(highest_grade_reached_) {
+	if (highest_grade_reached_) {
 		return;
 	}
 
@@ -371,8 +369,7 @@ void BezierScreen::drawDerivate() {
 	start_point /= start_point.w();
 	auto last_point = bezier_calculator_.calculateDerivate(this->coordinates_, this->t_);
 	last_point += start_point;
-	this->derivate_ = new Line(this->model_, this->view_, this->projection_, {RED}, {start_point, last_point.normalized()*2});
+	this->derivate_ = new Line(this->model_, this->view_, this->projection_, {RED}, {start_point, last_point.normalized() * 2});
 	this->derivate_->setPosition({INITPOS});
 	this->derivate_->setShader(this->prog_);
 }
-

@@ -1,4 +1,4 @@
-#include "line.h"
+#include "line.hpp"
 
 
 Line::Line(QMatrix4x4* model, QMatrix4x4* view, QMatrix4x4* projection, QVector3D color, QVector<QVector4D> points): vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
