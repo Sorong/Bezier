@@ -59,3 +59,7 @@ void Model::removeShader(int index) {
 	}
 	programs_.remove(index);
 }
+
+void Model::setModelMatrix(QMatrix4x4& model) {
+	this->model_ = model;
+}

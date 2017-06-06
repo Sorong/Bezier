@@ -1,32 +1,43 @@
-#include "beziercurve.hpp"
-#include "beziercalculator.hpp"
+#include "trianglestrip.hpp"
 
-
-BezierCurve::BezierCurve(QMatrix4x4& model, const QVector4D pos): Model(model, pos), coordinates_(nullptr) {
+TriangleStrip::TriangleStrip(QMatrix4x4& model, BezierCurve* first_curve, BezierCurve* second_curve)
+	: Model(model),
+	first_curve_(first_curve),
+	second_curve_(second_curve) {
 }
 
-BezierCurve::BezierCurve(QMatrix4x4& model): Model(model), coordinates_(nullptr) {
+TriangleStrip::TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve)
+	: Model(model, pos),
+	first_curve_(first_curve),
+	second_curve_(second_curve) {
 }
 
-BezierCurve::~BezierCurve()
-{
-}
-
-void BezierCurve::setBaseCoordinates(QVector<QVector4D>* coordinates) {
-	this->coordinates_ = coordinates;
-}
-
-QVector<QVector4D>& BezierCurve::getVertices() {
-	return this->vertices_;
-}
-
-void BezierCurve::init(QVector4D* position) {
-	if(this->coordinates_ == nullptr) {
+void TriangleStrip::init(QVector4D* position) {
+	if (programs_.isEmpty() || first_curve_->size() != second_curve_->size()) {
 		return;
 	}
-	BezierCalculator calculator;
-	calculator.calculateBeziercurve(*this->coordinates_, this->vertices_,0.05);
-	for (auto& vertex : vertices_) {
+	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
+		QVector4D current_first = first_curve_->at(f_i);
+		QVector4D current_second = second_curve_->at(f_i);
+		if(current_first.w() != 0) {
+			current_first /= current_first.w();
+		} else {
+			current_first.setW(1);
+		}
+		if (current_second.w() != 0) {
+			current_second /= current_second.w();
+		}
+		else {
+			current_second.setW(1);
+		}
+		vertices_.push_back(first_curve_->at(f_i));
+		vertices_.push_back(second_curve_->at(f_i));
+	}
+
+
+
+	QVector<QVector4D> vertices = this->vertices_;
+	for (auto& vertex : vertices) {
 		if (vertex.w() == 0) {
 			vertex.setW(1);
 		}
@@ -34,7 +45,7 @@ void BezierCurve::init(QVector4D* position) {
 			vertex /= vertex.w();
 		}
 	}
-	this->colors_.fill(this->colors_.at(0), this->vertices_.size());
+	colors_.fill({ 1,0,0,.5f }, this->vertices_.size());
 	for (int i = 0; i < this->vertices_.size(); i++) {
 		this->indices_.push_back(i);
 	}
@@ -48,7 +59,7 @@ void BezierCurve::init(QVector4D* position) {
 	// Step 1: Create vertex buffer object for position attribute and bind it to the associated "shader attribute".
 	glGenBuffers(1, &this->position_buffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
-	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(QVector4D), vertices.data(), GL_STATIC_DRAW);
 
 	// Bind it to position.
 	pos = glGetAttribLocation(progId, "position");
@@ -74,26 +85,22 @@ void BezierCurve::init(QVector4D* position) {
 	glBindVertexArray(0);
 }
 
-void BezierCurve::render(QMatrix4x4& projection, QMatrix4x4& view) {
+void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	auto mvp = projection * view  * (this->model_);
-	for(auto& program : programs_) {
+	for (auto& program : programs_) {
 		program->bind();
 		program->setUniformValue("mvp", mvp);
 		glBindVertexArray(this->vertexarrayobject_);
-		glDrawElements(GL_LINE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 		glBindVertexArray(0);
 	}
-	
+
 }
 
-int BezierCurve::size() const {
-	return this->vertices_.size();
+void TriangleStrip::setFirstCurve(BezierCurve* first) {
+	this->first_curve_ = first;
 }
 
-void BezierCurve::setColor(QVector4D color) {
-	if(colors_.isEmpty()) {
-		this->colors_.fill(color, 1);
-	} else {
-		this->colors_.fill(color);
-	}
+void TriangleStrip::setSecondCurve(BezierCurve* second) {
+	this->second_curve_ = second;
 }

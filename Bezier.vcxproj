@@ -173,6 +173,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mousehandler.cpp" />
     <ClCompile Include="icosahedron.cpp" />
+    <ClCompile Include="trianglestrip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainview.hpp">
@@ -222,6 +223,7 @@
     <ClInclude Include="model.hpp" />
     <ClInclude Include="mousehandler.hpp" />
     <ClInclude Include="icosahedron.hpp" />
+    <ClInclude Include="trianglestrip.hpp" />
     <CustomBuild Include="glview.hpp">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing glview.hpp...</Message>

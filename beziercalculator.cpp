@@ -27,13 +27,13 @@ void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<
 	}
 }
 
-bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates) const {
+bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float precision) const {
 	if(src_coordinates.size() <= 2) {
 		dest_coordinates = src_coordinates;
 		return true;
 	}
 	auto n = src_coordinates.size() - 1;
-	for (auto tAsInt = 0; tAsInt <= 100; tAsInt+=5) {
+	for (auto tAsInt = 0; tAsInt <= 100; tAsInt+=(precision*100)) {
 		auto t = tAsInt / 100.f;
 		QVector<float> bernsteinpolynoms;
 		float beziertest = 0;
