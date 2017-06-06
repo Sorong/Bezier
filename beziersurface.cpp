@@ -1,4 +1,5 @@
 #include "beziersurface.hpp"
+#include "beziercalculator.hpp"
 
 
 BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos) {
@@ -17,7 +18,7 @@ void BezierSurface::init(QVector4D *position) {
 	this->curves_.clear();
 	for (auto m = 0; m < vertical_length; m++) {
 		auto n = 0;
-		this->curves_.push_back(std::make_shared<BezierCurve>(model_, pos_));
+		//this->curves_.push_back(std::make_shared<BezierCurve>(model_, pos_));
 		for (; n < horizonal_length; n++) {
 			QVector4D current = this->coordinates_.at(m).at(n);
 			if(current.w() != 0) {
@@ -42,7 +43,13 @@ void BezierSurface::init(QVector4D *position) {
 		this->indices_.push_back((m * horizonal_length + n));
 		this->indices_.push_back((m * horizonal_length + ((n+1))));*/
 	}
-	for (int i = 0; i < curves_.size() - 1; i++) {
+	QVector<QVector<QVector4D>> dest; 
+	BezierCalculator calc;
+	calc.calculateBezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	for(auto& curve : dest) {
+		curves_.push_back(std::make_shared<BezierCurve>(model_, pos_));
+	}
+	for (int i = 0; i < dest.size() - 1; i++) {
 		triangle_strips_.push_back(std::make_shared<TriangleStrip>(model_, curves_.at(i).get(), curves_.at(i+1).get()));
 	}
 	this->colors_.fill({0,1,0,1}, this->vertices_.size());
@@ -86,7 +93,7 @@ void BezierSurface::init(QVector4D *position) {
 	for(auto& curve : curves_) {
 		curve->setColor({ 1,0,0, 1 });
 		curve->addShader(*this->programs_.at(0));
-		curve->setBaseCoordinates(const_cast<QVector<QVector4D>*>(&this->coordinates_.at(i)));
+		curve->setBaseCoordinates(dest.at(i));
 		curve->init(); i++;
 	}
 	for(auto& strip : triangle_strips_) {
