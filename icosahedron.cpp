@@ -147,7 +147,7 @@ void Icosahedron::reinit() {
 	// Bind it to color.
 	pos = glGetAttribLocation(prog_id, "color");
 	glEnableVertexAttribArray(pos);
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &this->index_buffer_);
@@ -158,17 +158,13 @@ void Icosahedron::reinit() {
 	glBindVertexArray(0);
 }
 
-void Icosahedron::setModelMatrix(QMatrix4x4& model) {
-	this->model_ = model;
-}
-
 void Icosahedron::setRadius(float i) {
 	int asInt = i * 100;
 	if (asInt == 0) { return; }
 	this->radius_ = (i / 4) * (1 + 2.236067977);
 }
 
-void Icosahedron::setColor(QVector3D color) {
+void Icosahedron::setColor(QVector4D color) {
 	this->color_ = color;
 	this->colors_.fill(color);
 	glBindVertexArray(this->vertexarrayobject_);

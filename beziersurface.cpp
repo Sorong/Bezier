@@ -19,10 +19,14 @@ void BezierSurface::init(QVector4D *position) {
 		auto n = 0;
 		this->curves_.push_back(std::make_shared<BezierCurve>(model_, pos_));
 		for (; n < horizonal_length; n++) {
-	
-			this->vertices_.push_back(this->coordinates_.at(m).at(n));
-			const QVector4D &test = this->coordinates_.at(m).at(n);
-			QVector4D *ptr = const_cast<QVector4D*>(&test);
+			QVector4D current = this->coordinates_.at(m).at(n);
+			if(current.w() != 0) {
+				this->vertices_.push_back(current/current.w());
+			} else {
+				current.setW(1);
+				this->vertices_.push_back(current);
+			}
+			QVector4D *ptr = const_cast<QVector4D*>(&this->coordinates_.at(m).at(n));
 			this->base_points_.push_back(std::make_shared<Icosahedron>(model_, ptr));
 			if(n != horizonal_length - 1) {
 				this->indices_.push_back((m * horizonal_length + n));
@@ -38,7 +42,10 @@ void BezierSurface::init(QVector4D *position) {
 		this->indices_.push_back((m * horizonal_length + n));
 		this->indices_.push_back((m * horizonal_length + ((n+1))));*/
 	}
-	this->colors_.fill({0,1,0}, this->vertices_.size());
+	for (int i = 0; i < curves_.size() - 1; i++) {
+		triangle_strips_.push_back(std::make_shared<TriangleStrip>(model_, curves_.at(i).get(), curves_.at(i+1).get()));
+	}
+	this->colors_.fill({0,1,0,1}, this->vertices_.size());
 	GLuint progId = this->programs_.at(0)->programId();
 	GLuint pos;
 
@@ -64,7 +71,7 @@ void BezierSurface::init(QVector4D *position) {
 	// Bind it to color.
 	pos = glGetAttribLocation(progId, "color");
 	glEnableVertexAttribArray(pos);
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &this->index_buffer_);
@@ -72,15 +79,19 @@ void BezierSurface::init(QVector4D *position) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
 	for(auto& ico : base_points_) {
 		ico->addShader(*this->programs_.at(0));
-		ico->setColor({ 1,1,1 });
+		ico->setColor({ 1,1,1,1 });
 		ico->init();
 	}
 	int i = 0;
 	for(auto& curve : curves_) {
-		curve->setColor({ 1,0,0 });
+		curve->setColor({ 1,0,0, 1 });
 		curve->addShader(*this->programs_.at(0));
 		curve->setBaseCoordinates(const_cast<QVector<QVector4D>*>(&this->coordinates_.at(i)));
 		curve->init(); i++;
+	}
+	for(auto& strip : triangle_strips_) {
+		strip->addShader(*this->programs_.at(0));
+		strip->init(nullptr);
 	}
 	if(position) {
 		this->setPosition(*position);
@@ -106,6 +117,10 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		curve->setModelMatrix(this->model_);
 		curve->render(projection, view);
 	}
+	for(auto& strip : triangle_strips_) {
+		strip->setModelMatrix(this->model_);
+		strip->render(projection, view);
+	}
 }
 
 void BezierSurface::reinit(QVector4D* pos) {
@@ -116,6 +131,7 @@ void BezierSurface::reinit(QVector4D* pos) {
 	this->base_points_.clear();
 	this->vertices_.clear();
 	this->indices_.clear();
+	this->triangle_strips_.clear();
 	init(pos);
 }
 
@@ -158,5 +174,5 @@ int BezierSurface::size() const {
 }
 
 void BezierSurface::setClicked(int index) const {
-	this->base_points_.at(index)->setColor({ 1,0,0 });
+	this->base_points_.at(index)->setColor({ 1,0,0,1 });
 }

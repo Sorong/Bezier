@@ -69,7 +69,7 @@ void BezierScreen::initializeGL() {
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
 	surface = new BezierSurface(*this->model_, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{{ -2,2,0,1 },{ 2,2,0,1 } ,{ 4,2,0,1 } },{{ -2,3,0,1 },{ 2,3,0,1 },{ 4,3,0,1 } } };
+	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{{ -2,2,1,1 },{ 2,2,1,1 } ,{ 4,2,1,1 } },{{ -2,3,2,1 },{ 2,3,2,1 },{ 4,3,2,1 } } };
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -80,6 +80,11 @@ void BezierScreen::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_NEVER);
 	if (lines_.isEmpty()) {
 		initSublines();
 		drawDerivate();
@@ -366,7 +371,7 @@ void BezierScreen::drawBezier() {
 	}
 	QVector<QVector4D> points;
 	highest_grade_reached_ = false;
-	highest_grade_reached_ = !bezier_calculator_.calculateBeziercurve(this->coordinates_, points);
+	highest_grade_reached_ = !bezier_calculator_.calculateBeziercurve(this->coordinates_, points,0.05);
 	if (highest_grade_reached_) {
 		return;
 	}

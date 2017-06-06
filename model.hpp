@@ -18,10 +18,11 @@ public:
 	QVector4D last() const;
 	void addShader(QOpenGLShaderProgram &prog);
 	void removeShader(int index);
+	void setModelMatrix(QMatrix4x4& model);
 protected: 
 	QMatrix4x4 model_;
 	QVector<QVector4D> vertices_;
-	QVector<QVector3D> colors_;
+	QVector<QVector4D> colors_;
 	QVector<GLushort> indices_;
 	QVector<QOpenGLShaderProgram*> programs_;
 	QVector4D pos_;
