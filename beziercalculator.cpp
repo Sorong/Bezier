@@ -56,6 +56,35 @@ bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates,
 	}
 	return true;
 }
+bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float precision_t, float precision_s) const {
+	QVector<QVector<QVector4D>> temp;
+	for (auto& current : src_coordinates) {
+		QVector<QVector4D> temp_dest;
+		if (!calculateBeziercurve(current, temp_dest, precision_t)) {
+			return false;
+		}
+		temp.push_back(temp_dest);
+	}
+	for (int i = 0; i < temp.at(0).size(); i++) {
+		QVector<QVector4D> bezier_t;
+		for (int j = 0; j < temp.size(); j++) {
+			bezier_t.push_back(temp.at(j).at(i));
+		}
+		QVector<QVector4D> bezier_s;
+		if(!calculateBeziercurve(bezier_t, bezier_s, precision_s)) {
+			return false;
+		}
+		dest_coordinates.push_back(bezier_s);
+	}
+	return true;
+}
+
+	bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float precision) {
+		return calculateBezierSurface(src_coordinates, dest_coordinates, precision, precision);
+	}
+	
+
+
 
 QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinates, float t) const {
 	QVector<QVector4D> points;

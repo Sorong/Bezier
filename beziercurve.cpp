@@ -2,18 +2,22 @@
 #include "beziercalculator.hpp"
 
 
-BezierCurve::BezierCurve(QMatrix4x4& model, const QVector4D pos): Model(model, pos), coordinates_(nullptr) {
+BezierCurve::BezierCurve(QMatrix4x4& model, const QVector4D pos): Model(model, pos) {
 }
 
-BezierCurve::BezierCurve(QMatrix4x4& model): Model(model), coordinates_(nullptr) {
+BezierCurve::BezierCurve(QMatrix4x4& model): Model(model) {
 }
 
 BezierCurve::~BezierCurve()
 {
 }
 
-void BezierCurve::setBaseCoordinates(QVector<QVector4D>* coordinates) {
+void BezierCurve::setBaseCoordinates(QVector<QVector4D> coordinates) {
 	this->coordinates_ = coordinates;
+}
+
+void BezierCurve::addBaseCoordinates(QVector4D coordinate) {
+	this->coordinates_.push_back(coordinate);
 }
 
 QVector<QVector4D>& BezierCurve::getVertices() {
@@ -21,11 +25,12 @@ QVector<QVector4D>& BezierCurve::getVertices() {
 }
 
 void BezierCurve::init(QVector4D* position) {
-	if(this->coordinates_ == nullptr) {
+	if(this->coordinates_.isEmpty()) {
 		return;
 	}
-	BezierCalculator calculator;
-	calculator.calculateBeziercurve(*this->coordinates_, this->vertices_,0.05);
+	this->vertices_ = this->coordinates_;
+	//BezierCalculator calculator;
+//	calculator.calculateBeziercurve(this->coordinates_, this->vertices_,0.05);
 	for (auto& vertex : vertices_) {
 		if (vertex.w() == 0) {
 			vertex.setW(1);
