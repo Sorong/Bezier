@@ -271,12 +271,17 @@ QVector<QVector4D> BezierScreen::getBasePoints() const {
 
 void BezierScreen::raiseElevation() {
 	if (coordinates_.size() <= 2) {
-		return;
+		bezier_calculator_.degreeElevationSurface(surface->getCoordinates());
+		surface->reinit();
+		makeCurrent();
+		update();
+
 	}
-	bezier_calculator_.degreeElevation(coordinates_);
+	
+/*	bezier_calculator_.degreeElevation(coordinates_);
 	makeCurrent();
 	initBaseline();
-	lines_.clear();
+	lines_.clear();*/
 }
 
 

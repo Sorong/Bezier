@@ -18,6 +18,7 @@ public:
 	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);
 	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
 	void setCoordinates(QVector<QVector<QVector4D>> &coordinates);
+	QVector<QVector<QVector4D>>& getCoordinates();
 	QVector4D* get(int index) const;
 	int size() const override;
 	void setClicked(int index) const;
