@@ -113,12 +113,18 @@ QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinate
 }
 
 void BezierCalculator::degreeElevationSurface(QVector<QVector<QVector4D>>& src_coordinates) {
-	if (src_coordinates.size() == 1) { return; }
+	if (src_coordinates.isEmpty()) {
+		return;
+	} 
 	QVector<QVector<QVector4D>> horizontalElevation;
 	for (int i = 0; i < src_coordinates.size(); i++) {
 		QVector<QVector4D> elevation = src_coordinates.at(i);
 		degreeElevation(elevation);
 		horizontalElevation.push_back(elevation);
+	}
+	if(horizontalElevation.size() <= 1)	{
+		src_coordinates = horizontalElevation;
+		return;
 	}
 	QVector<QVector<QVector4D>> verticalElevation;
 	for(int k = 0; k < horizontalElevation.at(0).size(); k++) {

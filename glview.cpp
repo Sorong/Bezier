@@ -69,7 +69,7 @@ void BezierScreen::initializeGL() {
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
 	surface = new BezierSurface(*this->model_, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{{ -2,2,1,1 },{ 2,2,1,1 } ,{ 4,2,1,1 } },{{ -2,3,2,1 },{ 2,3,2,1 },{ 4,3,2,1 } } };
+	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}} };
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -272,7 +272,7 @@ QVector<QVector4D> BezierScreen::getBasePoints() const {
 void BezierScreen::raiseElevation() {
 	if (coordinates_.size() <= 2) {
 		makeCurrent();
-		
+		update();
 		bezier_calculator_.degreeElevationSurface(surface->getCoordinates());
 
 		surface->reinit();
