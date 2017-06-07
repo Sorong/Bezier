@@ -90,7 +90,7 @@ void Icosahedron::init(QVector4D *position) {
 	// Bind it to color.
 	pos = glGetAttribLocation(prog_id, "color");
 	glEnableVertexAttribArray(pos);
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &this->index_buffer_);

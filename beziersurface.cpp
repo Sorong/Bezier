@@ -172,6 +172,10 @@ void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> &coordinates) {
 	this->coordinates_ = coordinates;
 }
 
+QVector<QVector<QVector4D>>& BezierSurface::getCoordinates() {
+	return this->coordinates_;
+}
+
 QVector4D* BezierSurface::get(int index) const {
 	return this->base_points_.at(index)->getReference();
 }
