@@ -61,6 +61,7 @@ bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_c
 	for (auto& current : src_coordinates) {
 		QVector<QVector4D> temp_dest;
 		if (!calculateBeziercurve(current, temp_dest, precision_t)) {
+			dest_coordinates = src_coordinates;
 			return false;
 		}
 		temp.push_back(temp_dest);
@@ -76,6 +77,7 @@ bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_c
 		}
 		QVector<QVector4D> bezier_s;
 		if(!calculateBeziercurve(bezier_t, bezier_s, precision_s)) {
+			dest_coordinates = src_coordinates;
 			return false;
 		}
 		dest_coordinates.push_back(bezier_s);
@@ -112,7 +114,7 @@ QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinate
 	return derivate;
 }
 
-void BezierCalculator::degreeElevationSurface(QVector<QVector<QVector4D>>& src_coordinates) {
+void BezierCalculator::degreeElevationSurface(QVector<QVector<QVector4D>>& src_coordinates) const {
 	if (src_coordinates.isEmpty()) {
 		return;
 	} 

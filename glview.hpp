@@ -9,14 +9,14 @@
 #include "beziercalculator.hpp"
 #include "beziersurface.hpp"
 
-class BezierScreen : public QOpenGLWidget, protected QOpenGLFunctions {
+class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
 	Q_OBJECT
 
 public:
 
 
-	BezierScreen(QWidget* parent);
-	virtual ~BezierScreen();
+	GLView(QWidget* parent);
+	virtual ~GLView();
 	void initializeGL() override;
 	void paintGL() override;
 	void resizeGL(int w, int h) override;
@@ -31,12 +31,13 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	QVector<QVector4D> getBasePoints() const;
 	void setT(float t);
-
-
+	
 public slots:
 	void raiseElevation();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
+	signals:
+	void clickedVertex();
 
 private:
 	bool initShader() const;

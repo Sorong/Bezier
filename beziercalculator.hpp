@@ -12,7 +12,7 @@ public:
 	bool calculateBezierSurface(QVector<QVector<QVector4D>> &src_coordiantes, QVector<QVector<QVector4D>> &dest_coordinates, float precision) const;
 	bool calculateBezierSurface(QVector<QVector<QVector4D>> &src_coordiantes, QVector<QVector<QVector4D>> &dest_coordinates, float precision_t, float precision_s) const;
 	QVector4D calculateDerivate(QVector<QVector4D>& src_coordinates, float t) const;
-	void degreeElevationSurface(QVector<QVector<QVector4D>> &src_coordinates);
+	void degreeElevationSurface(QVector<QVector<QVector4D>> &src_coordinates) const;
 	void degreeElevation(QVector<QVector4D>& src_coordinates) const;
 private:
 	int factorial(int n) const;

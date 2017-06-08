@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDockWidget>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -25,10 +26,10 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <glview.hpp>
+#include "glview.hpp"
 
 QT_BEGIN_NAMESPACE
 
@@ -37,7 +38,7 @@ class Ui_BezierClass
 public:
     QWidget *central_widget;
     QVBoxLayout *verticalLayout;
-    BezierScreen *bezier;
+    GLView *glview;
     QWidget *settings_widget_;
     QHBoxLayout *horizontalLayout;
     QWidget *parameter_widget_;
@@ -62,36 +63,56 @@ public:
     QLabel *weigh_label_;
     QDoubleSpinBox *weight_;
     QPushButton *add_button_;
-    QToolBar *main_toolbar_;
     QStatusBar *status_bar_;
     QMenuBar *menu_bar_;
+    QDockWidget *dockWidget;
+    QWidget *dockWidgetContents;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *dock_widget_layout_;
+    QLabel *vertex_data_;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_2;
+    QTextEdit *textEdit_3;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *label_1;
+    QTextEdit *textEdit_2;
+    QHBoxLayout *horizontalLayout_4;
+    QLabel *label_;
+    QTextEdit *textEdit;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_3;
+    QTextEdit *textEdit_4;
 
     void setupUi(QMainWindow *BezierClass)
     {
         if (BezierClass->objectName().isEmpty())
             BezierClass->setObjectName(QStringLiteral("BezierClass"));
-        BezierClass->resize(1024, 768);
+        BezierClass->resize(1279, 762);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(BezierClass->sizePolicy().hasHeightForWidth());
         BezierClass->setSizePolicy(sizePolicy);
+        BezierClass->setDocumentMode(false);
+        BezierClass->setTabShape(QTabWidget::Rounded);
+        BezierClass->setDockNestingEnabled(false);
         central_widget = new QWidget(BezierClass);
         central_widget->setObjectName(QStringLiteral("central_widget"));
+        central_widget->setMouseTracking(false);
         verticalLayout = new QVBoxLayout(central_widget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        bezier = new BezierScreen(central_widget);
-        bezier->setObjectName(QStringLiteral("bezier"));
+        glview = new GLView(central_widget);
+        glview->setObjectName(QStringLiteral("glview"));
         QSizePolicy sizePolicy1(QSizePolicy::Ignored, QSizePolicy::Ignored);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(bezier->sizePolicy().hasHeightForWidth());
-        bezier->setSizePolicy(sizePolicy1);
-        bezier->setFocusPolicy(Qt::StrongFocus);
+        sizePolicy1.setHeightForWidth(glview->sizePolicy().hasHeightForWidth());
+        glview->setSizePolicy(sizePolicy1);
+        glview->setFocusPolicy(Qt::StrongFocus);
 
-        verticalLayout->addWidget(bezier);
+        verticalLayout->addWidget(glview);
 
         settings_widget_ = new QWidget(central_widget);
         settings_widget_->setObjectName(QStringLiteral("settings_widget_"));
@@ -271,16 +292,129 @@ public:
         verticalLayout->addWidget(settings_widget_);
 
         BezierClass->setCentralWidget(central_widget);
-        main_toolbar_ = new QToolBar(BezierClass);
-        main_toolbar_->setObjectName(QStringLiteral("main_toolbar_"));
-        BezierClass->addToolBar(Qt::TopToolBarArea, main_toolbar_);
         status_bar_ = new QStatusBar(BezierClass);
         status_bar_->setObjectName(QStringLiteral("status_bar_"));
         BezierClass->setStatusBar(status_bar_);
         menu_bar_ = new QMenuBar(BezierClass);
         menu_bar_->setObjectName(QStringLiteral("menu_bar_"));
-        menu_bar_->setGeometry(QRect(0, 0, 1024, 26));
+        menu_bar_->setGeometry(QRect(0, 0, 1279, 26));
         BezierClass->setMenuBar(menu_bar_);
+        dockWidget = new QDockWidget(BezierClass);
+        dockWidget->setObjectName(QStringLiteral("dockWidget"));
+        dockWidget->setEnabled(true);
+        dockWidget->setMinimumSize(QSize(270, 42));
+        dockWidgetContents = new QWidget();
+        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
+        verticalLayoutWidget = new QWidget(dockWidgetContents);
+        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
+        verticalLayoutWidget->setGeometry(QRect(0, 0, 321, 671));
+        dock_widget_layout_ = new QVBoxLayout(verticalLayoutWidget);
+        dock_widget_layout_->setSpacing(6);
+        dock_widget_layout_->setContentsMargins(11, 11, 11, 11);
+        dock_widget_layout_->setObjectName(QStringLiteral("dock_widget_layout_"));
+        dock_widget_layout_->setContentsMargins(0, 0, 0, 0);
+        vertex_data_ = new QLabel(verticalLayoutWidget);
+        vertex_data_->setObjectName(QStringLiteral("vertex_data_"));
+        vertex_data_->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+
+        dock_widget_layout_->addWidget(vertex_data_);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(6);
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_2 = new QLabel(verticalLayoutWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        sizePolicy2.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy2);
+        label_2->setMinimumSize(QSize(80, 0));
+        label_2->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        horizontalLayout_7->addWidget(label_2);
+
+        textEdit_3 = new QTextEdit(verticalLayoutWidget);
+        textEdit_3->setObjectName(QStringLiteral("textEdit_3"));
+        QSizePolicy sizePolicy5(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(textEdit_3->sizePolicy().hasHeightForWidth());
+        textEdit_3->setSizePolicy(sizePolicy5);
+
+        horizontalLayout_7->addWidget(textEdit_3);
+
+
+        dock_widget_layout_->addLayout(horizontalLayout_7);
+
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        label_1 = new QLabel(verticalLayoutWidget);
+        label_1->setObjectName(QStringLiteral("label_1"));
+        sizePolicy2.setHeightForWidth(label_1->sizePolicy().hasHeightForWidth());
+        label_1->setSizePolicy(sizePolicy2);
+        label_1->setMinimumSize(QSize(80, 0));
+        label_1->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        horizontalLayout_5->addWidget(label_1);
+
+        textEdit_2 = new QTextEdit(verticalLayoutWidget);
+        textEdit_2->setObjectName(QStringLiteral("textEdit_2"));
+        sizePolicy5.setHeightForWidth(textEdit_2->sizePolicy().hasHeightForWidth());
+        textEdit_2->setSizePolicy(sizePolicy5);
+
+        horizontalLayout_5->addWidget(textEdit_2);
+
+
+        dock_widget_layout_->addLayout(horizontalLayout_5);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        label_ = new QLabel(verticalLayoutWidget);
+        label_->setObjectName(QStringLiteral("label_"));
+        sizePolicy2.setHeightForWidth(label_->sizePolicy().hasHeightForWidth());
+        label_->setSizePolicy(sizePolicy2);
+        label_->setMinimumSize(QSize(80, 0));
+        label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        horizontalLayout_4->addWidget(label_);
+
+        textEdit = new QTextEdit(verticalLayoutWidget);
+        textEdit->setObjectName(QStringLiteral("textEdit"));
+        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
+        textEdit->setSizePolicy(sizePolicy6);
+
+        horizontalLayout_4->addWidget(textEdit);
+
+
+        dock_widget_layout_->addLayout(horizontalLayout_4);
+
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setSpacing(6);
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        label_3 = new QLabel(verticalLayoutWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        sizePolicy2.setHeightForWidth(label_3->sizePolicy().hasHeightForWidth());
+        label_3->setSizePolicy(sizePolicy2);
+        label_3->setMinimumSize(QSize(80, 0));
+        label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        horizontalLayout_8->addWidget(label_3);
+
+        textEdit_4 = new QTextEdit(verticalLayoutWidget);
+        textEdit_4->setObjectName(QStringLiteral("textEdit_4"));
+        sizePolicy6.setHeightForWidth(textEdit_4->sizePolicy().hasHeightForWidth());
+        textEdit_4->setSizePolicy(sizePolicy6);
+
+        horizontalLayout_8->addWidget(textEdit_4);
+
+
+        dock_widget_layout_->addLayout(horizontalLayout_8);
+
+        dockWidget->setWidget(dockWidgetContents);
+        BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockWidget);
 
         retranslateUi(BezierClass);
 
@@ -298,6 +432,11 @@ public:
         y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate:", 0));
         weigh_label_->setText(QApplication::translate("BezierClass", "Gewichtung:", 0));
         add_button_->setText(QApplication::translate("BezierClass", "Hinzuf\303\274gen", 0));
+        vertex_data_->setText(QApplication::translate("BezierClass", "TextLabel", 0));
+        label_2->setText(QApplication::translate("BezierClass", "X-Koordinate", 0));
+        label_1->setText(QApplication::translate("BezierClass", "Y-Koordinate", 0));
+        label_->setText(QApplication::translate("BezierClass", "Z-Koordinate", 0));
+        label_3->setText(QApplication::translate("BezierClass", "Gewichtung", 0));
     } // retranslateUi
 
 };
