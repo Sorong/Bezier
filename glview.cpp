@@ -30,7 +30,7 @@
 #define LIME  0.2f, 0.7f, 0.2f
 #define DARKGREEN 0.0f, 0.4f, 0.0f
 
-BezierScreen::BezierScreen(QWidget* parent) :
+GLView::GLView(QWidget* parent) :
 	QOpenGLWidget(parent),
 	show_sublines_(false),
 	show_derivate_(false),
@@ -49,7 +49,7 @@ BezierScreen::BezierScreen(QWidget* parent) :
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
-BezierScreen::~BezierScreen() {
+GLView::~GLView() {
 	makeCurrent();
 	delete this->model_;
 	delete this->view_;
@@ -58,7 +58,7 @@ BezierScreen::~BezierScreen() {
 
 }
 
-void BezierScreen::initializeGL() {
+void GLView::initializeGL() {
 	initializeOpenGLFunctions();
 	if (!initShader()) {
 		qDebug() << this->prog_->log();
@@ -69,13 +69,13 @@ void BezierScreen::initializeGL() {
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
 	surface = new BezierSurface(*this->model_, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}} };
+	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 } },{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } } };
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
 }
 
-void BezierScreen::paintGL() {
+void GLView::paintGL() {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_LINE_SMOOTH);
@@ -108,7 +108,7 @@ void BezierScreen::paintGL() {
 	update();
 }
 
-void BezierScreen::resizeGL(int w, int h) {
+void GLView::resizeGL(int w, int h) {
 	h = h < 1 ? 1 : h;
 	glViewport(0, 0, w, h);
 	this->projection_->setToIdentity();
@@ -116,12 +116,12 @@ void BezierScreen::resizeGL(int w, int h) {
 }
 
 
-void BezierScreen::setT(float t) {
+void GLView::setT(float t) {
 	this->t_ = t;
 	this->lines_.clear();
 }
 
-void BezierScreen::removeCoordinateByIndex(int i) {
+void GLView::removeCoordinateByIndex(int i) {
 	initializeOpenGLFunctions();
 	makeCurrent();
 	coordinates_.removeAt(i);
@@ -131,11 +131,11 @@ void BezierScreen::removeCoordinateByIndex(int i) {
 }
 
 
-bool BezierScreen::addCoordinate(float x, float y) {
+bool GLView::addCoordinate(float x, float y) {
 	return this->addCoordinate({x,y,0,1});
 }
 
-bool BezierScreen::addCoordinate(QVector4D xyzw) {
+bool GLView::addCoordinate(QVector4D xyzw) {
 	initializeOpenGLFunctions();
 	makeCurrent();
 	this->coordinates_.push_back(xyzw);
@@ -148,7 +148,7 @@ bool BezierScreen::addCoordinate(QVector4D xyzw) {
 	return !highest_grade_reached_;
 }
 
-QVector4D BezierScreen::getCoordinateByIndex(int i) const {
+QVector4D GLView::getCoordinateByIndex(int i) const {
 	if (coordinates_.isEmpty() || i > coordinates_.size() - 1) {
 		return {0, 0, 0, 0};
 	}
@@ -156,7 +156,7 @@ QVector4D BezierScreen::getCoordinateByIndex(int i) const {
 }
 
 
-void BezierScreen::keyPressEvent(QKeyEvent* event) {
+void GLView::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 	case Qt::Key_Plus:
 		this->zoom_factor_ /= 1.01;
@@ -183,7 +183,7 @@ void BezierScreen::keyPressEvent(QKeyEvent* event) {
 	}
 }
 
-void BezierScreen::mousePressEvent(QMouseEvent* event) {
+void GLView::mousePressEvent(QMouseEvent* event) {
 	dragged_vertex_ = nullptr;
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
@@ -232,12 +232,13 @@ void BezierScreen::mousePressEvent(QMouseEvent* event) {
 	//	qDebug() << "clicked:" << coord;
 	//	qDebug() << intersect_to_center_;
 	//}
+	emit clickedVertex();
 	initializeOpenGLFunctions();
 	makeCurrent();
 	update();
 }
 
-void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
+void GLView::mouseMoveEvent(QMouseEvent* event) {
 	if (dragged_vertex_ == nullptr) {
 		return;
 	}
@@ -260,16 +261,16 @@ void BezierScreen::mouseMoveEvent(QMouseEvent* event) {
 	surface->reinit();
 }
 
-void BezierScreen::mouseReleaseEvent(QMouseEvent* event) {
+void GLView::mouseReleaseEvent(QMouseEvent* event) {
 
 }
 
-QVector<QVector4D> BezierScreen::getBasePoints() const {
+QVector<QVector4D> GLView::getBasePoints() const {
 	return this->base_->getVertices();
 }
 
 
-void BezierScreen::raiseElevation() {
+void GLView::raiseElevation() {
 	if (coordinates_.size() <= 2) {
 		makeCurrent();
 		update();
@@ -287,20 +288,20 @@ void BezierScreen::raiseElevation() {
 }
 
 
-void BezierScreen::toggleSublineMode(bool state) {
+void GLView::toggleSublineMode(bool state) {
 	this->show_sublines_ = state;
 	lines_.clear();
 	update();
 }
 
-void BezierScreen::toggleDerivateMode(bool state) {
+void GLView::toggleDerivateMode(bool state) {
 	makeCurrent();
 	this->show_derivate_ = state;
 	update();
 }
 
 
-bool BezierScreen::initShader() const {
+bool GLView::initShader() const {
 	QString path = QDir::currentPath() + SHADERPATH;
 	QString vert = ".vert";
 	QString frag = ".frag";
@@ -313,7 +314,7 @@ bool BezierScreen::initShader() const {
 	return this->prog_->link();
 }
 
-void BezierScreen::initBaseline() {
+void GLView::initBaseline() {
 	if (this->base_ != nullptr) {
 		delete this->base_;
 	}
@@ -334,7 +335,7 @@ void BezierScreen::initBaseline() {
 
 
 
-void BezierScreen::initSublines() {
+void GLView::initSublines() {
 	drawDeCasteljau();
 	if (lines_.isEmpty()) {
 		return;
@@ -349,12 +350,12 @@ void BezierScreen::initSublines() {
 	}
 }
 
-void BezierScreen::removeSublines() {
+void GLView::removeSublines() {
 	this->lines_.clear();
 }
 
 
-void BezierScreen::drawDeCasteljau() {
+void GLView::drawDeCasteljau() {
 	QVector3D col[] = {{RED},{GREEN},{MAGENTA}};
 	int col_index = 0;
 	QVector<QVector<QVector4D>> line_coordinates;
@@ -368,7 +369,7 @@ void BezierScreen::drawDeCasteljau() {
 	}
 }
 
-void BezierScreen::drawBezier() {
+void GLView::drawBezier() {
 	if (this->bezier_curve_ != nullptr) {
 		delete this->bezier_curve_;
 		this->bezier_curve_ = nullptr;
@@ -389,7 +390,7 @@ void BezierScreen::drawBezier() {
 	this->bezier_curve_->initLine();
 }
 
-void BezierScreen::drawDerivate() {
+void GLView::drawDerivate() {
 	if (this->derivate_ != nullptr) {
 		delete this->derivate_;
 		this->derivate_ = nullptr;

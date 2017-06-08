@@ -14,7 +14,11 @@ public slots:
 	void sliderToLabel(int i) const;
 	void addCoordinates() const;
 	void keyPressEvent(QKeyEvent* event) override;
+	void mousePressEvent(QMouseEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
+	void mouseReleaseEvent(QMouseEvent* event) override;
 	void raiseElevation() const;
+	void clickedVertex();
 private:
 	void addToList(QVector4D coordinate) const;
 	void reloadList() const;
