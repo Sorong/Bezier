@@ -6,7 +6,7 @@
 
 
 MainView::MainView(QWidget* parent)
-	: QMainWindow(parent) {
+	: QMainWindow(parent), clicked(nullptr) {
 	ui.setupUi(this);
 	this->setMinimumHeight(500);
 	//this->setMaximumHeight(375);
@@ -16,12 +16,14 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleSublineMode(bool)));
 	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleDerivateMode(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
-	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D&)), this, SLOT(clickedVertex(QVector4D&)));
+	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D*)), this, SLOT(clickedVertex(QVector4D*)));
 	QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
 	QObject::connect(ui.dock_surface_data_, SIGNAL(closed()), ui.show_surface_data_, SLOT(toggle()));
 	QObject::connect(ui.show_surface_data_, SIGNAL(toggled(bool)), ui.dock_surface_data_, SLOT(setVisible(bool)));
 	QObject::connect(ui.dock_vertex_data_, SIGNAL(closed()), ui.show_vertex_data_, SLOT(toggle()));
 	QObject::connect(ui.show_vertex_data_, SIGNAL(toggled(bool)), ui.dock_vertex_data_, SLOT(setVisible(bool)));
+
+	ui.dock_vertex_data_->hide();
 }
 
 MainView::~MainView() {
@@ -75,25 +77,21 @@ void MainView::mouseReleaseEvent(QMouseEvent* event) {
 	qDebug() << "mainviewmousepress";
 }
 
-void MainView::toggleVertexData(bool) {
-}
 
-void MainView::toggleSurfaceData(bool value) {
-	if(!ui.dock_surface_data_->isFloating()) {
-		ui.show_surface_data_->setChecked(value);
-		ui.dock_surface_data_->setHidden(value);
-	}
-
-	
-}
 
 void MainView::raiseElevation() const {
 	this->ui.glview_->raiseElevation();
 }
 
-void MainView::clickedVertex(QVector4D& coordinate) {
+void MainView::clickedVertex(QVector4D* coordinate) {
+	this->clicked = coordinate;
+	this->ui.show_vertex_data_->setEnabled(true);
+	this->ui.dock_vertex_data_->setVisible(true);
+	this->ui.x_coordinate_->setValue(clicked->x());
+	this->ui.y_coordinate_->setValue(clicked->y());
+	this->ui.z_coordinate_->setValue(clicked->z());
+	this->ui.weight_->setValue(clicked->w());
 	qDebug() << "clicked";
-	qDebug() << ui.dock_surface_data_->isHidden();
 }
 
 //Todo: Remove?
