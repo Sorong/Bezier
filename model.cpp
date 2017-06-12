@@ -30,6 +30,26 @@ void Model::setPosition(const QVector4D& position) {
 	this->model_.translate(pos_.toVector3D());
 }
 
+void Model::reinit(QVector4D* position) {
+	glBindVertexArray(this->vertexarrayobject_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);
+	glBindVertexArray(0);
+
+	glBindVertexArray(this->vertexarrayobject_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+	glBindVertexArray(0);
+
+	glBindVertexArray(this->vertexarrayobject_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->index_buffer_);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
+	glBindVertexArray(0);
+	if(position) {
+		model_.translate(position->toVector3DAffine());
+	}
+}
+
 QVector4D Model::at(int index) const {
 	if(index < 0 || index >= size()) {
 		throw std::out_of_range("Index out of Bounds");
@@ -62,4 +82,37 @@ void Model::removeShader(int index) {
 
 void Model::setModelMatrix(QMatrix4x4& model) {
 	this->model_ = model;
+}
+
+void Model::initBuffer() {
+	GLuint progId = this->programs_.at(0)->programId();
+	GLuint pos;
+	// Step 0: Create vertex array object.
+	glGenVertexArrays(1, &this->vertexarrayobject_);
+	glBindVertexArray(this->vertexarrayobject_);
+
+	// Step 1: Create vertex buffer object for position attribute and bind it to the associated "shader attribute".
+	glGenBuffers(1, &this->position_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);
+
+	// Bind it to position.
+	pos = glGetAttribLocation(progId, "position");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	// Step 2: Create vertex buffer object for color attribute and bind it to...
+	glGenBuffers(1, &this->color_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+
+	// Bind it to color.
+	pos = glGetAttribLocation(progId, "color");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	// Step 3: Create vertex buffer object for indices. No binding needed here.
+	glGenBuffers(1, &this->index_buffer_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->index_buffer_);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
 }

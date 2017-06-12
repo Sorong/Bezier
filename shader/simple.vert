@@ -11,7 +11,9 @@ void main()
 {	
 
 	fragmentColor = color;
-	vec4 blubb = vec4(1,0,1,0.2);
-	fragmentColor = fragmentColor;
-	gl_Position   = mvp * position;
+	vec4 pos = position;
+	if(pos.w != 0) {
+		pos /= pos.w;
+	}
+	gl_Position   = mvp * pos;
 }

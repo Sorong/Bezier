@@ -12,6 +12,7 @@ public:
 	void setPosition(const QVector4D &pos_);
 	virtual void init(QVector4D *position = nullptr) = 0;
 	virtual void render(QMatrix4x4& projection, QMatrix4x4& view) = 0;
+	virtual void reinit(QVector4D *position = nullptr);
 	QVector4D at(int index) const;
 	virtual int size() const;
 	const QVector<QVector4D>& getVertices() const;
@@ -20,6 +21,7 @@ public:
 	void removeShader(int index);
 	void setModelMatrix(QMatrix4x4& model);
 protected: 
+	virtual void initBuffer();
 	QMatrix4x4 model_;
 	QVector<QVector4D> vertices_;
 	QVector<QVector4D> colors_;
