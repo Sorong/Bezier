@@ -7,6 +7,8 @@ class Model : protected QOpenGLFunctions_3_3_Core
 public:
 	Model();
 	explicit Model(QMatrix4x4 &model);
+	Model(const Model&) = delete;
+	Model &operator=(const Model&) = delete;
 	Model(QMatrix4x4 &model, const QVector4D &pos);
 	virtual ~Model();
 	void setPosition(const QVector4D &pos_);

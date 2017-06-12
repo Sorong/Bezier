@@ -12,12 +12,16 @@ MainView::MainView(QWidget* parent)
 	//this->setMaximumHeight(375);
 	//QObject::connect(ui.horizontalSlider, SIGNAL(valueChanged(int)), ui.openGLWidget, SLOT(setT(int)));
 	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToLabel(int)));
-	QObject::connect(ui.add_button_, SIGNAL(pressed()), this, SLOT(addCoordinates()));
-	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.glview, SLOT(toggleSublineMode(bool)));
-	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.glview, SLOT(toggleDerivateMode(bool)));
+//	QObject::connect(ui.add_button_, SIGNAL(pressed()), this, SLOT(addCoordinates()));
+	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleSublineMode(bool)));
+	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleDerivateMode(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
-	QObject::connect(ui.glview, SIGNAL(clickedVertex(QVector4D&)), this, SLOT(clickedVertex(QVector4D&)));
-	menuBar()->addMenu("Ansicht");
+	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D&)), this, SLOT(clickedVertex(QVector4D&)));
+	QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
+	QObject::connect(ui.dock_surface_data_, SIGNAL(closed()), ui.show_surface_data_, SLOT(toggle()));
+	QObject::connect(ui.show_surface_data_, SIGNAL(toggled(bool)), ui.dock_surface_data_, SLOT(setVisible(bool)));
+	QObject::connect(ui.dock_vertex_data_, SIGNAL(closed()), ui.show_vertex_data_, SLOT(toggle()));
+	QObject::connect(ui.show_vertex_data_, SIGNAL(toggled(bool)), ui.dock_vertex_data_, SLOT(setVisible(bool)));
 }
 
 MainView::~MainView() {
@@ -29,11 +33,12 @@ void MainView::sliderToLabel(int i) const {
 	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
 	float_as_string.sprintf("%.2f", paramToFloat);
 	this->ui.t_label_->setText("t: " + float_as_string);
-	this->ui.glview->setT(paramToFloat);
+	this->ui.glview_->setT(paramToFloat);
 }
 
+//Todo: Remove?
 void MainView::addCoordinates() const {
-	QVector4D coordinates = { static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
+/*	QVector4D coordinates = { static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
 	coordinates *= this->ui.weight_->value();
 	if(this->ui.glview->addCoordinate(coordinates)) {
 		this->addToList(coordinates);
@@ -41,11 +46,11 @@ void MainView::addCoordinates() const {
 		QMessageBox messageBox;
 		messageBox.critical(nullptr, "Error", QString("Korrekte Darstellung nicht möglich. Bitte löschen Sie Punkte"));
 		messageBox.setFixedSize(500, 200);
-	}
+	}*/
 }
 
 void MainView::keyPressEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key_Delete && !ui.list_widget_->selectedItems().isEmpty()) {
+	/*if (event->key() == Qt::Key_Delete && !ui.list_widget_->selectedItems().isEmpty()) {
 		auto selected = ui.list_widget_->selectionModel()->selectedIndexes();
 		auto i = selected.at(0).row();
 		ui.list_widget_->takeItem(i);
@@ -53,7 +58,9 @@ void MainView::keyPressEvent(QKeyEvent* event) {
 
 	} else {
 		this->ui.glview->keyPressEvent(event);
-	}
+	}*/
+
+	this->ui.glview_->keyPressEvent(event);
 }
 
 void MainView::mousePressEvent(QMouseEvent* event) {
@@ -68,17 +75,30 @@ void MainView::mouseReleaseEvent(QMouseEvent* event) {
 	qDebug() << "mainviewmousepress";
 }
 
+void MainView::toggleVertexData(bool) {
+}
+
+void MainView::toggleSurfaceData(bool value) {
+	if(!ui.dock_surface_data_->isFloating()) {
+		ui.show_surface_data_->setChecked(value);
+		ui.dock_surface_data_->setHidden(value);
+	}
+
+	
+}
+
 void MainView::raiseElevation() const {
-	this->ui.glview->raiseElevation();
-	reloadList();
+	this->ui.glview_->raiseElevation();
 }
 
 void MainView::clickedVertex(QVector4D& coordinate) {
 	qDebug() << "clicked";
+	qDebug() << ui.dock_surface_data_->isHidden();
 }
 
+//Todo: Remove?
 void MainView::addToList(QVector4D coordinate) const {
-	QString out;
+/*	QString out;
 	QTextStream stream(&out);
 	stream.setRealNumberPrecision(2);
 	stream.setRealNumberNotation(QTextStream::FixedNotation);
@@ -87,13 +107,14 @@ void MainView::addToList(QVector4D coordinate) const {
 		coordinate /= coordinate.w();
 	}
 	stream << "( x: " << coordinate.x() << ", y: " << coordinate.y() << ", Gewichtung: " << w << ")";
-	this->ui.list_widget_->addItem(out);
+	this->ui.list_widget_->addItem(out);*/
 }
 
+//Todo: Remove?
 void MainView::reloadList() const {
-	auto points = this->ui.glview->getBasePoints();
+	/*auto points = this->ui.glview->getBasePoints();
 	this->ui.list_widget_->clear();
 	for (auto point : points) {
 		this->addToList(point);
-	}
+	}*/
 }

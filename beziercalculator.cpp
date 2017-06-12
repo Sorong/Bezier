@@ -51,7 +51,6 @@ bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates,
 			auto current = src_coordinates.at(j);
 			point += current * bernsteinpolynoms.at(j);
 		}
-		//point /= point.w(); TODO: necessary?
 		dest_coordinates.push_back(point);
 	}
 	return true;
