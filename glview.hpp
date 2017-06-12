@@ -36,6 +36,7 @@ public slots:
 	void raiseElevation();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
+	void editClickedVertex();
 	signals:
 	void clickedVertex(QVector4D*);
 

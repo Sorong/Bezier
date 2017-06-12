@@ -207,6 +207,7 @@ void GLView::mouseMoveEvent(QMouseEvent* event) {
 	*dragged_vertex_ *= w;
 	qDebug() << "new pos = " << *dragged_vertex_;
 	makeCurrent();
+	emit clickedVertex(dragged_vertex_);
 	surface->reinit();
 }
 
@@ -240,6 +241,11 @@ void GLView::toggleDerivateMode(bool state) {
 	update();
 }
 
+void GLView::editClickedVertex() {
+	makeCurrent();
+	surface->reinit();
+	update();
+}
 
 bool GLView::initShader() const {
 	QString path = QDir::currentPath() + SHADERPATH;

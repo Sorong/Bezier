@@ -22,7 +22,10 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.show_surface_data_, SIGNAL(toggled(bool)), ui.dock_surface_data_, SLOT(setVisible(bool)));
 	QObject::connect(ui.dock_vertex_data_, SIGNAL(closed()), ui.show_vertex_data_, SLOT(toggle()));
 	QObject::connect(ui.show_vertex_data_, SIGNAL(toggled(bool)), ui.dock_vertex_data_, SLOT(setVisible(bool)));
-
+	QObject::connect(ui.x_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
+	QObject::connect(ui.y_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
+	QObject::connect(ui.z_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
+	QObject::connect(ui.weight_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
 	ui.dock_vertex_data_->hide();
 }
 
@@ -81,17 +84,43 @@ void MainView::mouseReleaseEvent(QMouseEvent* event) {
 
 void MainView::raiseElevation() const {
 	this->ui.glview_->raiseElevation();
+	this->ui.show_vertex_data_->setChecked(false);
+	this->ui.show_vertex_data_->setEnabled(false);
+	
 }
 
 void MainView::clickedVertex(QVector4D* coordinate) {
 	this->clicked = coordinate;
 	this->ui.show_vertex_data_->setEnabled(true);
 	this->ui.dock_vertex_data_->setVisible(true);
-	this->ui.x_coordinate_->setValue(clicked->x());
-	this->ui.y_coordinate_->setValue(clicked->y());
-	this->ui.z_coordinate_->setValue(clicked->z());
+	float w = clicked->w();
+	this->ui.x_coordinate_->blockSignals(true);
+	this->ui.y_coordinate_->blockSignals(true);
+	this->ui.z_coordinate_->blockSignals(true);
+	this->ui.weight_->blockSignals(true);
+	this->ui.x_coordinate_->setValue(clicked->x()/w);
+	this->ui.y_coordinate_->setValue(clicked->y()/w);
+	this->ui.z_coordinate_->setValue(clicked->z()/w);
 	this->ui.weight_->setValue(clicked->w());
+
+	this->ui.x_coordinate_->blockSignals(false);
+	this->ui.y_coordinate_->blockSignals(false);
+	this->ui.z_coordinate_->blockSignals(false);
+	this->ui.weight_->blockSignals(false);
+
 	qDebug() << "clicked";
+}
+
+void MainView::editClickedVertex() {
+	if(clicked == nullptr) {
+		return;
+	}
+	float w = ui.weight_->value();
+	this->clicked->setX(ui.x_coordinate_->value() * w);
+	this->clicked->setY(ui.y_coordinate_->value() * w);
+	this->clicked->setZ(ui.z_coordinate_->value() * w);
+	this->clicked->setW(w);
+	this->ui.glview_->editClickedVertex();
 }
 
 //Todo: Remove?
