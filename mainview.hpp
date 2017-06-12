@@ -17,11 +17,10 @@ public slots:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
-	void toggleVertexData(bool);
-	void toggleSurfaceData(bool);
 	void raiseElevation() const;
-	void clickedVertex(QVector4D&);
+	void clickedVertex(QVector4D*);
 private:
+	QVector4D *clicked;
 	void addToList(QVector4D coordinate) const;
 	void reloadList() const;
 	Ui::BezierClass ui;

@@ -37,7 +37,7 @@ public slots:
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
 	signals:
-	void clickedVertex(QVector4D&);
+	void clickedVertex(QVector4D*);
 
 private:
 	bool initShader() const;

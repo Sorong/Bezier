@@ -180,7 +180,7 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 		intersect_to_center_ = coord.toVector3DAffine() - begin;
 		qDebug() << "clicked:" << coord;
 		qDebug() << intersect_to_center_;
-		emit clickedVertex(*dragged_vertex_);
+		emit clickedVertex(dragged_vertex_);
 		break;
 	}
 

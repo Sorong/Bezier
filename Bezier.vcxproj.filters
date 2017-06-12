@@ -151,7 +151,7 @@
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="dockwidget.hpp">
-      <Filter>Source Files\View</Filter>
+      <Filter>Header Files\View</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
