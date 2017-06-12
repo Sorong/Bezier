@@ -101,6 +101,12 @@
     <ClCompile Include="trianglestrip.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_dockwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="dockwidget.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bezier.ui">
@@ -143,6 +149,9 @@
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\ui_bezier.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="dockwidget.hpp">
+      <Filter>Source Files\View</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
