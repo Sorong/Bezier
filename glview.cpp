@@ -69,7 +69,7 @@ void GLView::initializeGL() {
 	QVector3D eye(EYE);
 	this->view_->lookAt(eye, {CENTER}, {UP});
 	surface = new BezierSurface(*this->model_, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-2,0,0,1}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 } },{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } } };
+	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 } }/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/ };
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -180,6 +180,7 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 	case Qt::Key_Down:
 		this->view_->rotate(2 * zoom_factor_, -2.0, 0, 0);
 		break;
+	default: break;
 	}
 }
 
@@ -196,8 +197,8 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 	float radius2 = radius * radius;
 
 	for (auto i = 0; i < this->surface->size(); i++) {
-		QVector4D *coord = surface->get(i);
-		QVector3D L = (coord->toVector3DAffine() - begin);
+		QVector4D &coord = surface->get(i);
+		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
 			continue;
@@ -207,32 +208,15 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 			continue;
 		}
 		float thc = sqrt(radius2 - d2);
-		auto t_drag = tca - thc;
-		dragged_vertex_ = coord;
-		intersect_to_center_ = coord->toVector3DAffine() - begin;
-		surface->setClicked(i);
+		//auto t_drag = tca - thc;
+		dragged_vertex_ = &surface->setClicked(i);
+		intersect_to_center_ = coord.toVector3DAffine() - begin;
 		qDebug() << "clicked:" << coord;
 		qDebug() << intersect_to_center_;
+		emit clickedVertex(*dragged_vertex_);
 		break;
 	}
-	//for (auto& coord : coordinates_) {
-	//	QVector3D L = (coord.toVector3DAffine() - begin);
-	//	float tca = QVector3D::dotProduct(L, direction);
-	//	if (tca < 0) {
-	//		continue;
-	//	}
-	//	float d2 = QVector3D::dotProduct(L, L) - tca * tca;
-	//	if (d2 > radius2) {
-	//		continue;
-	//	}
-	//	float thc = sqrt(radius2 - d2);
-	//	auto t_drag = tca - thc;
-	//	dragged_vertex_ = &coord;
-	//	intersect_to_center_ = coord.toVector3DAffine() - begin;
-	//	qDebug() << "clicked:" << coord;
-	//	qDebug() << intersect_to_center_;
-	//}
-	emit clickedVertex();
+
 	initializeOpenGLFunctions();
 	makeCurrent();
 	update();
@@ -274,9 +258,7 @@ void GLView::raiseElevation() {
 	if (coordinates_.size() <= 2) {
 		makeCurrent();
 		update();
-		bezier_calculator_.degreeElevationSurface(surface->getCoordinates());
-
-		surface->reinit();
+		surface->degreeElevation();
 		
 
 	}

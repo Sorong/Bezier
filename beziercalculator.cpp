@@ -87,7 +87,7 @@ bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_c
 
 	bool BezierCalculator::calculateBezierSurface(QVector<QVector<QVector4D>>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float precision) const
 	{
-		return calculateBezierSurface(src_coordinates, dest_coordinates, precision, precision);
+        return calculateBezierSurface(src_coordinates, dest_coordinates, precision, precision);
 	}
 	
 
@@ -103,7 +103,6 @@ QVector4D BezierCalculator::calculateDerivate(QVector<QVector4D>& src_coordinate
 		bernsteinpolynoms.push_back(polynom);
 	}
 
-	QVector4D point(0, 0, 0, 0);
 	QVector4D derivate(0, 0, 0, 0);
 	for (auto j = 0; j < src_coordinates.size() - 1; j++) {
 		auto b1 = src_coordinates.at(j + 1);
@@ -138,8 +137,18 @@ void BezierCalculator::degreeElevationSurface(QVector<QVector<QVector4D>>& src_c
 		degreeElevation(elevation);
 		verticalElevation.push_back(elevation);
 	}
-
-	src_coordinates = verticalElevation;
+	src_coordinates.resize(src_coordinates.size() + 1);
+	for(int i = 0; i < src_coordinates.size(); i++) {
+		int j = 0;
+		for(; j < verticalElevation.size(); j++) {
+			if(src_coordinates[i].isEmpty() || (src_coordinates[i].size() <= j)) {
+				src_coordinates[i].push_back(verticalElevation[j][i]);
+			} else {
+				src_coordinates[i][j] = verticalElevation[j][i];
+			}
+			
+		}
+	}
 }
 
 void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) const {

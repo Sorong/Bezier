@@ -16,7 +16,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.glview, SLOT(toggleSublineMode(bool)));
 	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.glview, SLOT(toggleDerivateMode(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
-	QObject::connect(ui.glview, SIGNAL(clickedVertex()), this, SLOT(clickedVertex()));
+	QObject::connect(ui.glview, SIGNAL(clickedVertex(QVector4D&)), this, SLOT(clickedVertex(QVector4D&)));
 	menuBar()->addMenu("Ansicht");
 }
 
@@ -73,7 +73,7 @@ void MainView::raiseElevation() const {
 	reloadList();
 }
 
-void MainView::clickedVertex() {
+void MainView::clickedVertex(QVector4D& coordinate) {
 	qDebug() << "clicked";
 }
 

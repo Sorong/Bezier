@@ -19,10 +19,12 @@ public:
 	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
 	void setCoordinates(QVector<QVector<QVector4D>> &coordinates);
 	QVector<QVector<QVector4D>>& getCoordinates();
-	QVector4D* get(int index) const;
+	QVector4D& get(int index) const;
 	int size() const override;
-	void setClicked(int index) const;
+	QVector4D& setClicked(int index) const;
+	void degreeElevation();
 private:
+	void createSubModels();
 	QVector<QVector<QVector4D>> coordinates_;
 	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;

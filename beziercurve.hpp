@@ -6,7 +6,7 @@ public:
 	BezierCurve(QMatrix4x4 &model, const QVector4D pos);
 	BezierCurve(QMatrix4x4& model);
 	~BezierCurve();
-	void setBaseCoordinates(QVector<QVector4D> coordinates);
+	void setBaseCoordinates(QVector<QVector4D>& coordinates);
 	void addBaseCoordinates(QVector4D coordinate);
 	QVector<QVector4D>& getVertices();
 	void init(QVector4D* position = nullptr) override;

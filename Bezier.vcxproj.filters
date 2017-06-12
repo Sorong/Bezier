@@ -115,38 +115,34 @@
     <CustomBuild Include="mainview.hpp">
       <Filter>Header Files\View</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_bezier.h">
+    <CustomBuild Include="shader\simple.frag" />
+    <CustomBuild Include="shader\simple.vert" />
+    <CustomBuild Include="beziercurve.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="beziersurface.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="line.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="model.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="icosahedron.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="trianglestrip.hpp">
+      <Filter>Header Files\Model</Filter>
+    </CustomBuild>
+    <CustomBuild Include="beziercalculator.hpp">
+      <Filter>Header Files\Util</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mousehandler.hpp">
+      <Filter>Header Files\Util</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_bezier.h">
       <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="beziercalculator.hpp">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="mousehandler.hpp">
-      <Filter>Header Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="line.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="model.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="beziersurface.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="icosahedron.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="beziercurve.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="trianglestrip.hpp">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shader\simple.frag" />
-    <None Include="shader\simple.vert" />
+    </CustomBuild>
   </ItemGroup>
 </Project>
