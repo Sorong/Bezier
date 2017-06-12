@@ -19,6 +19,7 @@ public slots:
 	void mouseReleaseEvent(QMouseEvent* event) override;
 	void raiseElevation() const;
 	void clickedVertex(QVector4D*);
+	void editClickedVertex();
 private:
 	QVector4D *clicked;
 	void addToList(QVector4D coordinate) const;
