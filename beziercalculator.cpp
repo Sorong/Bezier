@@ -162,6 +162,13 @@ void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) cons
 	src_coordinates = new_coordinates;
 }
 
+QVector4D BezierCalculator::calculateDerivateSurface(QVector<QVector<QVector4D>>& src_coordinates, float t, float s) {
+	if(src_coordinates.isEmpty()) {
+		throw std::range_error("It isn't possible to calculate the derivate of a bezier surface without values");
+	}
+	return{ 0,0,0,0 };
+}
+
 int BezierCalculator::factorial(int n) const {
 	if (n <= 1) {
 		return 1;

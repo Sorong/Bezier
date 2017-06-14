@@ -14,6 +14,7 @@ public:
 	QVector4D calculateDerivate(QVector<QVector4D>& src_coordinates, float t) const;
 	void degreeElevationSurface(QVector<QVector<QVector4D>> &src_coordinates) const;
 	void degreeElevation(QVector<QVector4D>& src_coordinates) const;
+	QVector4D calculateDerivateSurface(QVector<QVector<QVector4D>> &src_coordinates, float t, float s);
 private:
 	int factorial(int n) const;
 	int binominal(int n, int k) const;
