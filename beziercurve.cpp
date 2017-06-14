@@ -55,9 +55,6 @@ void BezierCurve::init(QVector4D* position) {
 		}
 	}
 
-	GLuint progId = this->programs_.at(0)->programId();
-	GLuint pos;
-
 	Model::initBuffer();
 	// Unbind vertex array object (back to default).
 	glBindVertexArray(0);

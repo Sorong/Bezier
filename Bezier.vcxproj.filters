@@ -83,9 +83,6 @@
     <ClCompile Include="beziercalculator.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
-    <ClCompile Include="mousehandler.cpp">
-      <Filter>Source Files\Util</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
@@ -142,9 +139,6 @@
       <Filter>Header Files\Model</Filter>
     </CustomBuild>
     <CustomBuild Include="beziercalculator.hpp">
-      <Filter>Header Files\Util</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mousehandler.hpp">
       <Filter>Header Files\Util</Filter>
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\ui_bezier.h">
