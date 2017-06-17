@@ -7,7 +7,8 @@ class BezierCalculator
 public:
 	BezierCalculator();
 	~BezierCalculator();
-	void deCasteljau(QVector<QVector4D> &base_coordinates, QVector<QVector<QVector4D>> &line_coordinates, float t) const;
+	void deCasteljau(const QVector<QVector4D>& base_coordinates, QVector<QVector<QVector4D>> &dest_coordinates, float t) const;
+	void deCasteljauSurface(const QVector<QVector<QVector4D>>& base_coordinates, QVector<QVector<QVector4D>> &dest_coordinates, float t, float s);
 	bool calculateBeziercurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float precision) const;
 	bool calculateBezierSurface(QVector<QVector<QVector4D>> &src_coordiantes, QVector<QVector<QVector4D>> &dest_coordinates, float precision) const;
 	bool calculateBezierSurface(QVector<QVector<QVector4D>> &src_coordiantes, QVector<QVector<QVector4D>> &dest_coordinates, float precision_t, float precision_s) const;
@@ -15,6 +16,7 @@ public:
 	void degreeElevationSurface(QVector<QVector<QVector4D>> &src_coordinates) const;
 	void degreeElevation(QVector<QVector4D>& src_coordinates) const;
 private:
+	void horizontalToVertical(const QVector<QVector<QVector4D>> &src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates) const;
 	int factorial(int n) const;
 	int binominal(int n, int k) const;
 };

@@ -11,9 +11,10 @@ MainView::MainView(QWidget* parent)
 	this->setMinimumHeight(500);
 	//this->setMaximumHeight(375);
 	//QObject::connect(ui.horizontalSlider, SIGNAL(valueChanged(int)), ui.openGLWidget, SLOT(setT(int)));
-	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToLabel(int)));
+	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToTLabel(int)));
+	QObject::connect(ui.s_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToSLabel(int)));
 //	QObject::connect(ui.add_button_, SIGNAL(pressed()), this, SLOT(addCoordinates()));
-	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleSublineMode(bool)));
+	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), this, SLOT(deCasteljau(bool)));
 	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), ui.glview_, SLOT(toggleDerivateMode(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
 	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D*)), this, SLOT(clickedVertex(QVector4D*)));
@@ -33,12 +34,32 @@ MainView::~MainView() {
 
 }
 
-void MainView::sliderToLabel(int i) const {
+void MainView::sliderToTLabel(int i) const {
 	const float paramToFloat = i/100.0f;
 	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
 	float_as_string.sprintf("%.2f", paramToFloat);
 	this->ui.t_label_->setText("t: " + float_as_string);
 	this->ui.glview_->setT(paramToFloat);
+}
+
+void MainView::sliderToSLabel(int i) const {
+	const float paramToFloat = i / 100.0f;
+	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
+	float_as_string.sprintf("%.2f", paramToFloat);
+	this->ui.s_label_->setText("s: " + float_as_string);
+	this->ui.glview_->setS(paramToFloat);
+}
+
+void MainView::deCasteljau(bool state) const {
+	this->ui.glview_->toggleSublineMode(state);
+	this->ui.s_label_->setEnabled(state);
+	this->ui.t_label_->setEnabled(state);
+	this->ui.s_slider_->setEnabled(state);
+	this->ui.t_slider_->setEnabled(state);
+	if(!state) {
+		this->ui.s_slider_->setValue(0);
+		this->ui.t_slider_->setValue(0);
+	}
 }
 
 //Todo: Remove?

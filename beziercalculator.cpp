@@ -11,9 +11,11 @@ BezierCalculator::~BezierCalculator()
 {
 }
 
-void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float t) const {
+void BezierCalculator::deCasteljau(const QVector<QVector4D>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float t) const {
+	if (src_coordinates.isEmpty()) {
+		return;
+	}
 	QVector<QVector4D> new_line_points;
-
 	for (int i = 0; i < src_coordinates.size() - 1; i++) {
 		auto b_i = (1 - t) * src_coordinates.at(i) + t * src_coordinates.at(i + 1);
 		new_line_points.push_back(b_i);
@@ -26,6 +28,21 @@ void BezierCalculator::deCasteljau(QVector<QVector4D>& src_coordinates, QVector<
 		deCasteljau(new_line_points, dest_coordinates, t);
 	}
 }
+
+void BezierCalculator::deCasteljauSurface(const QVector<QVector<QVector4D>>& base_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float t, float s) {
+	if(base_coordinates.size() <= 1) {
+		deCasteljau(base_coordinates.at(0), dest_coordinates, t);
+		return;
+	}
+	QVector<QVector4D> vertical_coordinates;
+	for(auto& vec : base_coordinates) {
+		deCasteljau(vec, dest_coordinates, t);
+		vertical_coordinates.push_back(dest_coordinates.last().last());
+	}
+	dest_coordinates.push_back(vertical_coordinates);
+	deCasteljau(vertical_coordinates, dest_coordinates, s);
+}
+
 
 bool BezierCalculator::calculateBeziercurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float precision) const {
 	if(src_coordinates.size() <= 2) {
@@ -127,15 +144,7 @@ void BezierCalculator::degreeElevationSurface(QVector<QVector<QVector4D>>& src_c
 		return;
 	}
 	QVector<QVector<QVector4D>> verticalElevation;
-	for(int k = 0; k < horizontalElevation.at(0).size(); k++) {
-		QVector<QVector4D> elevation;
-		for (int i = 0; i < horizontalElevation.size(); i++) {
-			elevation.push_back(horizontalElevation.at(i).at(k));
-			
-		}
-		degreeElevation(elevation);
-		verticalElevation.push_back(elevation);
-	}
+	horizontalToVertical(horizontalElevation, verticalElevation);
 	src_coordinates.resize(src_coordinates.size() + 1);
 	for(int i = 0; i < src_coordinates.size(); i++) {
 		int j = 0;
@@ -160,6 +169,21 @@ void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) cons
 	}
 	new_coordinates.push_back(src_coordinates.at(src_coordinates.size() - 1));
 	src_coordinates = new_coordinates;
+}
+
+void BezierCalculator::horizontalToVertical(const QVector<QVector<QVector4D>>& src_coordinates, QVector<QVector<QVector4D>>& dest_coordinates) const {
+	if(src_coordinates.isEmpty() || src_coordinates.at(0).isEmpty()) {
+		return;
+	}
+	for (int k = 0; k < src_coordinates.at(0).size(); k++) {
+		QVector<QVector4D> elevation;
+		for (int i = 0; i < src_coordinates.size(); i++) {
+			elevation.push_back(src_coordinates.at(i).at(k));
+
+		}
+		degreeElevation(elevation);
+		dest_coordinates.push_back(elevation);
+	}
 }
 
 int BezierCalculator::factorial(int n) const {

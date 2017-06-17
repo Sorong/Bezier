@@ -22,6 +22,10 @@ public:
 	void addShader(QOpenGLShaderProgram &prog);
 	void removeShader(int index);
 	void setModelMatrix(QMatrix4x4& model);
+	void rotate(qreal angle, qreal x, qreal y, qreal z = 0.0f);
+	void rotate(qreal angle, const QVector3D & vector);
+	void scale(qreal factor);
+	virtual void setColor(QVector4D color);
 protected: 
 	virtual void initBuffer();
 	QMatrix4x4 model_;

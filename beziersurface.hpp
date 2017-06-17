@@ -4,6 +4,7 @@
 #include <memory>
 #include "beziercurve.hpp"
 #include "trianglestrip.hpp"
+#include "line.hpp"
 
 class BezierSurface : public Model
 {
@@ -23,13 +24,24 @@ public:
 	int size() const override;
 	QVector4D& setClicked(int index) const;
 	void degreeElevation();
+	void showCasteljau(bool state);
 private:
 	void createSubModels();
+	void clearSubModels();
+	void recalculateSize();
+	void createBasePoints();
+	void createCurves(QVector<QVector<QVector4D>> &coordinates);
+	void createCasteljauLines();
 	QVector<QVector<QVector4D>> coordinates_;
 	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;
+	QVector<std::shared_ptr<Line>> lines_;
 
 	float t_, s_;
+	int horizontal_size_;
+	int vertical_size_;
+	bool casteljau_;
+	bool derivate;
 };
 
