@@ -1,7 +1,7 @@
 #include "model.hpp"
 
 
-Model::Model() {
+Model::Model(): vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
 }
 
 Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
@@ -82,6 +82,32 @@ void Model::removeShader(int index) {
 
 void Model::setModelMatrix(QMatrix4x4& model) {
 	this->model_ = model;
+}
+
+void Model::rotate(qreal angle, qreal x, qreal y, qreal z) {
+	this->model_.rotate(angle, x, y, z);
+}
+
+void Model::rotate(qreal angle, const QVector3D& vector) {
+	this->model_.rotate(angle, vector);
+}
+
+void Model::scale(qreal factor) {
+	this->model_.scale(factor);
+}
+
+void Model::setColor(QVector4D color) {
+	if (this->vertices_.isEmpty()) {
+		this->colors_.fill(color, 1);
+	} else {
+		this->colors_.fill(color, this->vertices_.size());
+		if(vertexarrayobject_) {
+			glBindVertexArray(this->vertexarrayobject_);
+			glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
+			glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
+			glBindVertexArray(0);
+		}
+	}
 }
 
 void Model::initBuffer() {

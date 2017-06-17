@@ -11,7 +11,9 @@ public:
 	MainView(QWidget* parent = 0);
 	~MainView();
 public slots:
-	void sliderToLabel(int i) const;
+	void sliderToTLabel(int i) const;
+	void sliderToSLabel(int i) const;
+	void deCasteljau(bool state) const;
 	void addCoordinates() const;
 	void keyPressEvent(QKeyEvent* event) override;
 	void mousePressEvent(QMouseEvent *event) override;
