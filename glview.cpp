@@ -37,7 +37,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f) {
+	zoom_factor_(1.0f), click_sphere_radius_(0.2) {
 	this->prog_ = new QOpenGLShaderProgram;
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -61,7 +61,8 @@ void GLView::initializeGL() {
 	//TODO: Removehardcoded Surface
 	QMatrix4x4 model;
 	surface = new BezierSurface(model, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 } }/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/ };
+	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}} ,{ { -2,0,2,1 },{ 2,0,2,1 },{ 4,0,2,1 } } }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
+/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -76,6 +77,7 @@ void GLView::paintGL() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
+	glPointSize(3);
 
 	if(surface != nullptr) {
 		surface->render(projection_, view_);
@@ -91,10 +93,20 @@ void GLView::resizeGL(int w, int h) {
 }
 
 
-void GLView::setT(float t) {
+void GLView::setT(float t)  {
+	makeCurrent();
 	if(surface != nullptr) {
 		this->surface->setT(t);
 	}
+	update();
+}
+
+void GLView::setS(float s)  {
+	makeCurrent();
+	if(surface != nullptr) {
+		this->surface->setS(s);
+	}
+	update();
 }
 
 //Todo: Remove for surface
@@ -126,26 +138,32 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 void GLView::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 	case Qt::Key_Plus:
-		zoom_factor_ /= 1.01;
-		projection_.setToIdentity();
-		projection_.perspective(45.0f * zoom_factor_, static_cast<float>(width()) / height(), z_near_, z_far_);
+		surface->scale(1.10);
+		click_model_.scale(1.10);
+	//	this->click_sphere_radius_ *= 1.10;
+	//	zoom_factor_ /= 1.01;
+		//projection_.setToIdentity();
+		//projection_.perspective(45.0f * zoom_factor_, static_cast<float>(width()) / height(), z_near_, z_far_);
 		break;
 	case Qt::Key_Minus:
-		zoom_factor_ = zoom_factor_ * 1.05 > 3.5 ? zoom_factor_ : zoom_factor_ * 1.05;
-		projection_.setToIdentity();
-		projection_.perspective(45.0f * zoom_factor_, static_cast<float>(width()) / height(), z_near_, z_far_);
+		surface->scale(0.9);
+		click_model_.scale(0.9);
 		break;
 	case Qt::Key_Left:
-		view_.rotate(2 * zoom_factor_, 0.0, 2, 0);
+		surface->rotate(1, 0, -1, 0);
+		click_model_.rotate(1, 0, -1, 0);
 		break;
 	case Qt::Key_Right:
-		view_.rotate(2 * zoom_factor_, 0.0, -2, 0);
+		surface->rotate(1, 0, 1, 0);
+		click_model_.rotate(1, 0, 1, 0);
 		break;
 	case Qt::Key_Up:
-		view_.rotate(2 * zoom_factor_, 2.0, 0, 0);
+		surface->rotate(1, -1, 0, 0);
+		click_model_.rotate(1, -1, 0, 0);
 		break;
 	case Qt::Key_Down:
-		view_.rotate(2 * zoom_factor_, -2.0, 0, 0);
+		surface->rotate(1, 1, 0, 0);
+		click_model_.rotate(1, 1, 0, 0);
 		break;
 	default: break;
 	}
@@ -155,10 +173,9 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 	dragged_vertex_ = nullptr;
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
-	QMatrix4x4 click_model;
-	click_model.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model, this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model, this->projection_, viewp);
+	click_model_.setColumn(3, { INITPOS });
+	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
 	float radius = 0.2f;
 	float radius2 = radius * radius;
@@ -195,14 +212,13 @@ void GLView::mouseMoveEvent(QMouseEvent* event) {
 	}
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, width(), height());
-	QMatrix4x4 click_model;
-	click_model.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model, this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model, this->projection_, viewp);
+	click_model_.setColumn(3, { INITPOS });
+	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
+	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
 	QVector3D direction = (end - begin).normalized();
 	auto length = intersect_to_center_.length();
 	float w = dragged_vertex_->w();
-	*dragged_vertex_ = begin + length * direction;
+	*dragged_vertex_ = (begin + length * direction);
 	dragged_vertex_->setW(1);
 	*dragged_vertex_ *= w;
 	qDebug() << "new pos = " << *dragged_vertex_;
@@ -232,12 +248,20 @@ void GLView::raiseElevation() {
 //Todo: Enable Casteljau for surface
 void GLView::toggleSublineMode(bool state) {
 	this->show_sublines_ = state;
+	this->surface->showCasteljau(state);
+	makeCurrent();
+	surface->reinit();
 	update();
+	
+	
 }
 
 //Todo: Enable Derivate for surface
 void GLView::toggleDerivateMode(bool state) {
+	this->show_derivate_ = state;
+	this->surface->showDerivate(state);
 	makeCurrent();
+	surface->reinit();
 	update();
 }
 

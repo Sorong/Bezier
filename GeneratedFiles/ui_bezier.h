@@ -47,29 +47,33 @@ public:
     QWidget *dock_vertex_data_content_;
     QWidget *layoutWidget;
     QGridLayout *vertex_data_layout_;
-    QDoubleSpinBox *x_coordinate_;
-    QSpacerItem *z_spacer_;
-    QDoubleSpinBox *z_coordinate_;
-    QLabel *y_label_;
-    QDoubleSpinBox *weight_;
-    QSpacerItem *x_spacer_;
-    QLabel *z_label_;
-    QSpacerItem *weight_spacer_;
-    QSpacerItem *y_spacer_;
-    QDoubleSpinBox *y_coordinate_;
-    QLabel *weight_label_;
     QLabel *x_label_;
+    QSpacerItem *z_spacer_;
+    QSpacerItem *y_spacer_;
+    QLabel *z_label_;
+    QDoubleSpinBox *z_coordinate_;
+    QDoubleSpinBox *y_coordinate_;
+    QLabel *y_label_;
+    QLabel *weight_label_;
+    QDoubleSpinBox *weight_;
+    QDoubleSpinBox *x_coordinate_;
+    QSpacerItem *weight_spacer_;
+    QSpacerItem *x_spacer_;
+    QPushButton *set_x_;
+    QPushButton *set_y_;
+    QPushButton *set_z_;
+    QPushButton *set_w_;
     DockWidget *dock_surface_data_;
     QWidget *surface_data_content_;
     QWidget *gridLayoutWidget_2;
     QGridLayout *surface_data_layout_;
+    QSlider *t_slider_;
+    QCheckBox *show_sublines_;
     QSlider *s_slider_;
     QLabel *s_label_;
     QLabel *t_label_;
-    QSlider *t_slider_;
-    QCheckBox *show_derivation_;
-    QCheckBox *show_sublines_;
     QPushButton *raise_elevation_;
+    QCheckBox *show_derivation_;
 
     void setupUi(QMainWindow *BezierClass)
     {
@@ -87,7 +91,8 @@ public:
         show_vertex_data_ = new QAction(BezierClass);
         show_vertex_data_->setObjectName(QStringLiteral("show_vertex_data_"));
         show_vertex_data_->setCheckable(true);
-        show_vertex_data_->setChecked(true);
+        show_vertex_data_->setChecked(false);
+        show_vertex_data_->setEnabled(false);
         show_surface_data_ = new QAction(BezierClass);
         show_surface_data_->setObjectName(QStringLiteral("show_surface_data_"));
         show_surface_data_->setCheckable(true);
@@ -116,14 +121,14 @@ public:
         BezierClass->setStatusBar(status_bar_);
         menu_bar_ = new QMenuBar(BezierClass);
         menu_bar_->setObjectName(QStringLiteral("menu_bar_"));
-        menu_bar_->setGeometry(QRect(0, 0, 1440, 26));
+        menu_bar_->setGeometry(QRect(0, 0, 1440, 21));
         menu_view_ = new QMenu(menu_bar_);
         menu_view_->setObjectName(QStringLiteral("menu_view_"));
         BezierClass->setMenuBar(menu_bar_);
         dock_vertex_data_ = new DockWidget(BezierClass);
         dock_vertex_data_->setObjectName(QStringLiteral("dock_vertex_data_"));
         dock_vertex_data_->setEnabled(true);
-        dock_vertex_data_->setMinimumSize(QSize(270, 91));
+        dock_vertex_data_->setMinimumSize(QSize(270, 80));
         dock_vertex_data_->setMaximumSize(QSize(524287, 524287));
         dock_vertex_data_->setFeatures(QDockWidget::DockWidgetFeatureMask);
         dock_vertex_data_->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
@@ -131,24 +136,38 @@ public:
         dock_vertex_data_content_->setObjectName(QStringLiteral("dock_vertex_data_content_"));
         layoutWidget = new QWidget(dock_vertex_data_content_);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 0, 269, 284));
+        layoutWidget->setGeometry(QRect(0, 0, 251, 284));
         vertex_data_layout_ = new QGridLayout(layoutWidget);
         vertex_data_layout_->setSpacing(6);
         vertex_data_layout_->setContentsMargins(11, 11, 11, 11);
         vertex_data_layout_->setObjectName(QStringLiteral("vertex_data_layout_"));
         vertex_data_layout_->setContentsMargins(5, 0, 5, 0);
-        x_coordinate_ = new QDoubleSpinBox(layoutWidget);
-        x_coordinate_->setObjectName(QStringLiteral("x_coordinate_"));
-        x_coordinate_->setMaximumSize(QSize(100, 16777215));
-        x_coordinate_->setMinimum(-1024);
-        x_coordinate_->setMaximum(1024);
-        x_coordinate_->setSingleStep(0.1);
+        x_label_ = new QLabel(layoutWidget);
+        x_label_->setObjectName(QStringLiteral("x_label_"));
+        sizePolicy1.setHeightForWidth(x_label_->sizePolicy().hasHeightForWidth());
+        x_label_->setSizePolicy(sizePolicy1);
+        x_label_->setMinimumSize(QSize(0, 0));
+        x_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-        vertex_data_layout_->addWidget(x_coordinate_, 1, 1, 1, 1);
+        vertex_data_layout_->addWidget(x_label_, 1, 0, 1, 1);
 
         z_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         vertex_data_layout_->addItem(z_spacer_, 4, 1, 1, 1);
+
+        y_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        vertex_data_layout_->addItem(y_spacer_, 2, 1, 1, 1);
+
+        z_label_ = new QLabel(layoutWidget);
+        z_label_->setObjectName(QStringLiteral("z_label_"));
+        sizePolicy1.setHeightForWidth(z_label_->sizePolicy().hasHeightForWidth());
+        z_label_->setSizePolicy(sizePolicy1);
+        z_label_->setMinimumSize(QSize(75, 0));
+        z_label_->setMaximumSize(QSize(16777215, 16777215));
+        z_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        vertex_data_layout_->addWidget(z_label_, 5, 0, 1, 1);
 
         z_coordinate_ = new QDoubleSpinBox(layoutWidget);
         z_coordinate_->setObjectName(QStringLiteral("z_coordinate_"));
@@ -157,15 +176,32 @@ public:
 
         vertex_data_layout_->addWidget(z_coordinate_, 5, 1, 1, 1);
 
+        y_coordinate_ = new QDoubleSpinBox(layoutWidget);
+        y_coordinate_->setObjectName(QStringLiteral("y_coordinate_"));
+        y_coordinate_->setMinimum(-1024);
+        y_coordinate_->setMaximum(1024);
+
+        vertex_data_layout_->addWidget(y_coordinate_, 3, 1, 1, 1);
+
         y_label_ = new QLabel(layoutWidget);
         y_label_->setObjectName(QStringLiteral("y_label_"));
         sizePolicy1.setHeightForWidth(y_label_->sizePolicy().hasHeightForWidth());
         y_label_->setSizePolicy(sizePolicy1);
         y_label_->setMinimumSize(QSize(0, 0));
-        y_label_->setMaximumSize(QSize(80, 16777215));
+        y_label_->setMaximumSize(QSize(16777215, 16777215));
         y_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         vertex_data_layout_->addWidget(y_label_, 3, 0, 1, 1);
+
+        weight_label_ = new QLabel(layoutWidget);
+        weight_label_->setObjectName(QStringLiteral("weight_label_"));
+        sizePolicy1.setHeightForWidth(weight_label_->sizePolicy().hasHeightForWidth());
+        weight_label_->setSizePolicy(sizePolicy1);
+        weight_label_->setMinimumSize(QSize(75, 0));
+        weight_label_->setMaximumSize(QSize(16777215, 16777215));
+        weight_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        vertex_data_layout_->addWidget(weight_label_, 7, 0, 1, 1);
 
         weight_ = new QDoubleSpinBox(layoutWidget);
         weight_->setObjectName(QStringLiteral("weight_"));
@@ -174,59 +210,46 @@ public:
 
         vertex_data_layout_->addWidget(weight_, 7, 1, 1, 1);
 
-        x_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        x_coordinate_ = new QDoubleSpinBox(layoutWidget);
+        x_coordinate_->setObjectName(QStringLiteral("x_coordinate_"));
+        x_coordinate_->setMinimum(-1024);
+        x_coordinate_->setMaximum(1024);
 
-        vertex_data_layout_->addItem(x_spacer_, 0, 1, 1, 1);
-
-        z_label_ = new QLabel(layoutWidget);
-        z_label_->setObjectName(QStringLiteral("z_label_"));
-        sizePolicy1.setHeightForWidth(z_label_->sizePolicy().hasHeightForWidth());
-        z_label_->setSizePolicy(sizePolicy1);
-        z_label_->setMinimumSize(QSize(80, 0));
-        z_label_->setMaximumSize(QSize(80, 16777215));
-        z_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-
-        vertex_data_layout_->addWidget(z_label_, 5, 0, 1, 1);
+        vertex_data_layout_->addWidget(x_coordinate_, 1, 1, 1, 1);
 
         weight_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         vertex_data_layout_->addItem(weight_spacer_, 6, 1, 1, 1);
 
-        y_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        x_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        vertex_data_layout_->addItem(y_spacer_, 2, 1, 1, 1);
+        vertex_data_layout_->addItem(x_spacer_, 0, 1, 1, 1);
 
-        y_coordinate_ = new QDoubleSpinBox(layoutWidget);
-        y_coordinate_->setObjectName(QStringLiteral("y_coordinate_"));
-        y_coordinate_->setMinimum(-1024);
-        y_coordinate_->setMaximum(1024);
+        set_x_ = new QPushButton(layoutWidget);
+        set_x_->setObjectName(QStringLiteral("set_x_"));
 
-        vertex_data_layout_->addWidget(y_coordinate_, 3, 1, 1, 1);
+        vertex_data_layout_->addWidget(set_x_, 1, 2, 1, 1);
 
-        weight_label_ = new QLabel(layoutWidget);
-        weight_label_->setObjectName(QStringLiteral("weight_label_"));
-        sizePolicy1.setHeightForWidth(weight_label_->sizePolicy().hasHeightForWidth());
-        weight_label_->setSizePolicy(sizePolicy1);
-        weight_label_->setMinimumSize(QSize(75, 0));
-        weight_label_->setMaximumSize(QSize(80, 16777215));
-        weight_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        set_y_ = new QPushButton(layoutWidget);
+        set_y_->setObjectName(QStringLiteral("set_y_"));
 
-        vertex_data_layout_->addWidget(weight_label_, 7, 0, 1, 1);
+        vertex_data_layout_->addWidget(set_y_, 3, 2, 1, 1);
 
-        x_label_ = new QLabel(layoutWidget);
-        x_label_->setObjectName(QStringLiteral("x_label_"));
-        sizePolicy1.setHeightForWidth(x_label_->sizePolicy().hasHeightForWidth());
-        x_label_->setSizePolicy(sizePolicy1);
-        x_label_->setMinimumSize(QSize(80, 0));
-        x_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        set_z_ = new QPushButton(layoutWidget);
+        set_z_->setObjectName(QStringLiteral("set_z_"));
 
-        vertex_data_layout_->addWidget(x_label_, 1, 0, 1, 1);
+        vertex_data_layout_->addWidget(set_z_, 5, 2, 1, 1);
+
+        set_w_ = new QPushButton(layoutWidget);
+        set_w_->setObjectName(QStringLiteral("set_w_"));
+
+        vertex_data_layout_->addWidget(set_w_, 7, 2, 1, 1);
 
         dock_vertex_data_->setWidget(dock_vertex_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dock_vertex_data_);
         dock_surface_data_ = new DockWidget(BezierClass);
         dock_surface_data_->setObjectName(QStringLiteral("dock_surface_data_"));
-        dock_surface_data_->setMinimumSize(QSize(270, 91));
+        dock_surface_data_->setMinimumSize(QSize(270, 80));
         dock_surface_data_->setFeatures(QDockWidget::DockWidgetFeatureMask);
         dock_surface_data_->setAllowedAreas(Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea);
         surface_data_content_ = new QWidget();
@@ -239,17 +262,40 @@ public:
         surface_data_layout_->setContentsMargins(11, 11, 11, 11);
         surface_data_layout_->setObjectName(QStringLiteral("surface_data_layout_"));
         surface_data_layout_->setContentsMargins(20, 0, 20, 0);
-        s_slider_ = new QSlider(gridLayoutWidget_2);
-        s_slider_->setObjectName(QStringLiteral("s_slider_"));
-        s_slider_->setEnabled(false);
+        t_slider_ = new QSlider(gridLayoutWidget_2);
+        t_slider_->setObjectName(QStringLiteral("t_slider_"));
+        t_slider_->setEnabled(false);
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(s_slider_->sizePolicy().hasHeightForWidth());
-        s_slider_->setSizePolicy(sizePolicy2);
+        sizePolicy2.setHeightForWidth(t_slider_->sizePolicy().hasHeightForWidth());
+        t_slider_->setSizePolicy(sizePolicy2);
         QFont font;
         font.setBold(false);
         font.setWeight(50);
+        t_slider_->setFont(font);
+        t_slider_->setMaximum(100);
+        t_slider_->setSingleStep(5);
+        t_slider_->setTracking(true);
+        t_slider_->setOrientation(Qt::Horizontal);
+        t_slider_->setInvertedAppearance(false);
+        t_slider_->setInvertedControls(false);
+        t_slider_->setTickPosition(QSlider::NoTicks);
+        t_slider_->setTickInterval(1);
+
+        surface_data_layout_->addWidget(t_slider_, 2, 1, 1, 1);
+
+        show_sublines_ = new QCheckBox(gridLayoutWidget_2);
+        show_sublines_->setObjectName(QStringLiteral("show_sublines_"));
+        show_sublines_->setTristate(false);
+
+        surface_data_layout_->addWidget(show_sublines_, 0, 1, 1, 1);
+
+        s_slider_ = new QSlider(gridLayoutWidget_2);
+        s_slider_->setObjectName(QStringLiteral("s_slider_"));
+        s_slider_->setEnabled(false);
+        sizePolicy2.setHeightForWidth(s_slider_->sizePolicy().hasHeightForWidth());
+        s_slider_->setSizePolicy(sizePolicy2);
         s_slider_->setFont(font);
         s_slider_->setMaximum(100);
         s_slider_->setSingleStep(5);
@@ -260,7 +306,7 @@ public:
         s_slider_->setTickPosition(QSlider::NoTicks);
         s_slider_->setTickInterval(1);
 
-        surface_data_layout_->addWidget(s_slider_, 2, 1, 1, 1);
+        surface_data_layout_->addWidget(s_slider_, 3, 1, 1, 1);
 
         s_label_ = new QLabel(gridLayoutWidget_2);
         s_label_->setObjectName(QStringLiteral("s_label_"));
@@ -278,7 +324,7 @@ public:
         s_label_->setMargin(0);
         s_label_->setIndent(-1);
 
-        surface_data_layout_->addWidget(s_label_, 2, 0, 1, 1);
+        surface_data_layout_->addWidget(s_label_, 3, 0, 1, 1);
 
         t_label_ = new QLabel(gridLayoutWidget_2);
         t_label_->setObjectName(QStringLiteral("t_label_"));
@@ -292,40 +338,17 @@ public:
         t_label_->setMargin(0);
         t_label_->setIndent(-1);
 
-        surface_data_layout_->addWidget(t_label_, 1, 0, 1, 1);
-
-        t_slider_ = new QSlider(gridLayoutWidget_2);
-        t_slider_->setObjectName(QStringLiteral("t_slider_"));
-        t_slider_->setEnabled(false);
-        sizePolicy2.setHeightForWidth(t_slider_->sizePolicy().hasHeightForWidth());
-        t_slider_->setSizePolicy(sizePolicy2);
-        t_slider_->setFont(font);
-        t_slider_->setMaximum(100);
-        t_slider_->setSingleStep(5);
-        t_slider_->setTracking(true);
-        t_slider_->setOrientation(Qt::Horizontal);
-        t_slider_->setInvertedAppearance(false);
-        t_slider_->setInvertedControls(false);
-        t_slider_->setTickPosition(QSlider::NoTicks);
-        t_slider_->setTickInterval(1);
-
-        surface_data_layout_->addWidget(t_slider_, 1, 1, 1, 1);
-
-        show_derivation_ = new QCheckBox(gridLayoutWidget_2);
-        show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
-
-        surface_data_layout_->addWidget(show_derivation_, 3, 1, 1, 1);
-
-        show_sublines_ = new QCheckBox(gridLayoutWidget_2);
-        show_sublines_->setObjectName(QStringLiteral("show_sublines_"));
-        show_sublines_->setTristate(false);
-
-        surface_data_layout_->addWidget(show_sublines_, 0, 1, 1, 1);
+        surface_data_layout_->addWidget(t_label_, 2, 0, 1, 1);
 
         raise_elevation_ = new QPushButton(gridLayoutWidget_2);
         raise_elevation_->setObjectName(QStringLiteral("raise_elevation_"));
 
-        surface_data_layout_->addWidget(raise_elevation_, 4, 1, 1, 1);
+        surface_data_layout_->addWidget(raise_elevation_, 5, 1, 1, 1);
+
+        show_derivation_ = new QCheckBox(gridLayoutWidget_2);
+        show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
+
+        surface_data_layout_->addWidget(show_derivation_, 1, 1, 1, 1);
 
         dock_surface_data_->setWidget(surface_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
@@ -346,18 +369,22 @@ public:
         show_surface_data_->setText(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
         menu_view_->setTitle(QApplication::translate("BezierClass", "Ansicht", 0));
         dock_vertex_data_->setWindowTitle(QApplication::translate("BezierClass", "Vertexdaten", 0));
-        y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate", 0));
-        z_label_->setText(QApplication::translate("BezierClass", "Z-Koordinate", 0));
-        weight_label_->setText(QApplication::translate("BezierClass", "Gewichtung", 0));
         x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate", 0));
+        z_label_->setText(QApplication::translate("BezierClass", "Z-Koordinate", 0));
+        y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate", 0));
+        weight_label_->setText(QApplication::translate("BezierClass", "Gewichtung", 0));
+        set_x_->setText(QApplication::translate("BezierClass", "\303\234bernehmen", 0));
+        set_y_->setText(QApplication::translate("BezierClass", "\303\234bernehmen", 0));
+        set_z_->setText(QApplication::translate("BezierClass", "\303\234bernehmen", 0));
+        set_w_->setText(QApplication::translate("BezierClass", "\303\234bernehmen", 0));
         dock_surface_data_->setWindowTitle(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
-        s_label_->setText(QApplication::translate("BezierClass", "s: 0.00", 0));
-        t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
-        show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung \n"
-"anzeigen", 0));
         show_sublines_->setText(QApplication::translate("BezierClass", "deCasteljau \n"
 "anzeigen", 0));
+        s_label_->setText(QApplication::translate("BezierClass", "s: 0.00", 0));
+        t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
         raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung", 0));
+        show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung \n"
+"anzeigen", 0));
     } // retranslateUi
 
 };

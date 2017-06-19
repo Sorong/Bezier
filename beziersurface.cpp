@@ -3,7 +3,7 @@
 
 #define VERTEXPOINTSCALE 0.2f
 
-BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), t_(0), s_(0) {
+BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), t_(0), s_(0), horizontal_size_(0), vertical_size_(0), casteljau_(false), derivate_(false) {
 }
 
 BezierSurface::~BezierSurface()
@@ -44,6 +44,16 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		strip->setModelMatrix(this->model_);
 		strip->render(projection, view);
 	}
+	if(this->casteljau_) {
+		for (auto& line : lines_) {
+			line->setModelMatrix(this->model_);
+			line->render(projection, view);
+		}
+	}
+	if(this->derivate_line_) {
+		derivate_line_->setModelMatrix(this->model_);
+		derivate_line_->render(projection, view);
+	}
 }
 
 void BezierSurface::reinit(QVector4D* pos) {
@@ -54,7 +64,7 @@ void BezierSurface::reinit(QVector4D* pos) {
 	}
 	QVector<QVector<QVector4D>> dest;
 	BezierCalculator calc;
-	calc.calculateBezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
 	for(int i = 0; i < this->curves_.size(); i++) {
 		this->curves_[i]->setBaseCoordinates(dest[i]);
 		curves_[i]->reinit(pos);
@@ -62,20 +72,48 @@ void BezierSurface::reinit(QVector4D* pos) {
 	for(auto& strip : this->triangle_strips_) {
 		strip->reinit(pos);
 	}
+	if(this->casteljau_) {
+		createCasteljauLines();
+		for (auto& line : lines_) {
+			line->addShader(*this->programs_.at(0));
+			line->init(pos);
+		}
+	}
+	if(this->derivate_) {
+		QVector4D derivate_src;
+		QVector<QVector4D> derivate_vectors = calc.derivateSurface(this->coordinates_, this->t_, this->s_, &derivate_src);
+		this->derivate_line_ = std::make_shared<Line>(model_, pos_);
+		QVector<QVector4D> line;
+		for(auto& vector : derivate_vectors) {
+			line.push_back(derivate_src);
+			line.push_back(derivate_src + vector);
+		}
+		derivate_line_->setCoordinates(line);
+		derivate_line_->addShader(*this->programs_.at(0));
+		derivate_line_->setColor({ 1,0,0,1 });
+		derivate_line_->init(pos);
+	}
+	
 	Model::reinit(pos);	
 }
 
 void BezierSurface::setT(float t) {
 	this->t_ = t;
+	if (this->casteljau_ || this->derivate_) {
+		reinit();
+	}
 }
 
 void BezierSurface::setS(float s) {
 	this->s_ = s;
+	if (this->casteljau_ ||this->derivate_) {
+		reinit();
+	}
 }
 
 void BezierSurface::addHorizontalCoordinates(QVector<QVector4D> &coordinates) {
 	if(coordinates.size() != this->coordinates_.size()) {
-		std::out_of_range("Invalid size, the surface cannot be increased");
+		throw std::out_of_range("Invalid size, the surface cannot be increased");
 	}
 	for (auto i = 0; i < coordinates.size(); i++) {
 		
@@ -85,13 +123,14 @@ void BezierSurface::addHorizontalCoordinates(QVector<QVector4D> &coordinates) {
 
 void BezierSurface::addVerticalCoordinates(QVector<QVector4D> &coordinates) {
 	if (coordinates.size() != this->coordinates_.at(0).size()) {
-		std::out_of_range("Invalid size, the surface cannot be increased");
+		throw std::out_of_range("Invalid size, the surface cannot be increased");
 	}
 	this->coordinates_.push_back(coordinates);
 }
 
 
 void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> &coordinates) {
+	recalculateSize();
 	this->coordinates_ = coordinates;
 }
 
@@ -118,16 +157,71 @@ QVector4D& BezierSurface::setClicked(int index) const {
 void BezierSurface::degreeElevation() {
 	BezierCalculator calculator;
 	calculator.degreeElevationSurface(this->getCoordinates());
+	recalculateSize();
+	clearSubModels();
+	createSubModels();
+	reinit();
+}
+
+void BezierSurface::showCasteljau(bool state) {
+	this->casteljau_ = state;
+}
+
+void BezierSurface::showDerivate(bool state) {
+	this->derivate_ = state;
+	if(!derivate_) {
+		this->derivate_line_ = nullptr;
+	}
+}
+
+void BezierSurface::createSubModels() {
+	createBasePoints();
+	QVector<QVector<QVector4D>> dest;
+	BezierCalculator calc;
+	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	createCurves(dest);
+	for (auto& ico : base_points_) {
+		ico->addShader(*this->programs_.at(0));
+		//ico->setColor({ 1,1,1,1 });
+		ico->init();
+	}
+	for (auto& curve : curves_) {
+		curve->setColor({ 1,0,0,1 });
+		curve->addShader(*this->programs_.at(0));
+		curve->init();
+	}
+	for (auto& strip : triangle_strips_) {
+		strip->addShader(*this->programs_.at(0));
+		strip->init(nullptr);
+	} 
+}
+
+void BezierSurface::clearSubModels() {
 	this->base_points_.clear();
 	this->vertices_.clear();
 	this->curves_.clear();
 	this->indices_.clear();
 	this->triangle_strips_.clear();
-	createSubModels();
-	reinit();
+	this->lines_.clear();
 }
 
-void BezierSurface::createSubModels() {
+void BezierSurface::recalculateSize() {
+	horizontal_size_ = 0;
+	vertical_size_ = 0;
+	if (!this->coordinates_.isEmpty()) {
+		if (!this->coordinates_.at(0).isEmpty()) {
+			horizontal_size_ = this->coordinates_.at(0).size();
+			for (auto& horizontal : coordinates_) {
+				if (horizontal_size_ != horizontal.size()) {
+					throw std::out_of_range("Invalid size, the surface coordinates cannot be used");
+				}
+			}
+		}
+		vertical_size_ = this->coordinates_.size();
+	}
+}
+
+void BezierSurface::createBasePoints() {
 	auto horizonal_length = this->coordinates_.at(0).size();
 	auto vertical_length = this->coordinates_.size();
 	for (auto m = 0; m < vertical_length; m++) {
@@ -147,34 +241,29 @@ void BezierSurface::createSubModels() {
 			}
 		}
 	}
-	for (auto& vertex : vertices_) {
-		vertex /= vertex.w();
-	}
-	QVector<QVector<QVector4D>> dest;
-	BezierCalculator calc;
-	calc.calculateBezierSurface(this->coordinates_, dest, 0.05, 0.05);
-	for (int i = 0; i < dest.size(); i++) {
+	this->colors_.fill({ 0,1,0,1 }, this->vertices_.size());
+}
+
+void BezierSurface::createCurves(QVector<QVector<QVector4D>> &coordinates) {
+	for (int i = 0; i < coordinates.size(); i++) {
 		std::shared_ptr<BezierCurve> curve = std::make_shared<BezierCurve>(model_, pos_);
-		curve->setBaseCoordinates(dest[i]);
+		curve->setBaseCoordinates(coordinates[i]);
 		curves_.push_back(curve);
 	}
-	for (int i = 0; i < dest.size() - 1; i++) {
+	for (int i = 0; i < curves_.size() - 1; i++) {
 		triangle_strips_.push_back(std::make_shared<TriangleStrip>(model_, curves_.at(i).get(), curves_.at(i + 1).get()));
 	}
-	this->colors_.fill({ 0,1,0,1 }, this->vertices_.size());
+}
 
-	for (auto& ico : base_points_) {
-		ico->addShader(*this->programs_.at(0));
-		//ico->setColor({ 1,1,1,1 });
-		ico->init();
-	}
-	for (auto& curve : curves_) {
-		curve->setColor({ 1,0,0, 1 });
-		curve->addShader(*this->programs_.at(0));
-		curve->init();
-	}
-	for (auto& strip : triangle_strips_) {
-		strip->addShader(*this->programs_.at(0));
-		strip->init(nullptr);
+void BezierSurface::createCasteljauLines() {
+	lines_.clear();
+	QVector<QVector<QVector4D>> base;
+	BezierCalculator calc;
+	calc.deCasteljauSurface(coordinates_, base, t_, s_);
+	for(auto& coordinate : base) {
+		std::shared_ptr<Line> line = std::make_shared<Line>(model_, pos_);
+		line->setCoordinates(coordinate);
+		line->setColor({ 1,1,1,1 });
+		lines_.push_back(line);
 	}
 }
