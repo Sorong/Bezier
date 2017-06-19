@@ -25,6 +25,7 @@ public:
 	QVector4D& setClicked(int index) const;
 	void degreeElevation();
 	void showCasteljau(bool state);
+	void showDerivate(bool state);
 private:
 	void createSubModels();
 	void clearSubModels();
@@ -37,11 +38,12 @@ private:
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;
 	QVector<std::shared_ptr<Line>> lines_;
+	std::shared_ptr<Line> derivate_line_;
 
 	float t_, s_;
 	int horizontal_size_;
 	int vertical_size_;
 	bool casteljau_;
-	bool derivate;
+	bool derivate_;
 };
 

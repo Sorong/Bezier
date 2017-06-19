@@ -3,7 +3,7 @@
 
 #define VERTEXPOINTSCALE 0.2f
 
-BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), t_(0), s_(0), horizontal_size_(0), vertical_size_(0), casteljau_(false), derivate(false) {
+BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), t_(0), s_(0), horizontal_size_(0), vertical_size_(0), casteljau_(false), derivate_(false) {
 }
 
 BezierSurface::~BezierSurface()
@@ -50,6 +50,10 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 			line->render(projection, view);
 		}
 	}
+	if(this->derivate_line_) {
+		derivate_line_->setModelMatrix(this->model_);
+		derivate_line_->render(projection, view);
+	}
 }
 
 void BezierSurface::reinit(QVector4D* pos) {
@@ -60,7 +64,7 @@ void BezierSurface::reinit(QVector4D* pos) {
 	}
 	QVector<QVector<QVector4D>> dest;
 	BezierCalculator calc;
-	calc.calculateBezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
 	for(int i = 0; i < this->curves_.size(); i++) {
 		this->curves_[i]->setBaseCoordinates(dest[i]);
 		curves_[i]->reinit(pos);
@@ -75,20 +79,34 @@ void BezierSurface::reinit(QVector4D* pos) {
 			line->init(pos);
 		}
 	}
+	if(this->derivate_) {
+		QVector4D derivate_src;
+		QVector<QVector4D> derivate_vectors = calc.derivateSurface(this->coordinates_, this->t_, this->s_, &derivate_src);
+		this->derivate_line_ = std::make_shared<Line>(model_, pos_);
+		QVector<QVector4D> line;
+		for(auto& vector : derivate_vectors) {
+			line.push_back(derivate_src);
+			line.push_back(derivate_src + vector);
+		}
+		derivate_line_->setCoordinates(line);
+		derivate_line_->addShader(*this->programs_.at(0));
+		derivate_line_->setColor({ 1,0,0,1 });
+		derivate_line_->init(pos);
+	}
 	
 	Model::reinit(pos);	
 }
 
 void BezierSurface::setT(float t) {
 	this->t_ = t;
-	if (this->casteljau_) {
+	if (this->casteljau_ || this->derivate_) {
 		reinit();
 	}
 }
 
 void BezierSurface::setS(float s) {
 	this->s_ = s;
-	if (this->casteljau_) {
+	if (this->casteljau_ ||this->derivate_) {
 		reinit();
 	}
 }
@@ -149,11 +167,18 @@ void BezierSurface::showCasteljau(bool state) {
 	this->casteljau_ = state;
 }
 
+void BezierSurface::showDerivate(bool state) {
+	this->derivate_ = state;
+	if(!derivate_) {
+		this->derivate_line_ = nullptr;
+	}
+}
+
 void BezierSurface::createSubModels() {
 	createBasePoints();
 	QVector<QVector<QVector4D>> dest;
 	BezierCalculator calc;
-	calc.calculateBezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
 	createCurves(dest);
 	for (auto& ico : base_points_) {
 		ico->addShader(*this->programs_.at(0));
