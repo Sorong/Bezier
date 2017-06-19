@@ -61,7 +61,8 @@ void GLView::initializeGL() {
 	//TODO: Removehardcoded Surface
 	QMatrix4x4 model;
 	surface = new BezierSurface(model, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 } }/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/ };
+	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}} ,{ { -2,0,2,1 },{ 2,0,2,1 },{ 4,0,2,1 } } }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
+/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -257,7 +258,10 @@ void GLView::toggleSublineMode(bool state) {
 
 //Todo: Enable Derivate for surface
 void GLView::toggleDerivateMode(bool state) {
+	this->show_derivate_ = state;
+	this->surface->showDerivate(state);
 	makeCurrent();
+	surface->reinit();
 	update();
 }
 
