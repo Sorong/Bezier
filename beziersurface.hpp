@@ -24,6 +24,8 @@ public:
 	int size() const override;
 	QVector4D& setClicked(int index) const;
 	void degreeElevation();
+	void degreeElevationT();
+	void degreeElevationS();
 	void showCasteljau(bool state);
 	void showDerivate(bool state);
 private:
@@ -33,6 +35,7 @@ private:
 	void createBasePoints();
 	void createCurves(QVector<QVector<QVector4D>> &coordinates);
 	void createCasteljauLines();
+	void clearAndReinit(QVector4D *pos = nullptr);
 	QVector<QVector<QVector4D>> coordinates_;
 	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;

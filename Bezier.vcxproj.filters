@@ -80,9 +80,6 @@
     <ClCompile Include="line.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="beziercalculator.cpp">
-      <Filter>Source Files\Util</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
@@ -103,6 +100,12 @@
     </ClCompile>
     <ClCompile Include="dockwidget.cpp">
       <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="beziersurfacecalculator.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="beziercalculator.cpp">
+      <Filter>Source Files\Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,14 +141,19 @@
     <CustomBuild Include="trianglestrip.hpp">
       <Filter>Header Files\Model</Filter>
     </CustomBuild>
-    <CustomBuild Include="beziercalculator.hpp">
-      <Filter>Header Files\Util</Filter>
-    </CustomBuild>
     <CustomBuild Include="GeneratedFiles\ui_bezier.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="dockwidget.hpp">
       <Filter>Header Files\View</Filter>
     </CustomBuild>
+    <CustomBuild Include="beziersurfacecalculator.hpp">
+      <Filter>Header Files\Util</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="beziercalculator.hpp">
+      <Filter>Header Files\Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include "beziersurface.hpp"
-#include "beziercalculator.hpp"
+#include "beziersurfacecalculator.hpp"
 
 #define VERTEXPOINTSCALE 0.2f
 
@@ -63,7 +63,7 @@ void BezierSurface::reinit(QVector4D* pos) {
 		base_points_[i]->reinit(pos);
 	}
 	QVector<QVector<QVector4D>> dest;
-	BezierCalculator calc;
+	BezierSurfaceCalculator calc;
 	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
 	for(int i = 0; i < this->curves_.size(); i++) {
 		this->curves_[i]->setBaseCoordinates(dest[i]);
@@ -155,12 +155,21 @@ QVector4D& BezierSurface::setClicked(int index) const {
 }
 
 void BezierSurface::degreeElevation() {
-	BezierCalculator calculator;
+	BezierSurfaceCalculator calculator;
 	calculator.degreeElevationSurface(this->getCoordinates());
-	recalculateSize();
-	clearSubModels();
-	createSubModels();
-	reinit();
+	clearAndReinit();
+}
+
+void BezierSurface::degreeElevationT() {
+	BezierSurfaceCalculator calculator;
+	calculator.degreeElevationTSurface(this->getCoordinates());
+	clearAndReinit();
+}
+
+void BezierSurface::degreeElevationS() {
+	BezierSurfaceCalculator calculator;
+	calculator.degreeElevationSSurface(this->getCoordinates());
+	clearAndReinit();
 }
 
 void BezierSurface::showCasteljau(bool state) {
@@ -177,7 +186,7 @@ void BezierSurface::showDerivate(bool state) {
 void BezierSurface::createSubModels() {
 	createBasePoints();
 	QVector<QVector<QVector4D>> dest;
-	BezierCalculator calc;
+	BezierSurfaceCalculator calc;
 	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
 	createCurves(dest);
 	for (auto& ico : base_points_) {
@@ -258,7 +267,7 @@ void BezierSurface::createCurves(QVector<QVector<QVector4D>> &coordinates) {
 void BezierSurface::createCasteljauLines() {
 	lines_.clear();
 	QVector<QVector<QVector4D>> base;
-	BezierCalculator calc;
+	BezierSurfaceCalculator calc;
 	calc.deCasteljauSurface(coordinates_, base, t_, s_);
 	for(auto& coordinate : base) {
 		std::shared_ptr<Line> line = std::make_shared<Line>(model_, pos_);
@@ -266,4 +275,11 @@ void BezierSurface::createCasteljauLines() {
 		line->setColor({ 1,1,1,1 });
 		lines_.push_back(line);
 	}
+}
+
+void BezierSurface::clearAndReinit(QVector4D* pos) {
+	recalculateSize();
+	clearSubModels();
+	createSubModels();
+	reinit();
 }

@@ -1,5 +1,5 @@
 #include "beziercurve.hpp"
-#include "beziercalculator.hpp"
+#include "beziersurfacecalculator.hpp"
 
 
 BezierCurve::BezierCurve(QMatrix4x4& model, const QVector4D pos): Model(model, pos) {
