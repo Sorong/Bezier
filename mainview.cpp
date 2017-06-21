@@ -13,7 +13,9 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.s_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToSLabel(int)));
 	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), this, SLOT(deCasteljau(bool)));
 	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), this, SLOT(derivate(bool)));
-	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(raiseElevation()));
+	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(degreeElevation()));
+	QObject::connect(ui.raise_elevation_t_, SIGNAL(pressed()), this, SLOT(degreeElevationT()));
+	QObject::connect(ui.raise_elevation_s_, SIGNAL(pressed()), this, SLOT(degreeElevationS()));
 	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D*)), this, SLOT(clickedVertex(QVector4D*)));
 	QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
 	QObject::connect(ui.dock_surface_data_, SIGNAL(closed()), ui.show_surface_data_, SLOT(toggle()));
@@ -99,11 +101,24 @@ void MainView::mouseReleaseEvent(QMouseEvent* event) {
 
 
 
-void MainView::raiseElevation() const {
-	this->ui.glview_->raiseElevation();
+void MainView::degreeElevation() const {
+	this->ui.glview_->degreeElevation();
 	this->ui.show_vertex_data_->setChecked(false);
 	this->ui.show_vertex_data_->setEnabled(false);
 	
+}
+
+void MainView::degreeElevationT() const {
+	this->ui.glview_->degreeElevationT();
+	this->ui.show_vertex_data_->setChecked(false);
+	this->ui.show_vertex_data_->setEnabled(false);
+
+}
+void MainView::degreeElevationS() const {
+	this->ui.glview_->degreeElevationS();
+	this->ui.show_vertex_data_->setChecked(false);
+	this->ui.show_vertex_data_->setEnabled(false);
+
 }
 
 void MainView::clickedVertex(QVector4D* coordinate) {

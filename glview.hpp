@@ -6,7 +6,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include "line.hpp"
-#include "beziercalculator.hpp"
+#include "beziersurfacecalculator.hpp"
 #include "beziersurface.hpp"
 
 class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
@@ -34,7 +34,9 @@ public:
 	void setS(float s);
 	
 public slots:
-	void raiseElevation();
+	void degreeElevation();
+	void degreeElevationT();
+	void degreeElevationS();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
 	void editClickedVertex();

@@ -55,7 +55,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_view_">
@@ -74,7 +74,7 @@
    <property name="minimumSize">
     <size>
      <width>270</width>
-     <height>80</height>
+     <height>91</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -101,7 +101,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>251</width>
+       <width>269</width>
        <height>284</height>
       </rect>
      </property>
@@ -147,6 +147,19 @@
         </property>
        </spacer>
       </item>
+      <item row="6" column="1">
+       <spacer name="weight_spacer_">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="2" column="1">
        <spacer name="y_spacer_">
         <property name="orientation">
@@ -159,6 +172,44 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="7" column="1">
+       <widget class="QDoubleSpinBox" name="weight_">
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>1024.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="y_label_">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Y-Koordinate</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="z_label_">
@@ -198,6 +249,19 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <spacer name="x_spacer_">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="3" column="1">
        <widget class="QDoubleSpinBox" name="y_coordinate_">
         <property name="minimum">
@@ -208,31 +272,13 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="y_label_">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="x_coordinate_">
+        <property name="minimum">
+         <double>-1024.000000000000000</double>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Y-Koordinate</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <property name="maximum">
+         <double>1024.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -264,80 +310,6 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QDoubleSpinBox" name="weight_">
-        <property name="minimum">
-         <double>0.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1024.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="x_coordinate_">
-        <property name="minimum">
-         <double>-1024.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1024.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <spacer name="weight_spacer_">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1">
-       <spacer name="x_spacer_">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="set_x_">
-        <property name="text">
-         <string>Übernehmen</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QPushButton" name="set_y_">
-        <property name="text">
-         <string>Übernehmen</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QPushButton" name="set_z_">
-        <property name="text">
-         <string>Übernehmen</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="2">
-       <widget class="QPushButton" name="set_w_">
-        <property name="text">
-         <string>Übernehmen</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </widget>
@@ -346,7 +318,7 @@
    <property name="minimumSize">
     <size>
      <width>270</width>
-     <height>80</height>
+     <height>91</height>
     </size>
    </property>
    <property name="features">
@@ -572,7 +544,7 @@ anzeigen</string>
       <item row="5" column="1">
        <widget class="QPushButton" name="raise_elevation_">
         <property name="text">
-         <string>Gradanhebung</string>
+         <string>Gradanhebung T/S</string>
         </property>
        </widget>
       </item>
@@ -581,6 +553,20 @@ anzeigen</string>
         <property name="text">
          <string>Ableitung 
 anzeigen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="raise_elevation_t_">
+        <property name="text">
+         <string>Gradanhebung T</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QPushButton" name="raise_elevation_s_">
+        <property name="text">
+         <string>Gradanhebung S</string>
         </property>
        </widget>
       </item>

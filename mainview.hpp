@@ -20,7 +20,9 @@ public slots:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
-	void raiseElevation() const;
+	void degreeElevation() const;
+	void degreeElevationT() const;
+	void degreeElevationS() const;
 	void clickedVertex(QVector4D*);
 	void editClickedVertex();
 private:
