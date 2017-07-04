@@ -36,7 +36,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), click_sphere_radius_(0.2) {
+	zoom_factor_(1.0f), click_sphere_radius_(0.2), controller(this) {
 	this->prog_ = new QOpenGLShaderProgram;
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
