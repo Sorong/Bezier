@@ -10,7 +10,7 @@ public:
 	void init(QVector4D* pos = nullptr) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
 	void setRadius(float i);
-	void setColor(QVector4D color);
+	void setColor(QVector4D color) override;
 	void scale(float ratio);
 	void translateToReference();
 	QVector4D& getReference() const;

@@ -14,8 +14,10 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDockWidget>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -25,6 +27,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <dockwidget.hpp>
@@ -47,18 +50,18 @@ public:
     QWidget *dock_vertex_data_content_;
     QWidget *layoutWidget;
     QGridLayout *vertex_data_layout_;
-    QLabel *x_label_;
-    QSpacerItem *z_spacer_;
-    QSpacerItem *weight_spacer_;
+    QLabel *z_label_;
     QSpacerItem *y_spacer_;
+    QDoubleSpinBox *z_coordinate_;
     QDoubleSpinBox *weight_;
     QLabel *y_label_;
-    QLabel *z_label_;
-    QDoubleSpinBox *z_coordinate_;
     QSpacerItem *x_spacer_;
-    QDoubleSpinBox *y_coordinate_;
-    QDoubleSpinBox *x_coordinate_;
     QLabel *weight_label_;
+    QDoubleSpinBox *y_coordinate_;
+    QSpacerItem *weight_spacer_;
+    QDoubleSpinBox *x_coordinate_;
+    QSpacerItem *z_spacer_;
+    QLabel *x_label_;
     DockWidget *dock_surface_data_;
     QWidget *surface_data_content_;
     QWidget *gridLayoutWidget_2;
@@ -72,6 +75,18 @@ public:
     QCheckBox *show_derivation_;
     QPushButton *raise_elevation_t_;
     QPushButton *raise_elevation_s_;
+    QDockWidget *dockWidget;
+    QWidget *dockWidgetContents;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *tool_buttons_2;
+    QToolButton *edit_model_;
+    QToolButton *draw_curve_;
+    QToolButton *draw_surface_;
+    QToolButton *draw_coons_;
+    QHBoxLayout *horizontalLayout;
+    QLabel *label;
+    QDoubleSpinBox *doubleSpinBox;
 
     void setupUi(QMainWindow *BezierClass)
     {
@@ -94,7 +109,8 @@ public:
         show_surface_data_ = new QAction(BezierClass);
         show_surface_data_->setObjectName(QStringLiteral("show_surface_data_"));
         show_surface_data_->setCheckable(true);
-        show_surface_data_->setChecked(true);
+        show_surface_data_->setChecked(false);
+        show_surface_data_->setEnabled(false);
         central_layout_ = new QWidget(BezierClass);
         central_layout_->setObjectName(QStringLiteral("central_layout_"));
         central_layout_->setMouseTracking(false);
@@ -119,7 +135,7 @@ public:
         BezierClass->setStatusBar(status_bar_);
         menu_bar_ = new QMenuBar(BezierClass);
         menu_bar_->setObjectName(QStringLiteral("menu_bar_"));
-        menu_bar_->setGeometry(QRect(0, 0, 1440, 26));
+        menu_bar_->setGeometry(QRect(0, 0, 1440, 21));
         menu_view_ = new QMenu(menu_bar_);
         menu_view_->setObjectName(QStringLiteral("menu_view_"));
         BezierClass->setMenuBar(menu_bar_);
@@ -139,27 +155,27 @@ public:
         vertex_data_layout_->setSpacing(6);
         vertex_data_layout_->setContentsMargins(11, 11, 11, 11);
         vertex_data_layout_->setObjectName(QStringLiteral("vertex_data_layout_"));
-        vertex_data_layout_->setContentsMargins(5, 0, 5, 0);
-        x_label_ = new QLabel(layoutWidget);
-        x_label_->setObjectName(QStringLiteral("x_label_"));
-        sizePolicy1.setHeightForWidth(x_label_->sizePolicy().hasHeightForWidth());
-        x_label_->setSizePolicy(sizePolicy1);
-        x_label_->setMinimumSize(QSize(0, 0));
-        x_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        vertex_data_layout_->setContentsMargins(5, 0, 50, 0);
+        z_label_ = new QLabel(layoutWidget);
+        z_label_->setObjectName(QStringLiteral("z_label_"));
+        sizePolicy1.setHeightForWidth(z_label_->sizePolicy().hasHeightForWidth());
+        z_label_->setSizePolicy(sizePolicy1);
+        z_label_->setMinimumSize(QSize(75, 0));
+        z_label_->setMaximumSize(QSize(16777215, 16777215));
+        z_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-        vertex_data_layout_->addWidget(x_label_, 1, 0, 1, 1);
-
-        z_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        vertex_data_layout_->addItem(z_spacer_, 4, 1, 1, 1);
-
-        weight_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        vertex_data_layout_->addItem(weight_spacer_, 6, 1, 1, 1);
+        vertex_data_layout_->addWidget(z_label_, 5, 0, 1, 1);
 
         y_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         vertex_data_layout_->addItem(y_spacer_, 2, 1, 1, 1);
+
+        z_coordinate_ = new QDoubleSpinBox(layoutWidget);
+        z_coordinate_->setObjectName(QStringLiteral("z_coordinate_"));
+        z_coordinate_->setMinimum(-1024);
+        z_coordinate_->setMaximum(1024);
+
+        vertex_data_layout_->addWidget(z_coordinate_, 5, 1, 1, 1);
 
         weight_ = new QDoubleSpinBox(layoutWidget);
         weight_->setObjectName(QStringLiteral("weight_"));
@@ -178,40 +194,9 @@ public:
 
         vertex_data_layout_->addWidget(y_label_, 3, 0, 1, 1);
 
-        z_label_ = new QLabel(layoutWidget);
-        z_label_->setObjectName(QStringLiteral("z_label_"));
-        sizePolicy1.setHeightForWidth(z_label_->sizePolicy().hasHeightForWidth());
-        z_label_->setSizePolicy(sizePolicy1);
-        z_label_->setMinimumSize(QSize(75, 0));
-        z_label_->setMaximumSize(QSize(16777215, 16777215));
-        z_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-
-        vertex_data_layout_->addWidget(z_label_, 5, 0, 1, 1);
-
-        z_coordinate_ = new QDoubleSpinBox(layoutWidget);
-        z_coordinate_->setObjectName(QStringLiteral("z_coordinate_"));
-        z_coordinate_->setMinimum(-1024);
-        z_coordinate_->setMaximum(1024);
-
-        vertex_data_layout_->addWidget(z_coordinate_, 5, 1, 1, 1);
-
         x_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         vertex_data_layout_->addItem(x_spacer_, 0, 1, 1, 1);
-
-        y_coordinate_ = new QDoubleSpinBox(layoutWidget);
-        y_coordinate_->setObjectName(QStringLiteral("y_coordinate_"));
-        y_coordinate_->setMinimum(-1024);
-        y_coordinate_->setMaximum(1024);
-
-        vertex_data_layout_->addWidget(y_coordinate_, 3, 1, 1, 1);
-
-        x_coordinate_ = new QDoubleSpinBox(layoutWidget);
-        x_coordinate_->setObjectName(QStringLiteral("x_coordinate_"));
-        x_coordinate_->setMinimum(-1024);
-        x_coordinate_->setMaximum(1024);
-
-        vertex_data_layout_->addWidget(x_coordinate_, 1, 1, 1, 1);
 
         weight_label_ = new QLabel(layoutWidget);
         weight_label_->setObjectName(QStringLiteral("weight_label_"));
@@ -222,6 +207,39 @@ public:
         weight_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         vertex_data_layout_->addWidget(weight_label_, 7, 0, 1, 1);
+
+        y_coordinate_ = new QDoubleSpinBox(layoutWidget);
+        y_coordinate_->setObjectName(QStringLiteral("y_coordinate_"));
+        y_coordinate_->setMinimum(-1024);
+        y_coordinate_->setMaximum(1024);
+
+        vertex_data_layout_->addWidget(y_coordinate_, 3, 1, 1, 1);
+
+        weight_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        vertex_data_layout_->addItem(weight_spacer_, 6, 1, 1, 1);
+
+        x_coordinate_ = new QDoubleSpinBox(layoutWidget);
+        x_coordinate_->setObjectName(QStringLiteral("x_coordinate_"));
+        x_coordinate_->setMaximumSize(QSize(80, 16777215));
+        x_coordinate_->setMinimum(-1024);
+        x_coordinate_->setMaximum(1024);
+
+        vertex_data_layout_->addWidget(x_coordinate_, 1, 1, 1, 1);
+
+        z_spacer_ = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        vertex_data_layout_->addItem(z_spacer_, 4, 1, 1, 1);
+
+        x_label_ = new QLabel(layoutWidget);
+        x_label_->setObjectName(QStringLiteral("x_label_"));
+        sizePolicy1.setHeightForWidth(x_label_->sizePolicy().hasHeightForWidth());
+        x_label_->setSizePolicy(sizePolicy1);
+        x_label_->setMinimumSize(QSize(0, 0));
+        x_label_->setMaximumSize(QSize(80, 16777215));
+        x_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        vertex_data_layout_->addWidget(x_label_, 1, 0, 1, 1);
 
         dock_vertex_data_->setWidget(dock_vertex_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dock_vertex_data_);
@@ -340,6 +358,94 @@ public:
 
         dock_surface_data_->setWidget(surface_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
+        dockWidget = new QDockWidget(BezierClass);
+        dockWidget->setObjectName(QStringLiteral("dockWidget"));
+        dockWidget->setMinimumSize(QSize(150, 100));
+        dockWidget->setFeatures(QDockWidget::DockWidgetMovable);
+        dockWidget->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
+        dockWidgetContents = new QWidget();
+        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
+        verticalLayoutWidget = new QWidget(dockWidgetContents);
+        verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
+        verticalLayoutWidget->setGeometry(QRect(0, 0, 250, 89));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout_2->setSpacing(0);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 5);
+        tool_buttons_2 = new QHBoxLayout();
+        tool_buttons_2->setSpacing(6);
+        tool_buttons_2->setObjectName(QStringLiteral("tool_buttons_2"));
+        edit_model_ = new QToolButton(verticalLayoutWidget);
+        edit_model_->setObjectName(QStringLiteral("edit_model_"));
+        edit_model_->setMinimumSize(QSize(32, 32));
+        edit_model_->setToolTipDuration(-1);
+        QIcon icon;
+        icon.addFile(QStringLiteral("res/hand-point-090.png"), QSize(), QIcon::Normal, QIcon::Off);
+        edit_model_->setIcon(icon);
+        edit_model_->setIconSize(QSize(32, 32));
+
+        tool_buttons_2->addWidget(edit_model_);
+
+        draw_curve_ = new QToolButton(verticalLayoutWidget);
+        draw_curve_->setObjectName(QStringLiteral("draw_curve_"));
+        draw_curve_->setMinimumSize(QSize(32, 32));
+        draw_curve_->setToolTipDuration(-1);
+        QIcon icon1;
+        icon1.addFile(QStringLiteral("res/layer-shape-curve.png"), QSize(), QIcon::Normal, QIcon::Off);
+        draw_curve_->setIcon(icon1);
+        draw_curve_->setIconSize(QSize(32, 32));
+
+        tool_buttons_2->addWidget(draw_curve_);
+
+        draw_surface_ = new QToolButton(verticalLayoutWidget);
+        draw_surface_->setObjectName(QStringLiteral("draw_surface_"));
+        draw_surface_->setMinimumSize(QSize(32, 32));
+        QIcon icon2;
+        icon2.addFile(QStringLiteral("res/layer-shape.png"), QSize(), QIcon::Normal, QIcon::Off);
+        draw_surface_->setIcon(icon2);
+        draw_surface_->setIconSize(QSize(32, 32));
+
+        tool_buttons_2->addWidget(draw_surface_);
+
+        draw_coons_ = new QToolButton(verticalLayoutWidget);
+        draw_coons_->setObjectName(QStringLiteral("draw_coons_"));
+        draw_coons_->setEnabled(false);
+        draw_coons_->setMinimumSize(QSize(32, 32));
+        QIcon icon3;
+        icon3.addFile(QStringLiteral("res/layer-shape-polygon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        draw_coons_->setIcon(icon3);
+        draw_coons_->setIconSize(QSize(32, 32));
+
+        tool_buttons_2->addWidget(draw_coons_);
+
+
+        verticalLayout_2->addLayout(tool_buttons_2);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setContentsMargins(-1, -1, 15, -1);
+        label = new QLabel(verticalLayoutWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setAlignment(Qt::AlignCenter);
+        label->setMargin(5);
+
+        horizontalLayout->addWidget(label);
+
+        doubleSpinBox = new QDoubleSpinBox(verticalLayoutWidget);
+        doubleSpinBox->setObjectName(QStringLiteral("doubleSpinBox"));
+        doubleSpinBox->setBaseSize(QSize(0, 0));
+        doubleSpinBox->setMinimum(-10);
+
+        horizontalLayout->addWidget(doubleSpinBox);
+
+
+        verticalLayout_2->addLayout(horizontalLayout);
+
+        dockWidget->setWidget(dockWidgetContents);
+        verticalLayoutWidget->raise();
+        BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget);
 
         menu_bar_->addAction(menu_view_->menuAction());
         menu_view_->addAction(show_vertex_data_);
@@ -357,10 +463,10 @@ public:
         show_surface_data_->setText(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
         menu_view_->setTitle(QApplication::translate("BezierClass", "Ansicht", 0));
         dock_vertex_data_->setWindowTitle(QApplication::translate("BezierClass", "Vertexdaten", 0));
-        x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate", 0));
-        y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate", 0));
         z_label_->setText(QApplication::translate("BezierClass", "Z-Koordinate", 0));
+        y_label_->setText(QApplication::translate("BezierClass", "Y-Koordinate", 0));
         weight_label_->setText(QApplication::translate("BezierClass", "Gewichtung", 0));
+        x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate", 0));
         dock_surface_data_->setWindowTitle(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
         show_sublines_->setText(QApplication::translate("BezierClass", "deCasteljau \n"
 "anzeigen", 0));
@@ -371,6 +477,27 @@ public:
 "anzeigen", 0));
         raise_elevation_t_->setText(QApplication::translate("BezierClass", "Gradanhebung T", 0));
         raise_elevation_s_->setText(QApplication::translate("BezierClass", "Gradanhebung S", 0));
+        dockWidget->setWindowTitle(QApplication::translate("BezierClass", "Werkzeuge", 0));
+#ifndef QT_NO_TOOLTIP
+        edit_model_->setToolTip(QApplication::translate("BezierClass", "Bearbeitungsmodus", 0));
+#endif // QT_NO_TOOLTIP
+        edit_model_->setText(QApplication::translate("BezierClass", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        draw_curve_->setToolTip(QApplication::translate("BezierClass", "Zeichnet Bezierkurve", 0));
+#endif // QT_NO_TOOLTIP
+        draw_curve_->setText(QApplication::translate("BezierClass", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        draw_surface_->setToolTip(QApplication::translate("BezierClass", "Zeichnet Bezierfl\303\244che", 0));
+#endif // QT_NO_TOOLTIP
+        draw_surface_->setText(QApplication::translate("BezierClass", "...", 0));
+#ifndef QT_NO_TOOLTIP
+        draw_coons_->setToolTip(QApplication::translate("BezierClass", "Zeichnet Coonspatch", 0));
+#endif // QT_NO_TOOLTIP
+        draw_coons_->setText(QApplication::translate("BezierClass", "...", 0));
+        label->setText(QApplication::translate("BezierClass", "Z-Achse:", 0));
+#ifndef QT_NO_TOOLTIP
+        doubleSpinBox->setToolTip(QApplication::translate("BezierClass", "Z-Achse wird \"festgesetzt\" anhand des eigegebenen Wertes.", 0));
+#endif // QT_NO_TOOLTIP
     } // retranslateUi
 
 };

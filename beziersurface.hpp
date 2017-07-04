@@ -5,6 +5,7 @@
 #include "beziercurve.hpp"
 #include "trianglestrip.hpp"
 #include "line.hpp"
+#include "types.hpp"
 
 class BezierSurface : public Model
 {
@@ -13,13 +14,13 @@ public:
 	~BezierSurface();
 	void init(QVector4D *pos = nullptr) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
-	void reinit(QVector4D *pos = nullptr);
+	void reinit(QVector4D *pos = nullptr) override;
 	void setT(float t);
 	void setS(float s);
 	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);
 	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
-	void setCoordinates(QVector<QVector<QVector4D>> &coordinates);
-	QVector<QVector<QVector4D>>& getCoordinates();
+	void setCoordinates(QVector4DMatrix& coordinates);
+	QVector4DMatrix& getCoordinates();
 	QVector4D& get(int index) const;
 	int size() const override;
 	QVector4D& setClicked(int index) const;
@@ -33,10 +34,10 @@ private:
 	void clearSubModels();
 	void recalculateSize();
 	void createBasePoints();
-	void createCurves(QVector<QVector<QVector4D>> &coordinates);
+	void createCurves(QVector4DMatrix& coordinates);
 	void createCasteljauLines();
 	void clearAndReinit(QVector4D *pos = nullptr);
-	QVector<QVector<QVector4D>> coordinates_;
+	QVector4DMatrix coordinates_;
 	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;

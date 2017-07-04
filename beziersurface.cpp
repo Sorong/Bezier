@@ -129,12 +129,12 @@ void BezierSurface::addVerticalCoordinates(QVector<QVector4D> &coordinates) {
 }
 
 
-void BezierSurface::setCoordinates(QVector<QVector<QVector4D>> &coordinates) {
+void BezierSurface::setCoordinates(QVector4DMatrix& coordinates) {
 	recalculateSize();
 	this->coordinates_ = coordinates;
 }
 
-QVector<QVector<QVector4D>>& BezierSurface::getCoordinates() {
+QVector4DMatrix& BezierSurface::getCoordinates() {
 	return this->coordinates_;
 }
 
@@ -253,7 +253,7 @@ void BezierSurface::createBasePoints() {
 	this->colors_.fill({ 0,1,0,1 }, this->vertices_.size());
 }
 
-void BezierSurface::createCurves(QVector<QVector<QVector4D>> &coordinates) {
+void BezierSurface::createCurves(QVector4DMatrix& coordinates) {
 	for (int i = 0; i < coordinates.size(); i++) {
 		std::shared_ptr<BezierCurve> curve = std::make_shared<BezierCurve>(model_, pos_);
 		curve->setBaseCoordinates(coordinates[i]);

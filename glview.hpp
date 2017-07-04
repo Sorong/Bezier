@@ -8,10 +8,14 @@
 #include "line.hpp"
 #include "beziersurfacecalculator.hpp"
 #include "beziersurface.hpp"
+#include "glviewcontroller.hpp"
+
+typedef enum {
+	SELECT, DRAWCURVE, DRAWSURFACE, DRAWCOONS
+} Mode;
 
 class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
 	Q_OBJECT
-
 public:
 
 

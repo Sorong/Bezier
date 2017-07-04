@@ -11,7 +11,7 @@ BezierCalculator::~BezierCalculator()
 {
 }
 
-void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, QVector<QVector<QVector4D>>& dest_coordinates, float t) const {
+void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, QVector4DMatrix& dest_coordinates, float t) const {
 	if (base_coordinates.isEmpty()) {
 		return;
 	}

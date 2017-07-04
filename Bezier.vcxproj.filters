@@ -59,12 +59,6 @@
     <ClCompile Include="GeneratedFiles\qrc_bezier.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glview.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glview.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainview.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -106,6 +100,15 @@
     </ClCompile>
     <ClCompile Include="beziercalculator.cpp">
       <Filter>Source Files\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="glviewcontroller.cpp">
+      <Filter>Source Files\View</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_glview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_glview.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +153,15 @@
     <CustomBuild Include="beziersurfacecalculator.hpp">
       <Filter>Header Files\Util</Filter>
     </CustomBuild>
+    <CustomBuild Include="glviewcontroller.hpp">
+      <Filter>Header Files\View</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beziercalculator.hpp">
+      <Filter>Header Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="types.hpp">
       <Filter>Header Files\Util</Filter>
     </ClInclude>
   </ItemGroup>
