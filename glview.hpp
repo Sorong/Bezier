@@ -10,6 +10,7 @@
 #include "beziersurface.hpp"
 #include "glviewcontroller.hpp"
 
+
 typedef enum {
 	SELECT, DRAWCURVE, DRAWSURFACE, DRAWCOONS
 } Mode;
@@ -58,6 +59,7 @@ private:
 	QVector3D intersect_to_center_;
 	BezierSurface *surface;
 	float click_sphere_radius_;
+	GLViewController controller;
 };
 
 #endif // BEZIERSCREEN_H
