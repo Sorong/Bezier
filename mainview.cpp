@@ -27,6 +27,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.z_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
 	QObject::connect(ui.weight_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
 	ui.dock_vertex_data_->hide();
+	//ui.dock_surface_data_->hide();
 }
 
 MainView::~MainView() {

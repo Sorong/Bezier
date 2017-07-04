@@ -55,13 +55,13 @@ void GLView::initializeGL() {
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
 	QVector3D eye(EYE);
-	this->view_.lookAt(eye, {CENTER}, {UP});
+	this->view_.lookAt(eye, { CENTER }, { UP });
 
 	//TODO: Removehardcoded Surface
 	QMatrix4x4 model;
 	surface = new BezierSurface(model, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }} }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
-/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
+	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{{-2,2,0,1},{2,2,0,1},{4,2,0,1}} }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
+	/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
 	surface->setCoordinates(test2);
 	surface->addShader(*this->prog_);
 	surface->init();
@@ -78,7 +78,7 @@ void GLView::paintGL() {
 	glEnable(GL_DEPTH_TEST);
 	glPointSize(3);
 
-	if(surface != nullptr) {
+	if (surface != nullptr) {
 		surface->render(projection_, view_);
 	}
 	update();
@@ -92,17 +92,17 @@ void GLView::resizeGL(int w, int h) {
 }
 
 
-void GLView::setT(float t)  {
+void GLView::setT(float t) {
 	makeCurrent();
-	if(surface != nullptr) {
+	if (surface != nullptr) {
 		this->surface->setT(t);
 	}
 	update();
 }
 
-void GLView::setS(float s)  {
+void GLView::setS(float s) {
 	makeCurrent();
-	if(surface != nullptr) {
+	if (surface != nullptr) {
 		this->surface->setS(s);
 	}
 	update();
@@ -117,7 +117,7 @@ void GLView::removeCoordinateByIndex(int i) {
 
 //Todo: Add for surface
 bool GLView::addCoordinate(float x, float y) {
-	return this->addCoordinate({x,y,0,1});
+	return this->addCoordinate({ x,y,0,1 });
 }
 
 //Todo: Add for surface
@@ -128,6 +128,7 @@ bool GLView::addCoordinate(QVector4D xyzw) {
 	}
 	return !highest_grade_reached_;
 }
+
 //Todo: GetCoordinateByIndex for surface
 QVector4D GLView::getCoordinateByIndex(int i) const {
 	return { 0,0,0,0 };
@@ -135,14 +136,13 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 
 //TODO: Rework shortcuts and/or effect of shortcuts
 void GLView::keyPressEvent(QKeyEvent* event) {
+	if (surface == nullptr) {
+		return;
+	}
 	switch (event->key()) {
 	case Qt::Key_Plus:
 		surface->scale(1.10);
 		click_model_.scale(1.10);
-	//	this->click_sphere_radius_ *= 1.10;
-	//	zoom_factor_ /= 1.01;
-		//projection_.setToIdentity();
-		//projection_.perspective(45.0f * zoom_factor_, static_cast<float>(width()) / height(), z_near_, z_far_);
 		break;
 	case Qt::Key_Minus:
 		surface->scale(0.9);
@@ -180,7 +180,7 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 	float radius2 = radius * radius;
 
 	for (auto i = 0; i < this->surface->size(); i++) {
-		QVector4D &coord = surface->get(i);
+		QVector4D& coord = surface->get(i);
 		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
@@ -236,15 +236,15 @@ QVector<QVector4D> GLView::getBasePoints() const {
 
 
 void GLView::degreeElevation() {
-		if(surface != nullptr) {
-			makeCurrent();
-			update();
-			surface->degreeElevation();
-		}
+	if (surface != nullptr) {
+		makeCurrent();
+		update();
+		surface->degreeElevation();
+	}
 }
 
 void GLView::degreeElevationT() {
-	if(surface != nullptr) {
+	if (surface != nullptr) {
 		makeCurrent();
 		update();
 		surface->degreeElevationT();
@@ -266,8 +266,8 @@ void GLView::toggleSublineMode(bool state) {
 	makeCurrent();
 	surface->reinit();
 	update();
-	
-	
+
+
 }
 
 //Todo: Enable Derivate for surface

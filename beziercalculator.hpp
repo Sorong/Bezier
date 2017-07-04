@@ -1,13 +1,14 @@
 #pragma once
 #include <QVector>
 #include <QVector4D>
+#include "types.hpp"
 
 class BezierCalculator
 {
 public:
 	BezierCalculator();
 	~BezierCalculator();
-	void deCasteljau(const QVector<QVector4D>& base_coordinates, QVector<QVector<QVector4D>> &dest_coordinates, float t) const;
+	void deCasteljau(const QVector<QVector4D>& base_coordinates, QVector4DMatrix& dest_coordinates, float t) const;
 	bool bezierCurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float precision) const;
 	QVector4D derivate(const QVector<QVector4D>& src_coordinates, float t) const;
 	void degreeElevation(QVector<QVector4D>& src_coordinates) const;
