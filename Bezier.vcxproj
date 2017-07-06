@@ -142,6 +142,7 @@
     <ClCompile Include="beziersurfacecalculator.cpp" />
     <ClCompile Include="beziercurve.cpp" />
     <ClCompile Include="beziersurface.cpp" />
+    <ClCompile Include="clickable.cpp" />
     <ClCompile Include="dockwidget.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_dockwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -612,6 +613,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="clickable.hpp" />
     <ClInclude Include="types.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
