@@ -110,6 +110,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_glview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="clickable.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bezier.ui">
@@ -162,6 +165,9 @@
       <Filter>Header Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="types.hpp">
+      <Filter>Header Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="clickable.hpp">
       <Filter>Header Files\Util</Filter>
     </ClInclude>
   </ItemGroup>

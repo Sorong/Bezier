@@ -40,14 +40,6 @@ void BezierCurve::init(QVector4D* position) {
 	if(this->vertices_.isEmpty()) {
 		return;
 	}
-/*	for (auto& vertex : vertices_) {
-		if (vertex.w() == 0) {
-			vertex.setW(1);
-		}
-		else {
-			vertex /= vertex.w();
-		}
-	}*/
 	this->colors_.fill(this->colors_.at(0), this->vertices_.size());
 	if(indices_.size() != this->vertices_.size()) {
 		for (int i = 0; i < this->vertices_.size(); i++) {

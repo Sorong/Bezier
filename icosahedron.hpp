@@ -1,7 +1,8 @@
 #pragma once
 #include "model.hpp"
+#include "clickable.hpp"
 
-class Icosahedron : public Model {
+class Icosahedron : public Model, public Clickable {
 public:
 	Icosahedron(const Icosahedron &) = delete;
 	Icosahedron& operator= (const Icosahedron& other) = delete;
@@ -12,9 +13,10 @@ public:
 	void setRadius(float i);
 	void setColor(QVector4D color) override;
 	void scale(float ratio);
-	void translateToReference();
-	QVector4D& getReference() const;
+	void translateToReference() override;
+	QVector4D& getReference() const override;
+	void setClicked(QVector4D& color) override;
+	void setUnclicked(QVector4D& color) override;
 private:
-	QVector4D& reference_vertex_;
 	float radius_;
 };

@@ -36,15 +36,16 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), click_sphere_radius_(0.2), controller(this) {
+	zoom_factor_(1.0f), click_sphere_radius_(0.2) {
 	this->prog_ = new QOpenGLShaderProgram;
+	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
 
 GLView::~GLView() {
 	makeCurrent();
 	delete this->prog_;
-
+	delete this->controller_;
 }
 
 void GLView::initializeGL() {
@@ -59,12 +60,12 @@ void GLView::initializeGL() {
 
 	//TODO: Removehardcoded Surface
 	QMatrix4x4 model;
-	surface = new BezierSurface(model, { INITPOS });
+	surface_ = new BezierSurface(model, { INITPOS });
 	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{{-2,2,0,1},{2,2,0,1},{4,2,0,1}} }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
 	/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
-	surface->setCoordinates(test2);
-	surface->addShader(*this->prog_);
-	surface->init();
+	surface_->setCoordinates(test2);
+	surface_->addShader(*this->prog_);
+	surface_->init();
 }
 
 void GLView::paintGL() {
@@ -78,8 +79,8 @@ void GLView::paintGL() {
 	glEnable(GL_DEPTH_TEST);
 	glPointSize(3);
 
-	if (surface != nullptr) {
-		surface->render(projection_, view_);
+	if (surface_ != nullptr) {
+		surface_->render(projection_, view_);
 	}
 	update();
 }
@@ -94,33 +95,33 @@ void GLView::resizeGL(int w, int h) {
 
 void GLView::setT(float t) {
 	makeCurrent();
-	if (surface != nullptr) {
-		this->surface->setT(t);
+	if (surface_ != nullptr) {
+		this->surface_->setT(t);
 	}
 	update();
 }
 
 void GLView::setS(float s) {
 	makeCurrent();
-	if (surface != nullptr) {
-		this->surface->setS(s);
+	if (surface_ != nullptr) {
+		this->surface_->setS(s);
 	}
 	update();
 }
 
-//Todo: Remove for surface
+//Todo: Remove for surface_
 void GLView::removeCoordinateByIndex(int i) {
 	initializeOpenGLFunctions();
 	makeCurrent();
 	update();
 }
 
-//Todo: Add for surface
+//Todo: Add for surface_
 bool GLView::addCoordinate(float x, float y) {
 	return this->addCoordinate({ x,y,0,1 });
 }
 
-//Todo: Add for surface
+//Todo: Add for surface_
 bool GLView::addCoordinate(QVector4D xyzw) {
 	initializeOpenGLFunctions();
 	makeCurrent();
@@ -129,39 +130,39 @@ bool GLView::addCoordinate(QVector4D xyzw) {
 	return !highest_grade_reached_;
 }
 
-//Todo: GetCoordinateByIndex for surface
+//Todo: GetCoordinateByIndex for surface_
 QVector4D GLView::getCoordinateByIndex(int i) const {
 	return { 0,0,0,0 };
 }
 
 //TODO: Rework shortcuts and/or effect of shortcuts
 void GLView::keyPressEvent(QKeyEvent* event) {
-	if (surface == nullptr) {
+	if (surface_ == nullptr) {
 		return;
 	}
 	switch (event->key()) {
 	case Qt::Key_Plus:
-		surface->scale(1.10);
+		surface_->scale(1.10);
 		click_model_.scale(1.10);
 		break;
 	case Qt::Key_Minus:
-		surface->scale(0.9);
+		surface_->scale(0.9);
 		click_model_.scale(0.9);
 		break;
 	case Qt::Key_Left:
-		surface->rotate(1, 0, -1, 0);
+		surface_->rotate(1, 0, -1, 0);
 		click_model_.rotate(1, 0, -1, 0);
 		break;
 	case Qt::Key_Right:
-		surface->rotate(1, 0, 1, 0);
+		surface_->rotate(1, 0, 1, 0);
 		click_model_.rotate(1, 0, 1, 0);
 		break;
 	case Qt::Key_Up:
-		surface->rotate(1, -1, 0, 0);
+		surface_->rotate(1, -1, 0, 0);
 		click_model_.rotate(1, -1, 0, 0);
 		break;
 	case Qt::Key_Down:
-		surface->rotate(1, 1, 0, 0);
+		surface_->rotate(1, 1, 0, 0);
 		click_model_.rotate(1, 1, 0, 0);
 		break;
 	default: break;
@@ -179,8 +180,8 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 	float radius = 0.2f;
 	float radius2 = radius * radius;
 
-	for (auto i = 0; i < this->surface->size(); i++) {
-		QVector4D& coord = surface->get(i);
+	for (auto i = 0; i < this->surface_->size(); i++) {
+		QVector4D& coord = surface_->get(i);
 		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
 		if (tca < 0) {
@@ -192,7 +193,7 @@ void GLView::mousePressEvent(QMouseEvent* event) {
 		}
 		//float thc = sqrt(radius2 - d2);
 		//auto t_drag = tca - thc;
-		dragged_vertex_ = &surface->setClicked(i);
+		dragged_vertex_ = &surface_->setClicked(i);
 		intersect_to_center_ = coord.toVector3DAffine() - begin;
 		qDebug() << "clicked:" << coord;
 		qDebug() << intersect_to_center_;
@@ -223,7 +224,7 @@ void GLView::mouseMoveEvent(QMouseEvent* event) {
 	qDebug() << "new pos = " << *dragged_vertex_;
 	makeCurrent();
 	emit clickedVertex(dragged_vertex_);
-	surface->reinit();
+	surface_->reinit();
 }
 
 void GLView::mouseReleaseEvent(QMouseEvent* event) {
@@ -236,52 +237,52 @@ QVector<QVector4D> GLView::getBasePoints() const {
 
 
 void GLView::degreeElevation() {
-	if (surface != nullptr) {
+	if (surface_ != nullptr) {
 		makeCurrent();
 		update();
-		surface->degreeElevation();
+		surface_->degreeElevation();
 	}
 }
 
 void GLView::degreeElevationT() {
-	if (surface != nullptr) {
+	if (surface_ != nullptr) {
 		makeCurrent();
 		update();
-		surface->degreeElevationT();
+		surface_->degreeElevationT();
 	}
 }
 
 void GLView::degreeElevationS() {
-	if (surface != nullptr) {
+	if (surface_ != nullptr) {
 		makeCurrent();
 		update();
-		surface->degreeElevationS();
+		surface_->degreeElevationS();
 	}
 }
 
-//Todo: Enable Casteljau for surface
+//Todo: Enable Casteljau for surface_
 void GLView::toggleSublineMode(bool state) {
 	this->show_sublines_ = state;
-	this->surface->showCasteljau(state);
+	this->surface_->showCasteljau(state);
 	makeCurrent();
-	surface->reinit();
+	surface_->reinit();
 	update();
 
 
 }
 
-//Todo: Enable Derivate for surface
+//Todo: Enable Derivate for surface_
 void GLView::toggleDerivateMode(bool state) {
 	this->show_derivate_ = state;
-	this->surface->showDerivate(state);
+	this->surface_->showDerivate(state);
 	makeCurrent();
-	surface->reinit();
+	surface_->reinit();
 	update();
 }
 
 void GLView::editClickedVertex() {
 	makeCurrent();
-	surface->reinit();
+	surface_->reinit();
 	update();
 }
 

@@ -1,7 +1,7 @@
 #include "icosahedron.hpp"
 
 
-Icosahedron::Icosahedron(QMatrix4x4& model, QVector4D& reference_vertex) : Model(model), reference_vertex_(reference_vertex){
+Icosahedron::Icosahedron(QMatrix4x4& model, QVector4D& reference_vertex) : Model(model), Clickable(reference_vertex){
 	setRadius(1);
 	this->colors_.push_back({ 1,1,1,1 });
 }
@@ -78,4 +78,12 @@ void Icosahedron::translateToReference() {
 
 QVector4D& Icosahedron::getReference() const {
 	return this->reference_vertex_;
+}
+
+void Icosahedron::setClicked(QVector4D& color) {
+	this->setColor(color);
+}
+
+void Icosahedron::setUnclicked(QVector4D& color) {
+	this->setColor(color);
 }

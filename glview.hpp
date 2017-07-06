@@ -11,12 +11,11 @@
 #include "glviewcontroller.hpp"
 
 
-typedef enum {
-	SELECT, DRAWCURVE, DRAWSURFACE, DRAWCOONS
-} Mode;
+
 
 class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
 	Q_OBJECT
+		friend class GLViewController;
 public:
 
 
@@ -50,16 +49,15 @@ public slots:
 
 private:
 	bool initShader() const;
-	BezierSurface *bezier_surface_;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4 view_, projection_, click_model_;
 	QOpenGLShaderProgram* prog_;
 	float z_near_, z_far_, zoom_factor_;
 	QVector4D* dragged_vertex_;
 	QVector3D intersect_to_center_;
-	BezierSurface *surface;
+	BezierSurface *surface_;
 	float click_sphere_radius_;
-	GLViewController controller;
+	GLViewController *controller_;
 };
 
 #endif // BEZIERSCREEN_H
