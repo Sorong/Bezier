@@ -154,6 +154,10 @@ QVector4D& BezierSurface::setClicked(int index) const {
 	return this->base_points_.at(index)->getReference();
 }
 
+Clickable& BezierSurface::getClicked(int index) {
+	return *this->base_points_[index];
+}
+
 void BezierSurface::degreeElevation() {
 	BezierSurfaceCalculator calculator;
 	calculator.degreeElevationSurface(this->getCoordinates());

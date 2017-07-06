@@ -18,9 +18,11 @@ typedef enum {
 
 typedef struct {
 	Clickable *clickable_;
+	Model *model_;
 	QVector4D *reference_;
-	int row_index = -1;
-	int col_index = -1;
+	QVector3D offset_;
+	int row_index_ = -1;
+	int col_index_ = -1;
 } ClickedModel;
 
 inline DrawMode operator|(DrawMode a, DrawMode b) {
@@ -53,12 +55,13 @@ private:
 	void moveSelectHandler(QMouseEvent* event);
 	void moveDrawSurfaceHandler(QMouseEvent* event);
 	void setCurrentUnclicked();
+	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
 	GLView* view_;
 	Mode mode_;
 	DrawMode draw_mode_;
 	int click_amount_;
 	QVector<ClickedModel> clicked_;
-	ClickedModel *current_selected;
+	ClickedModel *current_selected_;
 	QVector4D unclick_color_, click_color_;
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
 	QVector<std::shared_ptr<BezierSurface>> curves_;

@@ -170,61 +170,14 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 }
 
 void GLView::mousePressEvent(QMouseEvent* event) {
-	dragged_vertex_ = nullptr;
-	QVector2D pos(event->pos());
-	QRect viewp(0, 0, width(), height());
-	click_model_.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
-	QVector3D direction = (end - begin).normalized();
-	float radius = 0.2f;
-	float radius2 = radius * radius;
-
-	for (auto i = 0; i < this->surface_->size(); i++) {
-		QVector4D& coord = surface_->get(i);
-		QVector3D L = (coord.toVector3DAffine() - begin);
-		float tca = QVector3D::dotProduct(L, direction);
-		if (tca < 0) {
-			continue;
-		}
-		float d2 = QVector3D::dotProduct(L, L) - tca * tca;
-		if (d2 > radius2) {
-			continue;
-		}
-		//float thc = sqrt(radius2 - d2);
-		//auto t_drag = tca - thc;
-		dragged_vertex_ = &surface_->setClicked(i);
-		intersect_to_center_ = coord.toVector3DAffine() - begin;
-		qDebug() << "clicked:" << coord;
-		qDebug() << intersect_to_center_;
-		emit clickedVertex(dragged_vertex_);
-		break;
-	}
-
+	controller_->mousePressEvent(event);
 	initializeOpenGLFunctions();
 	makeCurrent();
 	update();
 }
 
 void GLView::mouseMoveEvent(QMouseEvent* event) {
-	if (dragged_vertex_ == nullptr) {
-		return;
-	}
-	QVector2D pos(event->pos());
-	QRect viewp(0, 0, width(), height());
-	click_model_.setColumn(3, { INITPOS });
-	auto begin = QVector3D(pos, -10.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
-	auto end = QVector3D(pos.x(), height() - pos.y(), 1.0f).unproject(this->view_ * click_model_, this->projection_, viewp);
-	QVector3D direction = (end - begin).normalized();
-	auto length = intersect_to_center_.length();
-	float w = dragged_vertex_->w();
-	*dragged_vertex_ = (begin + length * direction);
-	dragged_vertex_->setW(1);
-	*dragged_vertex_ *= w;
-	qDebug() << "new pos = " << *dragged_vertex_;
-	makeCurrent();
-	emit clickedVertex(dragged_vertex_);
-	surface_->reinit();
+	controller_->mouseMoveEvent(event);
 }
 
 void GLView::mouseReleaseEvent(QMouseEvent* event) {
