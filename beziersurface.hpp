@@ -24,6 +24,7 @@ public:
 	QVector4D& get(int index) const;
 	int size() const override;
 	QVector4D& setClicked(int index) const;
+	Clickable& getClicked(int index);
 	void degreeElevation();
 	void degreeElevationT();
 	void degreeElevationS();
