@@ -17,9 +17,6 @@ public slots:
 	void derivate(bool state) const;
 	void addCoordinates() const;
 	void keyPressEvent(QKeyEvent* event) override;
-	void mousePressEvent(QMouseEvent *event) override;
-	void mouseMoveEvent(QMouseEvent *event) override;
-	void mouseReleaseEvent(QMouseEvent* event) override;
 	void degreeElevation() const;
 	void degreeElevationT() const;
 	void degreeElevationS() const;

@@ -1,5 +1,6 @@
 #include "line.hpp"
 
+
 Line::Line(QMatrix4x4& model, QVector4D position) : Model(model, position) {
 }
 
@@ -52,3 +53,4 @@ void Line::setCoordinates(QVector<QVector4D>& coordinates) {
 
 void Line::setColor(QVector4D color) {
 }
+

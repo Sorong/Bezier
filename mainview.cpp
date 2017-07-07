@@ -26,6 +26,10 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.y_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
 	QObject::connect(ui.z_coordinate_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
 	QObject::connect(ui.weight_, SIGNAL(valueChanged(double)), this, SLOT(editClickedVertex()));
+	QObject::connect(ui.draw_curve_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawCurve()));
+	QObject::connect(ui.draw_surface_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawSurface()));
+	QObject::connect(ui.draw_coons_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawCoonspatch()));
+	QObject::connect(ui.edit_model_, SIGNAL(pressed()), ui.glview_, SLOT(modeSelect()));
 	ui.dock_vertex_data_->hide();
 	//ui.dock_surface_data_->hide();
 }
@@ -87,19 +91,6 @@ void MainView::keyPressEvent(QKeyEvent* event) {
 
 	this->ui.glview_->keyPressEvent(event);
 }
-
-void MainView::mousePressEvent(QMouseEvent* event) {
-	qDebug() << "mainviewmousepress";
-}
-
-void MainView::mouseMoveEvent(QMouseEvent* event) {
-	qDebug() << "mainviewmousemove";
-}
-
-void MainView::mouseReleaseEvent(QMouseEvent* event) {
-	qDebug() << "mainviewmousepress";
-}
-
 
 
 void MainView::degreeElevation() const {

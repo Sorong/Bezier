@@ -36,7 +36,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), click_sphere_radius_(0.2) {
+	zoom_factor_(1.0f) {
 	this->prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -191,6 +191,7 @@ QVector<QVector4D> GLView::getBasePoints() const {
 
 void GLView::degreeElevation() {
 	if (surface_ != nullptr) {
+		controller_->clearClicked();
 		makeCurrent();
 		update();
 		surface_->degreeElevation();
@@ -199,6 +200,7 @@ void GLView::degreeElevation() {
 
 void GLView::degreeElevationT() {
 	if (surface_ != nullptr) {
+		controller_->clearClicked();
 		makeCurrent();
 		update();
 		surface_->degreeElevationT();
@@ -207,13 +209,13 @@ void GLView::degreeElevationT() {
 
 void GLView::degreeElevationS() {
 	if (surface_ != nullptr) {
+		controller_->clearClicked();
 		makeCurrent();
 		update();
 		surface_->degreeElevationS();
 	}
 }
 
-//Todo: Enable Casteljau for surface_
 void GLView::toggleSublineMode(bool state) {
 	this->show_sublines_ = state;
 	this->surface_->showCasteljau(state);
@@ -224,7 +226,6 @@ void GLView::toggleSublineMode(bool state) {
 
 }
 
-//Todo: Enable Derivate for surface_
 void GLView::toggleDerivateMode(bool state) {
 	this->show_derivate_ = state;
 	this->surface_->showDerivate(state);
@@ -232,6 +233,23 @@ void GLView::toggleDerivateMode(bool state) {
 	surface_->reinit();
 	update();
 }
+
+void GLView::modeSelect() const {
+	this->controller_->setMode(SELECT);
+}
+
+void GLView::modeDrawCurve() const {
+	this->controller_->setMode(DRAWCURVE);
+}
+
+void GLView::modeDrawSurface() const {
+	this->controller_->setMode(DRAWSURFACE);
+}
+
+void GLView::modeDrawCoonspatch() const {
+	this->controller_->setMode(DRAWCOONS);
+}
+
 
 void GLView::editClickedVertex() {
 	makeCurrent();

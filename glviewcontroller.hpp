@@ -9,7 +9,7 @@ class QMouseEvent;
 class GLView;
 
 typedef enum {
-	SELECT, DRAWCURVE, DRAWSURFACE, DRAWCOONS
+	SELECT = 0, DRAWCURVE = 1, DRAWSURFACE = 2, DRAWCOONS = 4, C0 = 8
 } Mode;
 
 typedef enum {
@@ -47,6 +47,7 @@ public:
 	void mousePressEvent(QMouseEvent* event);
 	void mouseMoveEvent(QMouseEvent* event);
 	void mouseReleaseEvent(QMouseEvent* event);
+	void clearClicked();
 private:
 	void pressSelectHandler(QMouseEvent* event);
 	void pressDrawCurveHandler(QMouseEvent* event);
@@ -60,6 +61,7 @@ private:
 	Mode mode_;
 	DrawMode draw_mode_;
 	int click_amount_;
+	float clamped_z_;
 	QVector<ClickedModel> clicked_;
 	ClickedModel *current_selected_;
 	QVector4D unclick_color_, click_color_;

@@ -181,6 +181,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="icosahedron.cpp" />
+    <ClCompile Include="rectangle.cpp" />
     <ClCompile Include="trianglestrip.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -614,6 +615,7 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="clickable.hpp" />
+    <ClInclude Include="rectangle.hpp" />
     <ClInclude Include="types.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
