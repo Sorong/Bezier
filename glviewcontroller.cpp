@@ -3,9 +3,9 @@
 #include <QKeyEvent>
 #define INITPOS 0.0f, 0.0f, -10.0f, 1.0f
 
-GLViewController::GLViewController(GLView* view) : view_(view), mode_(SELECT), draw_mode_(NONE), click_amount_(0), current_selected_(nullptr) {
-	this->click_color_ = { 1,0,0,1 };
-	this->unclick_color_ = { 1,1,1,1 };
+GLViewController::GLViewController(GLView* view) : view_(view), mode_(SELECT), draw_mode_(NONE), click_amount_(0), clamped_z_(0), current_selected_(nullptr) {
+	this->click_color_ = {1,0,0,1};
+	this->unclick_color_ = {1,1,1,1};
 }
 
 void GLViewController::setView(GLView* view) {
@@ -21,6 +21,7 @@ void GLViewController::setMode(Mode mode) {
 		setCurrentUnclicked();
 	}
 	this->mode_ = mode;
+	qDebug() << mode;
 }
 
 void GLViewController::setClickAmount(int amount) {
@@ -92,6 +93,12 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 }
 
 void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
+	QVector2D pos(event->pos());
+	QRect viewp(0, 0, view_->width(), view_->height());
+	view_->click_model_.setColumn(3, { INITPOS });
+	auto begin = QVector3D(pos, -10.0f).unproject(this->view_->view_ * view_->click_model_, view_->projection_, viewp);
+	auto end = QVector3D(pos.x(), view_->height() - pos.y(), 1.0f).unproject(this->view_->view_ * view_->click_model_, view_->projection_, viewp);
+	QVector3D direction = (end - begin).normalized();
 }
 
 void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) {
@@ -126,6 +133,11 @@ void GLViewController::setCurrentUnclicked() {
 		current_selected_->clickable_->setUnclicked(unclick_color_);
 		current_selected_ = nullptr;
 	}
+}
+
+void GLViewController::clearClicked() {
+	setCurrentUnclicked();
+	this->clicked_.clear();
 }
 
 bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius) {

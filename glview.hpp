@@ -43,6 +43,10 @@ public slots:
 	void degreeElevationS();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
+	void modeSelect() const;
+	void modeDrawCurve() const;
+	void modeDrawSurface() const;
+	void modeDrawCoonspatch() const;
 	void editClickedVertex();
 	signals:
 	void clickedVertex(QVector4D*);
@@ -53,11 +57,10 @@ private:
 	QMatrix4x4 view_, projection_, click_model_;
 	QOpenGLShaderProgram* prog_;
 	float z_near_, z_far_, zoom_factor_;
-	QVector4D* dragged_vertex_;
-	QVector3D intersect_to_center_;
 	BezierSurface *surface_;
-	float click_sphere_radius_;
 	GLViewController *controller_;
+	QVector<std::shared_ptr<Model>> models_;
+	QVector<std::shared_ptr<Model>> temp_models_;
 };
 
 #endif // BEZIERSCREEN_H
