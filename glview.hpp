@@ -52,6 +52,7 @@ public slots:
 	void clickedVertex(QVector4D*);
 
 private:
+	void initModel(Model& model, QVector4D *pos);
 	bool initShader() const;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4 view_, projection_, click_model_;
@@ -59,8 +60,9 @@ private:
 	float z_near_, z_far_, zoom_factor_;
 	BezierSurface *surface_;
 	GLViewController *controller_;
-	QVector<std::shared_ptr<Model>> models_;
-	QVector<std::shared_ptr<Model>> temp_models_;
+	QVector<std::shared_ptr<BezierSurface>> surfaces_;
+	QVector<std::shared_ptr<BezierSurface>> curves_;
+	std::shared_ptr<Model> temp_model_;
 };
 
 #endif // BEZIERSCREEN_H

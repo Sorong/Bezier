@@ -82,6 +82,12 @@ void GLView::paintGL() {
 	if (surface_ != nullptr) {
 		surface_->render(projection_, view_);
 	}
+	if(temp_model_) {
+		temp_model_->render(projection_, view_);
+	}
+	for(auto& surface : surfaces_) {
+		surface->render(projection_, view_);
+	}
 	update();
 }
 
@@ -144,6 +150,9 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 	case Qt::Key_Plus:
 		surface_->scale(1.10);
 		click_model_.scale(1.10);
+		if(temp_model_) {
+			temp_model_->scale(2);
+		}
 		break;
 	case Qt::Key_Minus:
 		surface_->scale(0.9);
@@ -181,7 +190,7 @@ void GLView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void GLView::mouseReleaseEvent(QMouseEvent* event) {
-
+	controller_->mouseReleaseEvent(event);
 }
 
 QVector<QVector4D> GLView::getBasePoints() const {
@@ -254,6 +263,14 @@ void GLView::modeDrawCoonspatch() const {
 void GLView::editClickedVertex() {
 	makeCurrent();
 	surface_->reinit();
+	update();
+}
+
+void GLView::initModel(Model& model, QVector4D* pos) {
+	makeCurrent();
+	model.addShader(*this->prog_);
+	model.init(pos);
+
 	update();
 }
 

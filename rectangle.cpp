@@ -1,14 +1,16 @@
 #include "rectangle.hpp"
 
+using namespace Rect;
 
-Rectangle::Rectangle(QVector4D start, int size): Clickable(start) {
+Rectangle::Rectangle(QVector4D start, float size): Model(), Clickable(start) {
 
 	QVector4D right = start;
 	QVector4D botleft = start;
 	QVector4D botright = start;
 	right.setX(right.x() + size);
 	botleft.setY(botleft.y() + size);
-	botright = right + botleft;
+	auto start_right_vec = right - start;
+	botright = botleft + start_right_vec;
 	this->vertices_ = {
 		start, right, botleft, botright
 	};
@@ -24,7 +26,7 @@ void Rectangle::init(QVector4D* position) {
 	if(position) {
 		this->setPosition(*position);
 	}
-	this->indices_ = { 0,1,0,2,1,3,2,3 };
+	this->indices_ = { 0,1,3,2,0 };
 	if (this->colors_.isEmpty()) {
 		this->colors_.push_back({ 0,0,0,1 });
 	}
@@ -43,7 +45,7 @@ void Rectangle::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		prog->bind();
 		prog->setUniformValue("mvp", mvp);
 		glBindVertexArray(this->vertexarrayobject_);
-		glDrawElements(GL_LINES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_LINE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 		glBindVertexArray(0);
 	}
 }
