@@ -31,7 +31,6 @@ void GLViewController::setClickAmount(int amount) {
 }
 
 void GLViewController::mousePressEvent(QMouseEvent* event) {
-	setCurrentUnclicked();
 	switch (mode_) {
 		case SELECT:
 			pressSelectHandler(event);
@@ -64,8 +63,8 @@ void GLViewController::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
-	setCurrentUnclicked();
 	if(mode_ == DRAWSURFACE && glview_->temp_model_) {
+		setCurrentUnclicked();
 		auto coords = glview_->temp_model_->getVertices();
 		QVector<QVector<QVector4D>> surface = { {coords[0], coords[1]}, {coords[2], coords[3]} };
 		QMatrix4x4 mat;
@@ -73,6 +72,7 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
 		ptr->setCoordinates(surface);
 		ptr->addShader(*glview_->prog_);
+		clearClicked();
 		glview_->initModel(*ptr, nullptr);
 		glview_->surfaces_.push_back(ptr);
 		glview_->temp_model_.reset();
@@ -95,6 +95,7 @@ void GLViewController::pressSelectHandler(QMouseEvent* event) {
 			return;
 		}
 	}
+	
 
 }
 
@@ -164,6 +165,11 @@ void GLViewController::clearClicked() {
 }
 
 bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius) {
+	QVector4D * prev_selected = nullptr;
+	if(current_selected_) {
+		prev_selected = current_selected_->reference_;
+	}
+	setCurrentUnclicked();
 	for (auto i = 0; i < surface.size(); i++) {
 		QVector4D& coord = surface.get(i);
 		QVector3D L = (coord.toVector3DAffine() - begin);
@@ -177,6 +183,7 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		}
 		//float thc = sqrt(radius2 - d2);
 		//auto t_drag = tca - thc;
+		
 		ClickedModel clicked;
 		clicked.clickable_ = &surface.getClicked(i);
 		clicked.reference_ = &surface.getClicked(i).getReference();
@@ -187,12 +194,15 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		this->current_selected_->clickable_->setClicked(click_color_);
 		emit glview_->clickedVertex(clicked.reference_);
 		glview_->current_surface_ = &surface;
+		if (prev_selected == clicked.reference_) {
+			continue;
+		}
 		return true;
 	}
 	return false;
 }
 
-void GLViewController::projectMouseEvent(QMouseEvent* event, QVector3D* begin, QVector3D* end, QVector3D* direction) {
+void GLViewController::projectMouseEvent(QMouseEvent* event, QVector3D* begin, QVector3D* end, QVector3D* direction) const {
 	if(!begin || !end || !direction) {
 		return;
 	}

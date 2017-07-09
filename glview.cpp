@@ -129,7 +129,7 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 	return { 0,0,0,0 };
 }
 
-//TODO: Rework shortcuts and/or effect of shortcuts
+//TODO: Kamerazoom instead, ObjectZoom
 void GLView::keyPressEvent(QKeyEvent* event) {
 	if (!current_surface_) {
 		return;
