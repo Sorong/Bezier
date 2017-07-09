@@ -60,6 +60,7 @@ private:
 	float z_near_, z_far_, zoom_factor_;
 	GLViewController *controller_;
 	BezierSurface *current_surface_;
+	QVector3D eye;
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
 	QVector<std::shared_ptr<BezierSurface>> curves_;
 	std::shared_ptr<Model> temp_model_;

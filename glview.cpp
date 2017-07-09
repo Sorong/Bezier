@@ -36,7 +36,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f) {
+	zoom_factor_(1.0f), eye(EYE) {
 	this->prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
@@ -55,8 +55,7 @@ void GLView::initializeGL() {
 	}
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
-	QVector3D eye(EYE);
-	this->view_.lookAt(eye, { CENTER }, { UP });
+	this->view_.lookAt(eye, {CENTER}, {UP});
 }
 
 void GLView::paintGL() {
@@ -70,10 +69,10 @@ void GLView::paintGL() {
 	glEnable(GL_DEPTH_TEST);
 	glPointSize(3);
 
-	if(temp_model_) {
+	if (temp_model_) {
 		temp_model_->render(projection_, view_);
 	}
-	for(auto& surface : surfaces_) {
+	for (auto& surface : surfaces_) {
 		surface->render(projection_, view_);
 	}
 	update();
@@ -112,7 +111,7 @@ void GLView::removeCoordinateByIndex(int i) {
 
 //Todo: Add for surface_
 bool GLView::addCoordinate(float x, float y) {
-	return this->addCoordinate({ x,y,0,1 });
+	return this->addCoordinate({x,y,0,1});
 }
 
 //Todo: Add for surface_
@@ -126,7 +125,7 @@ bool GLView::addCoordinate(QVector4D xyzw) {
 
 //Todo: GetCoordinateByIndex for surface_
 QVector4D GLView::getCoordinateByIndex(int i) const {
-	return { 0,0,0,0 };
+	return {0,0,0,0};
 }
 
 //TODO: Kamerazoom instead, ObjectZoom
@@ -135,34 +134,38 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 		return;
 	}
 	switch (event->key()) {
-	case Qt::Key_Plus:
-		current_surface_->scale(1.10);
-		click_model_.scale(1.10);
-		if(temp_model_) {
-			temp_model_->scale(2);
-		}
-		break;
-	case Qt::Key_Minus:
-		current_surface_->scale(0.9);
-		click_model_.scale(0.9);
-		break;
-	case Qt::Key_Left:
-		current_surface_->rotate(1, 0, -1, 0);
-		click_model_.rotate(1, 0, -1, 0);
-		break;
-	case Qt::Key_Right:
-		current_surface_->rotate(1, 0, 1, 0);
-		click_model_.rotate(1, 0, 1, 0);
-		break;
-	case Qt::Key_Up:
-		current_surface_->rotate(1, -1, 0, 0);
-		click_model_.rotate(1, -1, 0, 0);
-		break;
-	case Qt::Key_Down:
-		current_surface_->rotate(1, 1, 0, 0);
-		click_model_.rotate(1, 1, 0, 0);
-		break;
-	default: break;
+		case Qt::Key_Plus:
+			if(eye.z() != 0) {
+				eye -= {0.0f, 0.0f, 1};
+			}
+			this->view_.setToIdentity();
+			this->view_.lookAt(eye, { CENTER }, { UP });
+			break;
+		case Qt::Key_Minus:
+			//current_surface_->scale(0.9);
+			//click_model_.scale(0.9);
+			eye += {0.0f, 0.0f, 1};
+			this->view_.setToIdentity();
+			this->view_.lookAt(eye, { CENTER }, { UP });
+			break;
+		case Qt::Key_Left:
+			current_surface_->rotate(1, 0, -1, 0);
+			click_model_.rotate(1, 0, -1, 0);
+			break;
+		case Qt::Key_Right:
+			current_surface_->rotate(1, 0, 1, 0);
+			click_model_.rotate(1, 0, 1, 0);
+			break;
+		case Qt::Key_Up:
+			current_surface_->rotate(1, -1, 0, 0);
+			click_model_.rotate(1, -1, 0, 0);
+			break;
+		case Qt::Key_Down:
+			current_surface_->rotate(1, 1, 0, 0);
+			click_model_.rotate(1, 1, 0, 0);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -182,7 +185,7 @@ void GLView::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 QVector<QVector4D> GLView::getBasePoints() const {
-	return { {} };
+	return {{}};
 }
 
 
@@ -214,7 +217,7 @@ void GLView::degreeElevationS() {
 }
 
 void GLView::toggleSublineMode(bool state) {
-	if(!current_surface_) {
+	if (!current_surface_) {
 		return;
 	}
 	this->show_sublines_ = state;
@@ -272,10 +275,10 @@ bool GLView::initShader() const {
 	QString path = QDir::currentPath() + SHADERPATH;
 	QString vert = ".vert";
 	QString frag = ".frag";
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "simple" + vert })) {
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, {path + "simple" + vert})) {
 		return false;
 	}
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "simple" + frag })) {
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, {path + "simple" + frag})) {
 		return false;
 	}
 	return this->prog_->link();
