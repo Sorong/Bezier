@@ -97,6 +97,14 @@ void BezierSurface::reinit(QVector4D* pos) {
 	Model::reinit(pos);	
 }
 
+void BezierSurface::reinit(QVector4D* pos, bool hardreset) {
+	if(hardreset) {
+		clearAndReinit(pos);
+	} else {
+		reinit(pos);
+	}
+}
+
 void BezierSurface::setT(float t) {
 	this->t_ = t;
 	if (this->casteljau_ || this->derivate_) {
@@ -112,20 +120,25 @@ void BezierSurface::setS(float s) {
 }
 
 void BezierSurface::addHorizontalCoordinates(QVector<QVector4D> &coordinates) {
+	if(coordinates_.isEmpty()) {
+		addVerticalCoordinates(coordinates);
+		return;
+	}
 	if(coordinates.size() != this->coordinates_.size()) {
 		throw std::out_of_range("Invalid size, the surface cannot be increased");
 	}
 	for (auto i = 0; i < coordinates.size(); i++) {
-		
 		this->coordinates_[i].push_back(coordinates.at(i));
 	}
+	recalculateSize();
 }
 
 void BezierSurface::addVerticalCoordinates(QVector<QVector4D> &coordinates) {
-	if (coordinates.size() != this->coordinates_.at(0).size()) {
+	if (!coordinates_.isEmpty() && coordinates.size() != this->coordinates_.at(0).size()) {
 		throw std::out_of_range("Invalid size, the surface cannot be increased");
 	}
 	this->coordinates_.push_back(coordinates);
+	recalculateSize();
 }
 
 

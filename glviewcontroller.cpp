@@ -100,6 +100,38 @@ void GLViewController::pressSelectHandler(QMouseEvent* event) {
 }
 
 void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
+	QVector3D begin, end, direction;
+	projectMouseEvent(event, &begin, &end, &direction);
+	auto length = (clamped_z_ - begin.z()) / direction.z();
+	QVector4D base = begin + length * direction;
+	base.setW(1);
+	QVector<QVector4D> vertical, coord = { {base} };
+	if (!current_selected_ || current_selected_->clickable_ != nullptr) {
+		ClickedModel clicked;
+		clicked.clickable_ = nullptr;
+		clicked.reference_ = nullptr;
+		clicked.model_ = glview_->temp_model_.get();
+		clicked.offset_ = { 0,0,0 };
+		QMatrix4x4 mat;
+		mat.setToIdentity();
+		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
+		ptr->addHorizontalCoordinates(coord);
+		ptr->addShader(*glview_->prog_);
+		clicked.model_ = ptr.get();
+		clicked_.push_back(clicked);
+		this->current_selected_ = &clicked_[clicked_.size() - 1];
+		glview_->curves_.push_back(ptr);
+		glview_->initModel(*ptr.get(), nullptr);
+	} else {
+		try {
+			dynamic_cast<BezierSurface*>(current_selected_->model_)->addHorizontalCoordinates(coord);
+			glview_->makeCurrent();
+			dynamic_cast<BezierSurface*>(current_selected_->model_)->reinit(nullptr, true);
+		} catch(std::bad_cast) {
+			//TODO: What?
+		}
+
+	}
 }
 
 void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
@@ -154,7 +186,9 @@ void GLViewController::moveDrawSurfaceHandler(QMouseEvent* event) {
 
 void GLViewController::setCurrentUnclicked() {
 	if (current_selected_ != nullptr) {
-		current_selected_->clickable_->setUnclicked(unclick_color_);
+		if(current_selected_->clickable_) {
+			current_selected_->clickable_->setUnclicked(unclick_color_);
+		}
 		current_selected_ = nullptr;
 	}
 }

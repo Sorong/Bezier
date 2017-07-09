@@ -14,7 +14,7 @@ public:
 	void degreeElevation(QVector<QVector4D>& src_coordinates) const;
 protected:
 	void bezierBernstein(const QVector<QVector4D> &src_coordinates, QVector<QVector4D> &dest_coordinates, float t);
-	int factorial(int n) const;
-	int binominal(int n, int k) const;
+	long factorial(int n) const;
+	long binominal(int n, int k) const;
 };
 

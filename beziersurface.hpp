@@ -15,6 +15,7 @@ public:
 	void init(QVector4D *pos = nullptr) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
 	void reinit(QVector4D *pos = nullptr) override;
+	void reinit(QVector4D *pos, bool hardreset);
 	void setT(float t);
 	void setS(float s);
 	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);

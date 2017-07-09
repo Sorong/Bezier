@@ -75,6 +75,9 @@ void GLView::paintGL() {
 	for (auto& surface : surfaces_) {
 		surface->render(projection_, view_);
 	}
+	for(auto& curve : curves_) {
+		curve->render(projection_, view_);
+	}
 	update();
 }
 
@@ -133,6 +136,7 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 	if (!current_surface_) {
 		return;
 	}
+	QMatrix4x4 mat;
 	switch (event->key()) {
 		case Qt::Key_Plus:
 			if(eye.z() != 0) {
@@ -149,8 +153,14 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 			this->view_.lookAt(eye, { CENTER }, { UP });
 			break;
 		case Qt::Key_Left:
-			current_surface_->rotate(1, 0, -1, 0);
-			click_model_.rotate(1, 0, -1, 0);
+			
+			mat.setToIdentity();
+			mat.rotate(1, 0, -1, 0);
+			eye = mat * eye;
+			this->view_.setToIdentity();
+			this->view_.lookAt(eye, { CENTER }, { UP });
+		//	current_surface_->rotate(1, 0, -1, 0);
+			//click_model_.rotate(1, 0, -1, 0);
 			break;
 		case Qt::Key_Right:
 			current_surface_->rotate(1, 0, 1, 0);

@@ -1,5 +1,5 @@
 #include "beziercalculator.hpp"
-
+#define BERNSTEINLIMIT 13
 
 
 BezierCalculator::BezierCalculator()
@@ -36,16 +36,22 @@ bool BezierCalculator::bezierCurve(QVector<QVector4D>& src_coordinates, QVector<
 	}
 	auto n = src_coordinates.size() - 1;
 	for (auto tAsInt = 0; tAsInt <= 100; tAsInt += (precision * 100)) {
-		auto t = tAsInt / 100.f;
-		QVector<float> bernsteinpolynoms;
-		float beziertest = 0;
+		double t = tAsInt / 100.f;
+		QVector<double> bernsteinpolynoms;
+		double beziertest = 0;
+		if(n >= BERNSTEINLIMIT) {
+			QVector4DMatrix mat;
+			deCasteljau(src_coordinates, mat, t);
+			dest_coordinates.push_back(mat.last().last());
+			continue;
+		}
 		for (int k = 0; k <= n; k++) {
-			auto polynom = binominal(n, k) * pow(t, k) * pow(1 - t, n - k);
-			beziertest += polynom;
+			double polynom = binominal(n, k) * pow(t, k) * pow(1 - t, n - k);
+			beziertest += (polynom);
 			bernsteinpolynoms.push_back(polynom);
 
 		}
-		if (beziertest * 100 <= 99) {
+		if (beziertest <= 0.99) {
 			return false;
 		}
 		QVector4D point(0, 0, 0, 0);
@@ -111,14 +117,14 @@ void BezierCalculator::bezierBernstein(const QVector<QVector4D>& src_coordinates
 	dest_coordinates.push_back(point);
 }
 
-int BezierCalculator::factorial(int n) const {
+long BezierCalculator::factorial(int n) const {
 	if (n <= 1) {
 		return 1;
 	}
 	return n * factorial(n - 1);
 }
 
-int BezierCalculator::binominal(int n, int k) const {
+long BezierCalculator::binominal(int n, int k) const {
 	if (n < k) {
 		return 0;
 	}
