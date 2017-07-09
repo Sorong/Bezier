@@ -32,6 +32,7 @@ inline DrawMode operator|(DrawMode a, DrawMode b) {
 inline DrawMode operator&(DrawMode a, DrawMode b) {
 	return static_cast<DrawMode>(static_cast<int>(a) & static_cast<int>(b));
 }
+
 inline DrawMode operator^(DrawMode a, DrawMode b) {
 	return static_cast<DrawMode>(static_cast<int>(a) ^ static_cast<int>(b));
 }
@@ -57,6 +58,7 @@ private:
 	void moveDrawSurfaceHandler(QMouseEvent* event);
 	void setCurrentUnclicked();
 	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
+	void projectMouseEvent(QMouseEvent* event, QVector3D *begin, QVector3D *end, QVector3D *direction);
 	GLView* glview_;
 	Mode mode_;
 	DrawMode draw_mode_;

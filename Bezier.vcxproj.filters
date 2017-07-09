@@ -114,7 +114,7 @@
       <Filter>Source Files\Util</Filter>
     </ClCompile>
     <ClCompile Include="rectangle.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,7 +174,7 @@
       <Filter>Header Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="rectangle.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

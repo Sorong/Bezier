@@ -73,11 +73,7 @@ void Icosahedron::scale(float ratio) {
 }
 
 void Icosahedron::translateToReference() {
-	this->model_.translate(reference_vertex_.toVector3DAffine());
-}
-
-QVector4D& Icosahedron::getReference() const {
-	return this->reference_vertex_;
+	this->model_.translate(reference_vertex_->toVector3DAffine());
 }
 
 void Icosahedron::setClicked(QVector4D& color) {

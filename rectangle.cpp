@@ -14,6 +14,7 @@ Rectangle::Rectangle(QVector4D start, float size): Model(), Clickable(start) {
 	this->vertices_ = {
 		start, right, botleft, botright
 	};
+	this->setReference(this->vertices_[3]);
 }
 
 Rectangle::~Rectangle() {
@@ -51,8 +52,8 @@ void Rectangle::render(QMatrix4x4& projection, QMatrix4x4& view) {
 }
 
 void Rectangle::reinit(QVector4D* position) {
-	this->vertices_[1] = { vertices_[2].x(), vertices_[0].y(), vertices_[1].z(), 1 };
-	this->vertices_[2] = { vertices_[0].x(), vertices_[2].y(), vertices_[2].z(), 1 };
+	this->vertices_[1] = { vertices_[3].x(), vertices_[0].y(), vertices_[0].z(), 1 };
+	this->vertices_[2] = { vertices_[0].x(), vertices_[3].y(), vertices_[0].z(), 1 };
 	glBindVertexArray(this->vertexarrayobject_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);
 	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(QVector4D), vertices_.data(), GL_STATIC_DRAW);

@@ -58,8 +58,8 @@ private:
 	QMatrix4x4 view_, projection_, click_model_;
 	QOpenGLShaderProgram* prog_;
 	float z_near_, z_far_, zoom_factor_;
-	BezierSurface *surface_;
 	GLViewController *controller_;
+	BezierSurface *current_surface_;
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
 	QVector<std::shared_ptr<BezierSurface>> curves_;
 	std::shared_ptr<Model> temp_model_;

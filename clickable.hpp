@@ -11,6 +11,7 @@ public:
 	virtual void setUnclicked(QVector4D& color) = 0;
 	virtual QVector4D& getReference() const;
 protected:
-	QVector4D &reference_vertex_;
+	void setReference(QVector4D& reference);
+	QVector4D *reference_vertex_;
 };
 

@@ -57,15 +57,6 @@ void GLView::initializeGL() {
 	this->view_.setToIdentity();
 	QVector3D eye(EYE);
 	this->view_.lookAt(eye, { CENTER }, { UP });
-
-	//TODO: Removehardcoded Surface
-	QMatrix4x4 model;
-	surface_ = new BezierSurface(model, { INITPOS });
-	QVector<QVector<QVector4D>> test2 = { {{-10,0,0,5}, {2,0,0,1}, {4,0,0,1}},{{-2,2,0,1},{2,2,0,1},{4,2,0,1}} }; /*{ { -2,2,0,1 },{ 2,2,0,1 },{ 4,2,0,1 }*/
-	/*,{ { -2,0,5,1 },{ 2,0,5,1 },{ 4,0,5,1 } }*/
-	surface_->setCoordinates(test2);
-	surface_->addShader(*this->prog_);
-	surface_->init();
 }
 
 void GLView::paintGL() {
@@ -79,9 +70,6 @@ void GLView::paintGL() {
 	glEnable(GL_DEPTH_TEST);
 	glPointSize(3);
 
-	if (surface_ != nullptr) {
-		surface_->render(projection_, view_);
-	}
 	if(temp_model_) {
 		temp_model_->render(projection_, view_);
 	}
@@ -101,16 +89,16 @@ void GLView::resizeGL(int w, int h) {
 
 void GLView::setT(float t) {
 	makeCurrent();
-	if (surface_ != nullptr) {
-		this->surface_->setT(t);
+	if (current_surface_ != nullptr) {
+		this->current_surface_->setT(t);
 	}
 	update();
 }
 
 void GLView::setS(float s) {
 	makeCurrent();
-	if (surface_ != nullptr) {
-		this->surface_->setS(s);
+	if (current_surface_ != nullptr) {
+		this->current_surface_->setS(s);
 	}
 	update();
 }
@@ -143,35 +131,35 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 
 //TODO: Rework shortcuts and/or effect of shortcuts
 void GLView::keyPressEvent(QKeyEvent* event) {
-	if (surface_ == nullptr) {
+	if (!current_surface_) {
 		return;
 	}
 	switch (event->key()) {
 	case Qt::Key_Plus:
-		surface_->scale(1.10);
+		current_surface_->scale(1.10);
 		click_model_.scale(1.10);
 		if(temp_model_) {
 			temp_model_->scale(2);
 		}
 		break;
 	case Qt::Key_Minus:
-		surface_->scale(0.9);
+		current_surface_->scale(0.9);
 		click_model_.scale(0.9);
 		break;
 	case Qt::Key_Left:
-		surface_->rotate(1, 0, -1, 0);
+		current_surface_->rotate(1, 0, -1, 0);
 		click_model_.rotate(1, 0, -1, 0);
 		break;
 	case Qt::Key_Right:
-		surface_->rotate(1, 0, 1, 0);
+		current_surface_->rotate(1, 0, 1, 0);
 		click_model_.rotate(1, 0, 1, 0);
 		break;
 	case Qt::Key_Up:
-		surface_->rotate(1, -1, 0, 0);
+		current_surface_->rotate(1, -1, 0, 0);
 		click_model_.rotate(1, -1, 0, 0);
 		break;
 	case Qt::Key_Down:
-		surface_->rotate(1, 1, 0, 0);
+		current_surface_->rotate(1, 1, 0, 0);
 		click_model_.rotate(1, 1, 0, 0);
 		break;
 	default: break;
@@ -199,47 +187,53 @@ QVector<QVector4D> GLView::getBasePoints() const {
 
 
 void GLView::degreeElevation() {
-	if (surface_ != nullptr) {
+	if (current_surface_ != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		surface_->degreeElevation();
+		current_surface_->degreeElevation();
 	}
 }
 
 void GLView::degreeElevationT() {
-	if (surface_ != nullptr) {
+	if (current_surface_ != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		surface_->degreeElevationT();
+		current_surface_->degreeElevationT();
 	}
 }
 
 void GLView::degreeElevationS() {
-	if (surface_ != nullptr) {
+	if (current_surface_ != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		surface_->degreeElevationS();
+		current_surface_->degreeElevationS();
 	}
 }
 
 void GLView::toggleSublineMode(bool state) {
+	if(!current_surface_) {
+		return;
+	}
 	this->show_sublines_ = state;
-	this->surface_->showCasteljau(state);
+	current_surface_->showCasteljau(state);
 	makeCurrent();
-	surface_->reinit();
+	current_surface_->reinit();
 	update();
 
 
 }
 
 void GLView::toggleDerivateMode(bool state) {
+	if (!current_surface_) {
+		return;
+	}
 	this->show_derivate_ = state;
-	this->surface_->showDerivate(state);
+	current_surface_->showDerivate(state);
 	makeCurrent();
-	surface_->reinit();
+	current_surface_->reinit();
 	update();
 }
 
@@ -262,7 +256,7 @@ void GLView::modeDrawCoonspatch() const {
 
 void GLView::editClickedVertex() {
 	makeCurrent();
-	surface_->reinit();
+	current_surface_->reinit();
 	update();
 }
 

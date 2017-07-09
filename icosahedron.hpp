@@ -14,7 +14,6 @@ public:
 	void setColor(QVector4D color) override;
 	void scale(float ratio);
 	void translateToReference() override;
-	QVector4D& getReference() const override;
 	void setClicked(QVector4D& color) override;
 	void setUnclicked(QVector4D& color) override;
 private:
