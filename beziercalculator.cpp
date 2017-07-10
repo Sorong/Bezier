@@ -96,7 +96,7 @@ void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) cons
 	src_coordinates = new_coordinates;
 }
 
-void BezierCalculator::bezierBernstein(const QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float t) {
+void BezierCalculator::bezierBernstein(const QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float t) const {
 	auto n = src_coordinates.size() - 1;
 	QVector<float> bernsteinpolynoms;
 	float beziertest = 0;

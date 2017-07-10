@@ -26,6 +26,7 @@ public:
 	void rotate(qreal angle, const QVector3D & vector);
 	void scale(qreal factor);
 	virtual void setColor(QVector4D color);
+	QMatrix4x4& getModelMatrix();
 protected: 
 	virtual void initBuffer();
 	QMatrix4x4 model_;

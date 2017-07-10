@@ -49,7 +49,7 @@ void GLViewController::mousePressEvent(QMouseEvent* event) {
 	}
 }
 
-void GLViewController::mouseMoveEvent(QMouseEvent* event) {
+void GLViewController::mouseMoveEvent(QMouseEvent* event) const {
 	switch (mode_) {
 		case SELECT:
 			moveSelectHandler(event);
@@ -82,15 +82,17 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 
 void GLViewController::pressSelectHandler(QMouseEvent* event) {
 	QVector3D begin, end, direction;
-	projectMouseEvent(event, &begin, &end, &direction);
+
 	float radius = 0.2f;
 	float radius2 = radius * radius;
 	for (auto& current : glview_->surfaces_) {
+		projectMouseEvent(event, current->getModelMatrix(),  &begin, &end, &direction);
 		if (checkClicked(*current, begin, direction, radius2)) {
 			return;
 		}
 	}
 	for (auto& current : glview_->curves_) {
+		projectMouseEvent(event, current->getModelMatrix(), &begin, &end, &direction);
 		if (checkClicked(*current, begin, direction, radius2)) {
 			return;
 		}
@@ -110,7 +112,6 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		ClickedModel clicked;
 		clicked.clickable_ = nullptr;
 		clicked.reference_ = nullptr;
-		clicked.model_ = glview_->temp_model_.get();
 		clicked.offset_ = { 0,0,0 };
 		QMatrix4x4 mat;
 		mat.setToIdentity();
@@ -152,15 +153,15 @@ void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
 	this->current_selected_ = &clicked_[clicked_.size() - 1];
 }
 
-void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) {
+void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) const {
 }
 
-void GLViewController::moveSelectHandler(QMouseEvent* event) {
+void GLViewController::moveSelectHandler(QMouseEvent* event) const {
 	if (current_selected_ == nullptr) {
 		return;
 	}
 	QVector3D begin, end, direction;
-	projectMouseEvent(event, &begin, &end, &direction);
+	projectMouseEvent(event,current_selected_->model_->getModelMatrix(), &begin, &end, &direction);
 	auto length = current_selected_->offset_.length();
 	float w = current_selected_->reference_->w();
 	*current_selected_->reference_ = (begin + length * direction);
@@ -171,7 +172,7 @@ void GLViewController::moveSelectHandler(QMouseEvent* event) {
 	current_selected_->model_->reinit();
 }
 
-void GLViewController::moveDrawSurfaceHandler(QMouseEvent* event) {
+void GLViewController::moveDrawSurfaceHandler(QMouseEvent* event) const {
 	if (current_selected_ == nullptr) {
 		return;
 	}
@@ -240,10 +241,18 @@ void GLViewController::projectMouseEvent(QMouseEvent* event, QVector3D* begin, Q
 	if(!begin || !end || !direction) {
 		return;
 	}
+	QMatrix4x4 mat;
+	mat.setColumn(3, { INITPOS });
+	projectMouseEvent(event, mat, begin, end, direction);
+}
+
+void GLViewController::projectMouseEvent(QMouseEvent* event, const QMatrix4x4 model, QVector3D* begin, QVector3D* end, QVector3D* direction) const {
+	if (!begin || !end || !direction) {
+		return;
+	}
 	QVector2D pos(event->pos());
 	QRect viewp(0, 0, glview_->width(), glview_->height());
-	glview_->click_model_.setColumn(3, { INITPOS });
-	*begin = QVector3D(pos, -10.0f).unproject(this->glview_->view_ * glview_->click_model_, glview_->projection_, viewp);
-	*end = QVector3D(pos.x(), glview_->height() - pos.y(), 1.0f).unproject(this->glview_->view_ * glview_->click_model_, glview_->projection_, viewp);
+	*begin = QVector3D(pos, -10.0f).unproject(this->glview_->view_ * model, glview_->projection_, viewp);
+	*end = QVector3D(pos.x(), glview_->height() - pos.y(), 1.0f).unproject(this->glview_->view_ * model, glview_->projection_, viewp);
 	*direction = (*end - *begin).normalized();
 }

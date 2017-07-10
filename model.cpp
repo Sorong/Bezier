@@ -110,6 +110,10 @@ void Model::setColor(QVector4D color) {
 	}
 }
 
+QMatrix4x4& Model::getModelMatrix() {
+	return model_;
+}
+
 void Model::initBuffer() {
 	GLuint progId = this->programs_.at(0)->programId();
 	GLuint pos;

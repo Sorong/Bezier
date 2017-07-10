@@ -54,11 +54,12 @@ private:
 	void pressDrawCurveHandler(QMouseEvent* event);
 	void pressDrawSurfaceHandler(QMouseEvent* event);
 	void pressDrawCoonspatchHandler(QMouseEvent* event);
-	void moveSelectHandler(QMouseEvent* event);
-	void moveDrawSurfaceHandler(QMouseEvent* event);
+	void moveSelectHandler(QMouseEvent* event) const;
+	void moveDrawSurfaceHandler(QMouseEvent* event) const;
 	void setCurrentUnclicked();
 	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
 	void projectMouseEvent(QMouseEvent* event, QVector3D *begin, QVector3D *end, QVector3D *direction) const;
+	void projectMouseEvent(QMouseEvent* event, const QMatrix4x4 model, QVector3D *begin, QVector3D *end, QVector3D * direction) const;
 	GLView* glview_;
 	Mode mode_;
 	DrawMode draw_mode_;

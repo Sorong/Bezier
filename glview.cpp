@@ -146,33 +146,21 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 			this->view_.lookAt(eye, { CENTER }, { UP });
 			break;
 		case Qt::Key_Minus:
-			//current_surface_->scale(0.9);
-			//click_model_.scale(0.9);
 			eye += {0.0f, 0.0f, 1};
 			this->view_.setToIdentity();
 			this->view_.lookAt(eye, { CENTER }, { UP });
 			break;
 		case Qt::Key_Left:
-			
-			mat.setToIdentity();
-			mat.rotate(1, 0, -1, 0);
-			eye = mat * eye;
-			this->view_.setToIdentity();
-			this->view_.lookAt(eye, { CENTER }, { UP });
-		//	current_surface_->rotate(1, 0, -1, 0);
-			//click_model_.rotate(1, 0, -1, 0);
+			current_surface_->rotate(1, 0, -1, 0);
 			break;
 		case Qt::Key_Right:
 			current_surface_->rotate(1, 0, 1, 0);
-			click_model_.rotate(1, 0, 1, 0);
 			break;
 		case Qt::Key_Up:
 			current_surface_->rotate(1, -1, 0, 0);
-			click_model_.rotate(1, -1, 0, 0);
 			break;
 		case Qt::Key_Down:
 			current_surface_->rotate(1, 1, 0, 0);
-			click_model_.rotate(1, 1, 0, 0);
 			break;
 		default:
 			break;

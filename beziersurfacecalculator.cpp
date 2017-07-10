@@ -11,7 +11,7 @@ BezierSurfaceCalculator::~BezierSurfaceCalculator()
 {
 }
 
-void BezierSurfaceCalculator::deCasteljauSurface(const QVector4DMatrix& base_coordinates, QVector4DMatrix& dest_coordinates, float t, float s) {
+void BezierSurfaceCalculator::deCasteljauSurface(const QVector4DMatrix& base_coordinates, QVector4DMatrix& dest_coordinates, float t, float s) const {
 	if(base_coordinates.size() <= 1) {
 		deCasteljau(base_coordinates.at(0), dest_coordinates, t);
 		return;
@@ -61,7 +61,7 @@ bool BezierSurfaceCalculator::bezierSurface(QVector4DMatrix& src_coordinates, QV
         return bezierSurface(src_coordinates, dest_coordinates, precision, precision);
 	}
 	
-QVector<QVector4D> BezierSurfaceCalculator::derivateSurface(const QVector4DMatrix& src_coordinates, float t, float s, QVector4D* derivate_root) {
+QVector<QVector4D> BezierSurfaceCalculator::derivateSurface(const QVector4DMatrix& src_coordinates, float t, float s, QVector4D* derivate_root) const {
 	if(src_coordinates.isEmpty()) {
 		return {};
 	}

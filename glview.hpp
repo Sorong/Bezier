@@ -55,7 +55,7 @@ private:
 	void initModel(Model& model, QVector4D *pos);
 	bool initShader() const;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
-	QMatrix4x4 view_, projection_, click_model_;
+	QMatrix4x4 view_, projection_;
 	QOpenGLShaderProgram* prog_;
 	float z_near_, z_far_, zoom_factor_;
 	GLViewController *controller_;
