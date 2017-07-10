@@ -363,7 +363,7 @@
        <number>20</number>
       </property>
       <item row="2" column="1">
-       <widget class="QSlider" name="t_slider_">
+       <widget class="QSlider" name="u_slider_">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -417,7 +417,7 @@ anzeigen</string>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QSlider" name="s_slider_">
+       <widget class="QSlider" name="v_slider_">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -460,7 +460,7 @@ anzeigen</string>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="s_label_">
+       <widget class="QLabel" name="v_label_">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -490,7 +490,7 @@ anzeigen</string>
          </font>
         </property>
         <property name="text">
-         <string>s: 0.00</string>
+         <string>v: 0.00</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -507,7 +507,7 @@ anzeigen</string>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="t_label_">
+       <widget class="QLabel" name="u_label_">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -537,7 +537,7 @@ anzeigen</string>
          </font>
         </property>
         <property name="text">
-         <string>t: 0.00</string>
+         <string>u: 0.00</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -556,7 +556,7 @@ anzeigen</string>
       <item row="5" column="1">
        <widget class="QPushButton" name="raise_elevation_">
         <property name="text">
-         <string>Gradanhebung T/S</string>
+         <string>Gradanhebung U/V</string>
         </property>
        </widget>
       </item>
@@ -569,16 +569,16 @@ anzeigen</string>
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QPushButton" name="raise_elevation_t_">
+       <widget class="QPushButton" name="raise_elevation_u_">
         <property name="text">
-         <string>Gradanhebung T</string>
+         <string>Gradanhebung U</string>
         </property>
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QPushButton" name="raise_elevation_s_">
+       <widget class="QPushButton" name="raise_elevation_v_">
         <property name="text">
-         <string>Gradanhebung S</string>
+         <string>Gradanhebung V</string>
         </property>
        </widget>
       </item>
@@ -680,6 +680,9 @@ anzeigen</string>
             <height>32</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>false</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -780,8 +783,6 @@ anzeigen</string>
       </item>
      </layout>
     </widget>
-    <zorder>verticalLayoutWidget</zorder>
-    <zorder></zorder>
    </widget>
   </widget>
   <action name="show_vertex_data_">

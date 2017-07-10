@@ -9,13 +9,13 @@ MainView::MainView(QWidget* parent)
 	: QMainWindow(parent), clicked(nullptr) {
 	ui.setupUi(this);
 	this->setMinimumHeight(500);
-	QObject::connect(ui.t_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToTLabel(int)));
-	QObject::connect(ui.s_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToSLabel(int)));
+	QObject::connect(ui.u_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToTLabel(int)));
+	QObject::connect(ui.v_slider_, SIGNAL(valueChanged(int)), this, SLOT(sliderToSLabel(int)));
 	QObject::connect(ui.show_sublines_, SIGNAL(toggled(bool)), this, SLOT(deCasteljau(bool)));
 	QObject::connect(ui.show_derivation_, SIGNAL(toggled(bool)), this, SLOT(derivate(bool)));
 	QObject::connect(ui.raise_elevation_, SIGNAL(pressed()), this, SLOT(degreeElevation()));
-	QObject::connect(ui.raise_elevation_t_, SIGNAL(pressed()), this, SLOT(degreeElevationT()));
-	QObject::connect(ui.raise_elevation_s_, SIGNAL(pressed()), this, SLOT(degreeElevationS()));
+	QObject::connect(ui.raise_elevation_u_, SIGNAL(pressed()), this, SLOT(degreeElevationU()));
+	QObject::connect(ui.raise_elevation_v_, SIGNAL(pressed()), this, SLOT(degreeElevationV()));
 	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D*)), this, SLOT(clickedVertex(QVector4D*)));
 	QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
 	QObject::connect(ui.dock_surface_data_, SIGNAL(closed()), ui.show_surface_data_, SLOT(toggle()));
@@ -40,18 +40,18 @@ MainView::~MainView() {
 
 void MainView::sliderToTLabel(int i) const {
 	const float paramToFloat = i/100.0f;
-	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
-	float_as_string.sprintf("%.2f", paramToFloat);
-	this->ui.t_label_->setText("t: " + float_as_string);
-	this->ui.glview_->setT(paramToFloat);
+	QString floau_av_string;// = QString::number(i / 10.0f, 'g', 4);
+	floau_av_string.sprintf("%.2f", paramToFloat);
+	this->ui.u_label_->setText("u: " + floau_av_string);
+	this->ui.glview_->setU(paramToFloat);
 }
 
 void MainView::sliderToSLabel(int i) const {
 	const float paramToFloat = i / 100.0f;
-	QString float_as_string;// = QString::number(i / 10.0f, 'g', 4);
-	float_as_string.sprintf("%.2f", paramToFloat);
-	this->ui.s_label_->setText("s: " + float_as_string);
-	this->ui.glview_->setS(paramToFloat);
+	QString floau_av_string;// = QString::number(i / 10.0f, 'g', 4);
+	floau_av_string.sprintf("%.2f", paramToFloat);
+	this->ui.v_label_->setText("v: " + floau_av_string);
+	this->ui.glview_->setV(paramToFloat);
 }
 
 void MainView::deCasteljau(bool state) const {
@@ -68,7 +68,7 @@ void MainView::derivate(bool state) const {
 //Todo: Remove?
 void MainView::addCoordinates() const {
 /*	QVector4D coordinates = { static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
-	coordinates *= this->ui.weight_->value();
+	coordinates *= this->ui.weighu_->value();
 	if(this->ui.glview->addCoordinate(coordinates)) {
 		this->addToList(coordinates);
 	} else {
@@ -79,10 +79,10 @@ void MainView::addCoordinates() const {
 }
 
 void MainView::keyPressEvent(QKeyEvent* event) {
-	/*if (event->key() == Qt::Key_Delete && !ui.list_widget_->selectedItems().isEmpty()) {
-		auto selected = ui.list_widget_->selectionModel()->selectedIndexes();
+	/*if (event->key() == Qt::Key_Delete && !ui.lisu_widgeu_->selectedItems().isEmpty()) {
+		auto selected = ui.lisu_widgeu_->selectionModel()->selectedIndexes();
 		auto i = selected.at(0).row();
-		ui.list_widget_->takeItem(i);
+		ui.lisu_widgeu_->takeItem(i);
 		ui.glview->removeCoordinateByIndex(i);
 
 	} else {
@@ -101,13 +101,13 @@ void MainView::degreeElevation() const {
 }
 
 void MainView::degreeElevationT() const {
-	this->ui.glview_->degreeElevationT();
+	this->ui.glview_->degreeElevationU();
 	this->ui.show_vertex_data_->setChecked(false);
 	this->ui.show_vertex_data_->setEnabled(false);
 
 }
 void MainView::degreeElevationS() const {
-	this->ui.glview_->degreeElevationS();
+	this->ui.glview_->degreeElevationV();
 	this->ui.show_vertex_data_->setChecked(false);
 	this->ui.show_vertex_data_->setEnabled(false);
 
@@ -135,7 +135,7 @@ void MainView::clickedVertex(QVector4D* coordinate) {
 	qDebug() << "clicked";
 }
 
-void MainView::editClickedVertex() {
+void MainView::editClickedVertex() const {
 	if(clicked == nullptr) {
 		return;
 	}
@@ -149,13 +149,13 @@ void MainView::editClickedVertex() {
 
 void MainView::toggleSlider() const {
 	bool state = ui.show_sublines_->isChecked() || ui.show_derivation_->isChecked();
-	this->ui.s_label_->setEnabled(state);
-	this->ui.t_label_->setEnabled(state);
-	this->ui.s_slider_->setEnabled(state);
-	this->ui.t_slider_->setEnabled(state);
+	this->ui.v_label_->setEnabled(state);
+	this->ui.u_label_->setEnabled(state);
+	this->ui.v_slider_->setEnabled(state);
+	this->ui.u_slider_->setEnabled(state);
 	if (!state) {
-		this->ui.s_slider_->setValue(0);
-		this->ui.t_slider_->setValue(0);
+		this->ui.v_slider_->setValue(0);
+		this->ui.u_slider_->setValue(0);
 	}
 }
 

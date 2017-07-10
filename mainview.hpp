@@ -21,7 +21,7 @@ public slots:
 	void degreeElevationT() const;
 	void degreeElevationS() const;
 	void clickedVertex(QVector4D*);
-	void editClickedVertex();
+	void editClickedVertex() const;
 private:
 	void toggleSlider() const;
 	QVector4D *clicked;

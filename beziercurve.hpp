@@ -12,7 +12,7 @@ public:
 	void init(QVector4D* position = nullptr) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
 	int size() const override;
-	void setColor(QVector4D color);
+	void setColor(QVector4D color) override;
 private:
 	QVector<QVector4D> coordinates_;
 };

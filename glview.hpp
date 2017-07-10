@@ -34,13 +34,13 @@ public:
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	QVector<QVector4D> getBasePoints() const;
-	void setT(float t);
-	void setS(float s);
+	void setU(float u);
+	void setV(float v);
 	
 public slots:
 	void degreeElevation();
-	void degreeElevationT();
-	void degreeElevationS();
+	void degreeElevationU();
+	void degreeElevationV();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
 	void modeSelect() const;

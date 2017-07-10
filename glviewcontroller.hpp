@@ -46,14 +46,14 @@ public:
 	void setMode(Mode mode);
 	void setClickAmount(int amount);
 	void mousePressEvent(QMouseEvent* event);
-	void mouseMoveEvent(QMouseEvent* event);
+	void mouseMoveEvent(QMouseEvent* event) const;
 	void mouseReleaseEvent(QMouseEvent* event);
 	void clearClicked();
 private:
 	void pressSelectHandler(QMouseEvent* event);
 	void pressDrawCurveHandler(QMouseEvent* event);
 	void pressDrawSurfaceHandler(QMouseEvent* event);
-	void pressDrawCoonspatchHandler(QMouseEvent* event);
+	void pressDrawCoonspatchHandler(QMouseEvent* event) const;
 	void moveSelectHandler(QMouseEvent* event) const;
 	void moveDrawSurfaceHandler(QMouseEvent* event) const;
 	void setCurrentUnclicked();

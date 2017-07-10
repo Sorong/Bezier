@@ -66,15 +66,15 @@ public:
     QWidget *surface_data_content_;
     QWidget *gridLayoutWidget_2;
     QGridLayout *surface_data_layout_;
-    QSlider *t_slider_;
+    QSlider *u_slider_;
     QCheckBox *show_sublines_;
-    QSlider *s_slider_;
-    QLabel *s_label_;
-    QLabel *t_label_;
+    QSlider *v_slider_;
+    QLabel *v_label_;
+    QLabel *u_label_;
     QPushButton *raise_elevation_;
     QCheckBox *show_derivation_;
-    QPushButton *raise_elevation_t_;
-    QPushButton *raise_elevation_s_;
+    QPushButton *raise_elevation_u_;
+    QPushButton *raise_elevation_v_;
     QDockWidget *dockWidget;
     QWidget *dockWidgetContents;
     QWidget *verticalLayoutWidget;
@@ -258,28 +258,28 @@ public:
         surface_data_layout_->setContentsMargins(11, 11, 11, 11);
         surface_data_layout_->setObjectName(QStringLiteral("surface_data_layout_"));
         surface_data_layout_->setContentsMargins(20, 0, 20, 0);
-        t_slider_ = new QSlider(gridLayoutWidget_2);
-        t_slider_->setObjectName(QStringLiteral("t_slider_"));
-        t_slider_->setEnabled(false);
+        u_slider_ = new QSlider(gridLayoutWidget_2);
+        u_slider_->setObjectName(QStringLiteral("u_slider_"));
+        u_slider_->setEnabled(false);
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(t_slider_->sizePolicy().hasHeightForWidth());
-        t_slider_->setSizePolicy(sizePolicy2);
+        sizePolicy2.setHeightForWidth(u_slider_->sizePolicy().hasHeightForWidth());
+        u_slider_->setSizePolicy(sizePolicy2);
         QFont font;
         font.setBold(false);
         font.setWeight(50);
-        t_slider_->setFont(font);
-        t_slider_->setMaximum(100);
-        t_slider_->setSingleStep(5);
-        t_slider_->setTracking(true);
-        t_slider_->setOrientation(Qt::Horizontal);
-        t_slider_->setInvertedAppearance(false);
-        t_slider_->setInvertedControls(false);
-        t_slider_->setTickPosition(QSlider::NoTicks);
-        t_slider_->setTickInterval(1);
+        u_slider_->setFont(font);
+        u_slider_->setMaximum(100);
+        u_slider_->setSingleStep(5);
+        u_slider_->setTracking(true);
+        u_slider_->setOrientation(Qt::Horizontal);
+        u_slider_->setInvertedAppearance(false);
+        u_slider_->setInvertedControls(false);
+        u_slider_->setTickPosition(QSlider::NoTicks);
+        u_slider_->setTickInterval(1);
 
-        surface_data_layout_->addWidget(t_slider_, 2, 1, 1, 1);
+        surface_data_layout_->addWidget(u_slider_, 2, 1, 1, 1);
 
         show_sublines_ = new QCheckBox(gridLayoutWidget_2);
         show_sublines_->setObjectName(QStringLiteral("show_sublines_"));
@@ -287,54 +287,54 @@ public:
 
         surface_data_layout_->addWidget(show_sublines_, 0, 1, 1, 1);
 
-        s_slider_ = new QSlider(gridLayoutWidget_2);
-        s_slider_->setObjectName(QStringLiteral("s_slider_"));
-        s_slider_->setEnabled(false);
-        sizePolicy2.setHeightForWidth(s_slider_->sizePolicy().hasHeightForWidth());
-        s_slider_->setSizePolicy(sizePolicy2);
-        s_slider_->setFont(font);
-        s_slider_->setMaximum(100);
-        s_slider_->setSingleStep(5);
-        s_slider_->setTracking(true);
-        s_slider_->setOrientation(Qt::Horizontal);
-        s_slider_->setInvertedAppearance(false);
-        s_slider_->setInvertedControls(false);
-        s_slider_->setTickPosition(QSlider::NoTicks);
-        s_slider_->setTickInterval(1);
+        v_slider_ = new QSlider(gridLayoutWidget_2);
+        v_slider_->setObjectName(QStringLiteral("v_slider_"));
+        v_slider_->setEnabled(false);
+        sizePolicy2.setHeightForWidth(v_slider_->sizePolicy().hasHeightForWidth());
+        v_slider_->setSizePolicy(sizePolicy2);
+        v_slider_->setFont(font);
+        v_slider_->setMaximum(100);
+        v_slider_->setSingleStep(5);
+        v_slider_->setTracking(true);
+        v_slider_->setOrientation(Qt::Horizontal);
+        v_slider_->setInvertedAppearance(false);
+        v_slider_->setInvertedControls(false);
+        v_slider_->setTickPosition(QSlider::NoTicks);
+        v_slider_->setTickInterval(1);
 
-        surface_data_layout_->addWidget(s_slider_, 3, 1, 1, 1);
+        surface_data_layout_->addWidget(v_slider_, 3, 1, 1, 1);
 
-        s_label_ = new QLabel(gridLayoutWidget_2);
-        s_label_->setObjectName(QStringLiteral("s_label_"));
-        s_label_->setEnabled(false);
-        s_label_->setMinimumSize(QSize(75, 0));
-        s_label_->setMaximumSize(QSize(150, 16777215));
-        s_label_->setBaseSize(QSize(0, 0));
+        v_label_ = new QLabel(gridLayoutWidget_2);
+        v_label_->setObjectName(QStringLiteral("v_label_"));
+        v_label_->setEnabled(false);
+        v_label_->setMinimumSize(QSize(75, 0));
+        v_label_->setMaximumSize(QSize(150, 16777215));
+        v_label_->setBaseSize(QSize(0, 0));
         QFont font1;
         font1.setPointSize(15);
         font1.setBold(false);
         font1.setWeight(50);
-        s_label_->setFont(font1);
-        s_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        s_label_->setWordWrap(false);
-        s_label_->setMargin(0);
-        s_label_->setIndent(-1);
+        v_label_->setFont(font1);
+        v_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        v_label_->setWordWrap(false);
+        v_label_->setMargin(0);
+        v_label_->setIndent(-1);
 
-        surface_data_layout_->addWidget(s_label_, 3, 0, 1, 1);
+        surface_data_layout_->addWidget(v_label_, 3, 0, 1, 1);
 
-        t_label_ = new QLabel(gridLayoutWidget_2);
-        t_label_->setObjectName(QStringLiteral("t_label_"));
-        t_label_->setEnabled(false);
-        t_label_->setMinimumSize(QSize(75, 0));
-        t_label_->setMaximumSize(QSize(150, 16777215));
-        t_label_->setBaseSize(QSize(0, 0));
-        t_label_->setFont(font1);
-        t_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        t_label_->setWordWrap(false);
-        t_label_->setMargin(0);
-        t_label_->setIndent(-1);
+        u_label_ = new QLabel(gridLayoutWidget_2);
+        u_label_->setObjectName(QStringLiteral("u_label_"));
+        u_label_->setEnabled(false);
+        u_label_->setMinimumSize(QSize(75, 0));
+        u_label_->setMaximumSize(QSize(150, 16777215));
+        u_label_->setBaseSize(QSize(0, 0));
+        u_label_->setFont(font1);
+        u_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        u_label_->setWordWrap(false);
+        u_label_->setMargin(0);
+        u_label_->setIndent(-1);
 
-        surface_data_layout_->addWidget(t_label_, 2, 0, 1, 1);
+        surface_data_layout_->addWidget(u_label_, 2, 0, 1, 1);
 
         raise_elevation_ = new QPushButton(gridLayoutWidget_2);
         raise_elevation_->setObjectName(QStringLiteral("raise_elevation_"));
@@ -346,15 +346,15 @@ public:
 
         surface_data_layout_->addWidget(show_derivation_, 1, 1, 1, 1);
 
-        raise_elevation_t_ = new QPushButton(gridLayoutWidget_2);
-        raise_elevation_t_->setObjectName(QStringLiteral("raise_elevation_t_"));
+        raise_elevation_u_ = new QPushButton(gridLayoutWidget_2);
+        raise_elevation_u_->setObjectName(QStringLiteral("raise_elevation_u_"));
 
-        surface_data_layout_->addWidget(raise_elevation_t_, 6, 1, 1, 1);
+        surface_data_layout_->addWidget(raise_elevation_u_, 6, 1, 1, 1);
 
-        raise_elevation_s_ = new QPushButton(gridLayoutWidget_2);
-        raise_elevation_s_->setObjectName(QStringLiteral("raise_elevation_s_"));
+        raise_elevation_v_ = new QPushButton(gridLayoutWidget_2);
+        raise_elevation_v_->setObjectName(QStringLiteral("raise_elevation_v_"));
 
-        surface_data_layout_->addWidget(raise_elevation_s_, 7, 1, 1, 1);
+        surface_data_layout_->addWidget(raise_elevation_v_, 7, 1, 1, 1);
 
         dock_surface_data_->setWidget(surface_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
@@ -395,6 +395,7 @@ public:
         icon1.addFile(QStringLiteral("res/layer-shape-curve.png"), QSize(), QIcon::Normal, QIcon::Off);
         draw_curve_->setIcon(icon1);
         draw_curve_->setIconSize(QSize(32, 32));
+        draw_curve_->setAutoRaise(false);
 
         tool_buttons_2->addWidget(draw_curve_);
 
@@ -444,7 +445,6 @@ public:
         verticalLayout_2->addLayout(horizontalLayout);
 
         dockWidget->setWidget(dockWidgetContents);
-        verticalLayoutWidget->raise();
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget);
 
         menu_bar_->addAction(menu_view_->menuAction());
@@ -470,13 +470,13 @@ public:
         dock_surface_data_->setWindowTitle(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
         show_sublines_->setText(QApplication::translate("BezierClass", "deCasteljau \n"
 "anzeigen", 0));
-        s_label_->setText(QApplication::translate("BezierClass", "s: 0.00", 0));
-        t_label_->setText(QApplication::translate("BezierClass", "t: 0.00", 0));
-        raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung T/S", 0));
+        v_label_->setText(QApplication::translate("BezierClass", "v: 0.00", 0));
+        u_label_->setText(QApplication::translate("BezierClass", "u: 0.00", 0));
+        raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung U/V", 0));
         show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung \n"
 "anzeigen", 0));
-        raise_elevation_t_->setText(QApplication::translate("BezierClass", "Gradanhebung T", 0));
-        raise_elevation_s_->setText(QApplication::translate("BezierClass", "Gradanhebung S", 0));
+        raise_elevation_u_->setText(QApplication::translate("BezierClass", "Gradanhebung U", 0));
+        raise_elevation_v_->setText(QApplication::translate("BezierClass", "Gradanhebung V", 0));
         dockWidget->setWindowTitle(QApplication::translate("BezierClass", "Werkzeuge", 0));
 #ifndef QT_NO_TOOLTIP
         edit_model_->setToolTip(QApplication::translate("BezierClass", "Bearbeitungsmodus", 0));

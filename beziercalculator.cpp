@@ -11,13 +11,13 @@ BezierCalculator::~BezierCalculator()
 {
 }
 
-void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, QVector4DMatrix& dest_coordinates, float t) const {
+void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, QVector4DMatrix& dest_coordinates, float u) const {
 	if (base_coordinates.isEmpty()) {
 		return;
 	}
 	QVector<QVector4D> new_line_points;
 	for (int i = 0; i < base_coordinates.size() - 1; i++) {
-		auto b_i = (1 - t) * base_coordinates.at(i) + t * base_coordinates.at(i + 1);
+		auto b_i = (1 - u) * base_coordinates.at(i) + u * base_coordinates.at(i + 1);
 		new_line_points.push_back(b_i);
 	}
 	if (new_line_points.isEmpty()) {
@@ -25,7 +25,7 @@ void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, Q
 	}
 	dest_coordinates.push_back(new_line_points);
 	if (new_line_points.size() > 1) {
-		deCasteljau(new_line_points, dest_coordinates, t);
+		deCasteljau(new_line_points, dest_coordinates, u);
 	}
 }
 
@@ -96,12 +96,12 @@ void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) cons
 	src_coordinates = new_coordinates;
 }
 
-void BezierCalculator::bezierBernstein(const QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float t) const {
+void BezierCalculator::bezierBernstein(const QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float v) const {
 	auto n = src_coordinates.size() - 1;
 	QVector<float> bernsteinpolynoms;
 	float beziertest = 0;
 	for (int k = 0; k <= n; k++) {
-		auto polynom = binominal(n, k) * pow(t, k) * pow(1 - t, n - k);
+		auto polynom = binominal(n, k) * pow(v, k) * pow(1 - v, n - k);
 		beziertest += polynom;
 		bernsteinpolynoms.push_back(polynom);
 

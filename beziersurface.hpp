@@ -16,8 +16,8 @@ public:
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
 	void reinit(QVector4D *pos = nullptr) override;
 	void reinit(QVector4D *pos, bool hardreset);
-	void setT(float t);
-	void setS(float s);
+	void setU(float u);
+	void setV(float v);
 	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);
 	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
 	void setCoordinates(QVector4DMatrix& coordinates);
@@ -26,9 +26,9 @@ public:
 	int size() const override;
 	QVector4D& setClicked(int index) const;
 	Clickable& getClicked(int index);
-	void degreeElevation();
-	void degreeElevationT();
-	void degreeElevationS();
+	void degreeElevationUV();
+	void degreeElevationU();
+	void degreeElevationV();
 	void showCasteljau(bool state);
 	void showDerivate(bool state);
 private:
@@ -46,7 +46,7 @@ private:
 	QVector<std::shared_ptr<Line>> lines_;
 	std::shared_ptr<Line> derivate_line_;
 
-	float t_, s_;
+	float u_, v_;
 	int horizontal_size_;
 	int vertical_size_;
 	bool casteljau_;

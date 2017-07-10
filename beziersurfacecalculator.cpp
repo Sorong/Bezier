@@ -11,26 +11,26 @@ BezierSurfaceCalculator::~BezierSurfaceCalculator()
 {
 }
 
-void BezierSurfaceCalculator::deCasteljauSurface(const QVector4DMatrix& base_coordinates, QVector4DMatrix& dest_coordinates, float t, float s) const {
+void BezierSurfaceCalculator::deCasteljauSurface(const QVector4DMatrix& base_coordinates, QVector4DMatrix& dest_coordinates, float u, float v) const {
 	if(base_coordinates.size() <= 1) {
-		deCasteljau(base_coordinates.at(0), dest_coordinates, t);
+		deCasteljau(base_coordinates.at(0), dest_coordinates, u);
 		return;
 	}
 	QVector<QVector4D> vertical_coordinates;
 	for(auto& vec : base_coordinates) {
-		deCasteljau(vec, dest_coordinates, t);
+		deCasteljau(vec, dest_coordinates, u);
 		vertical_coordinates.push_back(dest_coordinates.last().last());
 	}
 	dest_coordinates.push_back(vertical_coordinates);
-	deCasteljau(vertical_coordinates, dest_coordinates, s);
+	deCasteljau(vertical_coordinates, dest_coordinates, v);
 }
 
 
-bool BezierSurfaceCalculator::bezierSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix& dest_coordinates, float precision_t, float precision_s) const {
+bool BezierSurfaceCalculator::bezierSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix& dest_coordinates, float precision_u, float precision_v) const {
 	QVector4DMatrix temp;
 	for (auto& current : src_coordinates) {
 		QVector<QVector4D> temp_dest;
-		if (!bezierCurve(current, temp_dest, precision_t)) {
+		if (!bezierCurve(current, temp_dest, precision_u)) {
 			dest_coordinates = src_coordinates;
 			return false;
 		}
@@ -47,7 +47,7 @@ bool BezierSurfaceCalculator::bezierSurface(QVector4DMatrix& src_coordinates, QV
 			bezier_t.push_back(temp.at(j).at(i));
 		}
 		QVector<QVector4D> bezier_s;
-		if(!bezierCurve(bezier_t, bezier_s, precision_s)) {
+		if(!bezierCurve(bezier_t, bezier_s, precision_v)) {
 			dest_coordinates = src_coordinates;
 			return false;
 		}
@@ -61,34 +61,34 @@ bool BezierSurfaceCalculator::bezierSurface(QVector4DMatrix& src_coordinates, QV
         return bezierSurface(src_coordinates, dest_coordinates, precision, precision);
 	}
 	
-QVector<QVector4D> BezierSurfaceCalculator::derivateSurface(const QVector4DMatrix& src_coordinates, float t, float s, QVector4D* derivate_root) const {
+QVector<QVector4D> BezierSurfaceCalculator::derivateSurface(const QVector4DMatrix& src_coordinates, float u, float v, QVector4D* derivate_root) const {
 	if(src_coordinates.isEmpty()) {
 		return {};
 	}
 	if(src_coordinates.size() == 1) {
 		if(derivate_root) {
 			QVector4DMatrix dest;
-			deCasteljau(src_coordinates.at(0), dest, t);
+			deCasteljau(src_coordinates.at(0), dest, u);
 			*derivate_root = dest.last().last();
 			*derivate_root /= derivate_root->w();
 		}
-		return { derivate(src_coordinates.at(0), t).normalized() };
+		return { derivate(src_coordinates.at(0), u).normalized() };
 	}
 	QVector<QVector4D> s_direction;
 	for(auto& curve : src_coordinates) {
-		bezierBernstein(curve, s_direction, t);
+		bezierBernstein(curve, s_direction, u);
 	}
-	QVector4D s_derivate = derivate(s_direction, s);
+	QVector4D s_derivate = derivate(s_direction, v);
 	QVector4DMatrix vertical;
 	QVector<QVector4D> t_direction;
 	horizontalToVertical(src_coordinates, vertical);
 	for(auto& curve : vertical) {
-		bezierBernstein(curve, t_direction, s);
+		bezierBernstein(curve, t_direction, v);
 	}
-	QVector4D t_derivate = derivate(t_direction, t);
+	QVector4D t_derivate = derivate(t_direction, u);
 	if(derivate_root) {
 		QVector4DMatrix dest;
-		deCasteljau(s_direction, dest, s);
+		deCasteljau(s_direction, dest, v);
 		*derivate_root = dest.last().last();
 	}
 	QVector<QVector4D> return_value;
@@ -103,18 +103,18 @@ void BezierSurfaceCalculator::degreeElevationSurface(QVector4DMatrix& src_coordi
 		return;
 	} 
 	QVector4DMatrix horizontal_elevation;
-	degreeElevationTSurface(src_coordinates, &horizontal_elevation);
+	degreeElevationUSurface(src_coordinates, &horizontal_elevation);
 	if(horizontal_elevation.size() <= 1)	{
 		src_coordinates = horizontal_elevation;
 		return;
 	}
 	
 	QVector4DMatrix vertical_elevation;
-	degreeElevationSSurface(src_coordinates, &vertical_elevation);
+	degreeElevationVSurface(src_coordinates, &vertical_elevation);
 	src_coordinates = vertical_elevation;
 }
 
-void BezierSurfaceCalculator::degreeElevationTSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix* dest) const {
+void BezierSurfaceCalculator::degreeElevationUSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix* dest) const {
 	if(!dest) {
 		dest = &src_coordinates;
 	}
@@ -130,7 +130,7 @@ void BezierSurfaceCalculator::degreeElevationTSurface(QVector4DMatrix& src_coord
 	}
 }
 
-void BezierSurfaceCalculator::degreeElevationSSurface(QVector4DMatrix& src_coodinates, QVector4DMatrix* dest) const {
+void BezierSurfaceCalculator::degreeElevationVSurface(QVector4DMatrix& src_coodinates, QVector4DMatrix* dest) const {
 	if(!dest) {
 		dest = &src_coodinates;
 	}

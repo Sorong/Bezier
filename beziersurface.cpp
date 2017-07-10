@@ -3,7 +3,7 @@
 
 #define VERTEXPOINTSCALE 0.2f
 
-BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), t_(0), s_(0), horizontal_size_(0), vertical_size_(0), casteljau_(false), derivate_(false) {
+BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos): Model(model, pos), u_(0), v_(0), horizontal_size_(0), vertical_size_(0), casteljau_(false), derivate_(false) {
 }
 
 BezierSurface::~BezierSurface()
@@ -81,7 +81,7 @@ void BezierSurface::reinit(QVector4D* pos) {
 	}
 	if(this->derivate_) {
 		QVector4D derivate_src;
-		QVector<QVector4D> derivate_vectors = calc.derivateSurface(this->coordinates_, this->t_, this->s_, &derivate_src);
+		QVector<QVector4D> derivate_vectors = calc.derivateSurface(this->coordinates_, this->u_, this->v_, &derivate_src);
 		this->derivate_line_ = std::make_shared<Line>(model_, pos_);
 		QVector<QVector4D> line;
 		for(auto& vector : derivate_vectors) {
@@ -105,15 +105,15 @@ void BezierSurface::reinit(QVector4D* pos, bool hardreset) {
 	}
 }
 
-void BezierSurface::setT(float t) {
-	this->t_ = t;
+void BezierSurface::setU(float u) {
+	this->u_ = u;
 	if (this->casteljau_ || this->derivate_) {
 		reinit();
 	}
 }
 
-void BezierSurface::setS(float s) {
-	this->s_ = s;
+void BezierSurface::setV(float v) {
+	this->v_ = v;
 	if (this->casteljau_ ||this->derivate_) {
 		reinit();
 	}
@@ -171,21 +171,21 @@ Clickable& BezierSurface::getClicked(int index) {
 	return *this->base_points_[index];
 }
 
-void BezierSurface::degreeElevation() {
+void BezierSurface::degreeElevationUV() {
 	BezierSurfaceCalculator calculator;
 	calculator.degreeElevationSurface(this->getCoordinates());
 	clearAndReinit();
 }
 
-void BezierSurface::degreeElevationT() {
+void BezierSurface::degreeElevationU() {
 	BezierSurfaceCalculator calculator;
-	calculator.degreeElevationTSurface(this->getCoordinates());
+	calculator.degreeElevationUSurface(this->getCoordinates());
 	clearAndReinit();
 }
 
-void BezierSurface::degreeElevationS() {
+void BezierSurface::degreeElevationV() {
 	BezierSurfaceCalculator calculator;
-	calculator.degreeElevationSSurface(this->getCoordinates());
+	calculator.degreeElevationVSurface(this->getCoordinates());
 	clearAndReinit();
 }
 
@@ -285,7 +285,7 @@ void BezierSurface::createCasteljauLines() {
 	lines_.clear();
 	QVector<QVector<QVector4D>> base;
 	BezierSurfaceCalculator calc;
-	calc.deCasteljauSurface(coordinates_, base, t_, s_);
+	calc.deCasteljauSurface(coordinates_, base, u_, v_);
 	for(auto& coordinate : base) {
 		std::shared_ptr<Line> line = std::make_shared<Line>(model_, pos_);
 		line->setCoordinates(coordinate);

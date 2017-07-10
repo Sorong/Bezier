@@ -89,18 +89,18 @@ void GLView::resizeGL(int w, int h) {
 }
 
 
-void GLView::setT(float t) {
+void GLView::setU(float u) {
 	makeCurrent();
 	if (current_surface_ != nullptr) {
-		this->current_surface_->setT(t);
+		this->current_surface_->setU(u);
 	}
 	update();
 }
 
-void GLView::setS(float s) {
+void GLView::setV(float v) {
 	makeCurrent();
 	if (current_surface_ != nullptr) {
-		this->current_surface_->setS(s);
+		this->current_surface_->setV(v);
 	}
 	update();
 }
@@ -192,25 +192,25 @@ void GLView::degreeElevation() {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevation();
+		current_surface_->degreeElevationUV();
 	}
 }
 
-void GLView::degreeElevationT() {
+void GLView::degreeElevationU() {
 	if (current_surface_ != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevationT();
+		current_surface_->degreeElevationU();
 	}
 }
 
-void GLView::degreeElevationS() {
+void GLView::degreeElevationV() {
 	if (current_surface_ != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevationS();
+		current_surface_->degreeElevationV();
 	}
 }
 
