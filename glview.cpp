@@ -278,7 +278,7 @@ void GLView::editClickedVertex() {
 
 void GLView::initModel(Model& model, QVector4D* pos) {
 	makeCurrent();
-	model.addShader(*this->prog_);
+	model.setDefaultShader(*this->prog_);
 	model.init(pos);
 	update();
 }

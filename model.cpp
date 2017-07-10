@@ -1,14 +1,14 @@
 #include "model.hpp"
 
 
-Model::Model() : normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
+Model::Model() : default_shader_(nullptr), normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
 	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
 }
 
 Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
 }
 
-Model::Model(QMatrix4x4& model, const QVector4D& pos) : normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
+Model::Model(QMatrix4x4& model, const QVector4D& pos) : default_shader_(nullptr), normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
 	this->model_ = model;
 	setPosition(pos);
 	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
@@ -75,16 +75,10 @@ QVector4D Model::last() const {
 	return at(vertices_.size() - 1);
 }
 
-void Model::addShader(QOpenGLShaderProgram& prog) {
-	programs_.push_back(&prog);
+void Model::setDefaultShader(QOpenGLShaderProgram& prog) {
+	default_shader_ = &prog;
 }
 
-void Model::removeShader(int index) {
-	if (index < 0 || index > programs_.size() - 1) {
-		throw std::out_of_range("Index out of bound");
-	}
-	programs_.remove(index);
-}
 
 void Model::setModelMatrix(QMatrix4x4& model) {
 	this->model_ = model;
@@ -130,7 +124,7 @@ void Model::showNormals(bool show) {
 }
 
 void Model::initBuffer() {
-	GLuint progId = this->programs_.at(0)->programId();
+	GLuint progId = this->default_shader_->programId();
 	GLuint pos;
 	// Step 0: Create vertex array object.
 	glGenVertexArrays(1, &this->vertexarrayobject_);

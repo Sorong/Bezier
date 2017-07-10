@@ -13,15 +13,16 @@ TriangleStrip::TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurv
 }
 
 void TriangleStrip::init(QVector4D* position) {
-	if (programs_.isEmpty() || first_curve_->size() != second_curve_->size()) {
+	if (!default_shader_ || first_curve_->size() != second_curve_->size()) {
 		return;
 	}
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
 		QVector4D current_first = first_curve_->at(f_i);
 		QVector4D current_second = second_curve_->at(f_i);
-		if(current_first.w() != 0) {
+		if (current_first.w() != 0) {
 			current_first /= current_first.w();
-		} else {
+		}
+		else {
 			current_first.setW(1);
 		}
 		if (current_second.w() != 0) {
@@ -36,7 +37,7 @@ void TriangleStrip::init(QVector4D* position) {
 			normals_.push_back(first_curve_->normalAt(f_i));
 			normals_.push_back(second_curve_->normalAt(f_i));
 		}
-	
+
 	}
 
 	QVector<QVector4D> vertices = this->vertices_;
@@ -58,6 +59,9 @@ void TriangleStrip::init(QVector4D* position) {
 }
 
 void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
+	if (!default_shader_) {
+		return;
+	}
 	auto mvp = projection * view  * (this->model_);
 	QMatrix3x3 nm = this->model_.normalMatrix();
 	if (show_normals_ && !normals_.isEmpty() && normal_shader_) {
@@ -69,14 +73,11 @@ void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 		glBindVertexArray(0);
 	}
-	for (auto& program : programs_) {
-		program->bind();
-		program->setUniformValue("mvp", mvp);
-		glBindVertexArray(this->vertexarrayobject_);
-		glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
-		glBindVertexArray(0);
-	}
-	
+	default_shader_->bind();
+	default_shader_->setUniformValue("mvp", mvp);
+	glBindVertexArray(this->vertexarrayobject_);
+	glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+	glBindVertexArray(0);
 
 }
 
@@ -106,7 +107,7 @@ void TriangleStrip::reinit(QVector4D* pos) {
 		}
 	}
 
-	if(this->vertices_.size() != this->indices_.size()) {
+	if (this->vertices_.size() != this->indices_.size()) {
 		this->indices_.clear();
 		for (int i = 0; i < this->vertices_.size(); i++) {
 			this->indices_.push_back(i);

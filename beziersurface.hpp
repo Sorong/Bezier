@@ -37,6 +37,8 @@ public:
 	void removeRow(int row);
 	void removeCol(int col);
 	void removeRowAndCol(int row, int col);
+	void setSurfaceShader(QOpenGLShaderProgram& surface_shader);
+	void setDefaultShader(QOpenGLShaderProgram &prog) override;
 private:
 	void createSubModels();
 	void clearSubModels();
@@ -52,6 +54,7 @@ private:
 	QVector<std::shared_ptr<BezierCurve>> curves_;
 	QVector<std::shared_ptr<Line>> lines_;
 	std::shared_ptr<Line> derivate_line_;
+	QOpenGLShaderProgram *surface_shader_;
 
 	float u_, v_;
 	int horizontal_size_;

@@ -21,7 +21,7 @@ Rectangle::~Rectangle() {
 }
 
 void Rectangle::init(QVector4D* position) {
-	if(programs_.isEmpty() || this->vertices_.isEmpty()) {
+	if(!default_shader_ || this->vertices_.isEmpty()) {
 		return;
 	}
 	if(position) {
@@ -41,14 +41,15 @@ void Rectangle::init(QVector4D* position) {
 }
 
 void Rectangle::render(QMatrix4x4& projection, QMatrix4x4& view) {
-	auto mvp = projection * view * model_;
-	for (auto& prog : programs_) {
-		prog->bind();
-		prog->setUniformValue("mvp", mvp);
-		glBindVertexArray(this->vertexarrayobject_);
-		glDrawElements(GL_LINE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
-		glBindVertexArray(0);
+	if (!default_shader_) {
+		return;
 	}
+	auto mvp = projection * view * model_;
+	default_shader_->bind();
+	default_shader_->setUniformValue("mvp", mvp);
+	glBindVertexArray(this->vertexarrayobject_);
+	glDrawElements(GL_LINE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+	glBindVertexArray(0);
 }
 
 void Rectangle::reinit(QVector4D* position) {

@@ -19,8 +19,7 @@ public:
 	virtual int size() const;
 	const QVector<QVector4D>& getVertices() const;
 	QVector4D last() const;
-	void addShader(QOpenGLShaderProgram &prog);
-	void removeShader(int index);
+	virtual void setDefaultShader(QOpenGLShaderProgram &prog);
 	void setModelMatrix(QMatrix4x4& model);
 	void rotate(qreal angle, qreal x, qreal y, qreal z = 0.0f);
 	void rotate(qreal angle, const QVector3D & vector);
@@ -37,8 +36,8 @@ protected:
 	QVector<QVector4D> colors_;
 	QVector<GLushort> indices_;
 	QVector<QVector4D> normals_;
-	QVector<QOpenGLShaderProgram*> programs_;
-	QOpenGLShaderProgram *normal_shader_;
+	QOpenGLShaderProgram* default_shader_;
+	QOpenGLShaderProgram* normal_shader_;
 	QVector4D pos_;
 	GLuint vertexarrayobject_;
 	GLuint position_buffer_;
