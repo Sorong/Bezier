@@ -43,6 +43,7 @@ public slots:
 	void degreeElevationV();
 	void toggleSublineMode(bool);
 	void toggleDerivateMode(bool);
+	void toggleNormals(bool);
 	void modeSelect() const;
 	void modeDrawCurve() const;
 	void modeDrawSurface() const;
@@ -50,9 +51,11 @@ public slots:
 	void editClickedVertex();
 	signals:
 	void clickedVertex(QVector4D*);
+	void clickedSurface(Model *);
 
 private:
 	void initModel(Model& model, QVector4D *pos);
+	void reinitCurrentSurface();
 	bool initShader() const;
 	bool initNormalShader() const;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;

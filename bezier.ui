@@ -362,103 +362,6 @@
       <property name="rightMargin">
        <number>20</number>
       </property>
-      <item row="2" column="1">
-       <widget class="QSlider" name="u_slider_">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="tracking">
-         <bool>true</bool>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="invertedAppearance">
-         <bool>false</bool>
-        </property>
-        <property name="invertedControls">
-         <bool>false</bool>
-        </property>
-        <property name="tickPosition">
-         <enum>QSlider::NoTicks</enum>
-        </property>
-        <property name="tickInterval">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="show_sublines_">
-        <property name="text">
-         <string>deCasteljau 
-anzeigen</string>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSlider" name="v_slider_">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="tracking">
-         <bool>true</bool>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="invertedAppearance">
-         <bool>false</bool>
-        </property>
-        <property name="invertedControls">
-         <bool>false</bool>
-        </property>
-        <property name="tickPosition">
-         <enum>QSlider::NoTicks</enum>
-        </property>
-        <property name="tickInterval">
-         <number>1</number>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="v_label_">
         <property name="enabled">
@@ -503,6 +406,75 @@ anzeigen</string>
         </property>
         <property name="indent">
          <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="show_sublines_">
+        <property name="text">
+         <string>deCasteljau 
+anzeigen</string>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="show_derivation_">
+        <property name="text">
+         <string>Ableitung 
+anzeigen</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="raise_elevation_u_">
+        <property name="text">
+         <string>Gradanhebung U</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSlider" name="u_slider_">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="singleStep">
+         <number>5</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="invertedControls">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
+        <property name="tickInterval">
+         <number>1</number>
         </property>
        </widget>
       </item>
@@ -560,18 +532,46 @@ anzeigen</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="show_derivation_">
-        <property name="text">
-         <string>Ableitung 
-anzeigen</string>
+      <item row="3" column="1">
+       <widget class="QSlider" name="v_slider_">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QPushButton" name="raise_elevation_u_">
-        <property name="text">
-         <string>Gradanhebung U</string>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="singleStep">
+         <number>5</number>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="invertedControls">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
+        <property name="tickInterval">
+         <number>1</number>
         </property>
        </widget>
       </item>
@@ -579,6 +579,17 @@ anzeigen</string>
        <widget class="QPushButton" name="raise_elevation_v_">
         <property name="text">
          <string>Gradanhebung V</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="show_normals_">
+        <property name="text">
+         <string>Normalen 
+anzeigen</string>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

@@ -28,11 +28,15 @@ public:
 	int size() const override;
 	QVector4D& setClicked(int index) const;
 	Clickable& getClicked(int index);
+	Clickable& getClicked(int index, int *row, int *col);
 	void degreeElevationUV();
 	void degreeElevationU();
 	void degreeElevationV();
 	void showCasteljau(bool state);
 	void showDerivate(bool state);
+	void removeRow(int row);
+	void removeCol(int col);
+	void removeRowAndCol(int row, int col);
 private:
 	void createSubModels();
 	void clearSubModels();

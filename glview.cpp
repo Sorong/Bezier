@@ -155,17 +155,27 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 			this->view_.setToIdentity();
 			this->view_.lookAt(eye, { CENTER }, { UP });
 			break;
-		case Qt::Key_Left:
+		case Qt::Key_Left: 
+		case Qt::Key_A:
 			current_surface_->rotate(1, 0, -1, 0);
 			break;
 		case Qt::Key_Right:
+		case Qt::Key_D:
 			current_surface_->rotate(1, 0, 1, 0);
 			break;
 		case Qt::Key_Up:
+		case Qt::Key_W:
 			current_surface_->rotate(1, -1, 0, 0);
 			break;
 		case Qt::Key_Down:
+		case Qt::Key_S:
 			current_surface_->rotate(1, 1, 0, 0);
+			break;
+		case Qt::Key_Q:
+			current_surface_->rotate(1, 0, 0, -1);
+			break;
+		case Qt::Key_E:
+			current_surface_->rotate(1, 0, 0, 1);
 			break;
 		default:
 			break;
@@ -225,11 +235,7 @@ void GLView::toggleSublineMode(bool state) {
 	}
 	this->show_sublines_ = state;
 	current_surface_->showCasteljau(state);
-	makeCurrent();
-	current_surface_->reinit();
-	update();
-
-
+	reinitCurrentSurface();
 }
 
 void GLView::toggleDerivateMode(bool state) {
@@ -238,9 +244,15 @@ void GLView::toggleDerivateMode(bool state) {
 	}
 	this->show_derivate_ = state;
 	current_surface_->showDerivate(state);
-	makeCurrent();
-	current_surface_->reinit();
-	update();
+	reinitCurrentSurface();
+}
+
+void GLView::toggleNormals(bool show) {
+	if (current_surface_ != nullptr) {
+		makeCurrent();
+		update();
+		current_surface_->showNormals(show);
+	}
 }
 
 void GLView::modeSelect() const {
@@ -261,15 +273,22 @@ void GLView::modeDrawCoonspatch() const {
 
 
 void GLView::editClickedVertex() {
-	makeCurrent();
-	current_surface_->reinit();
-	update();
+	reinitCurrentSurface();
 }
 
 void GLView::initModel(Model& model, QVector4D* pos) {
 	makeCurrent();
 	model.addShader(*this->prog_);
 	model.init(pos);
+	update();
+}
+
+void GLView::reinitCurrentSurface() {
+	if(!current_surface_) {
+		return;
+	}
+	makeCurrent();
+	current_surface_->reinit();
 	update();
 }
 

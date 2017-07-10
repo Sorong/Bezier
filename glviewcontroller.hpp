@@ -16,13 +16,21 @@ typedef enum {
 	NONE = 0, CASTELJAU = 1, DERIVATE = 2
 } DrawMode;
 
-typedef struct {
+typedef struct Clicked {
 	Clickable *clickable_;
 	Model *model_;
 	QVector4D *reference_;
 	QVector3D offset_;
 	int row_index_ = -1;
 	int col_index_ = -1;
+	Clicked(): clickable_(nullptr), model_(nullptr), reference_(nullptr) {
+	}
+
+	Clicked(BezierSurface& surface, int i) {
+		clickable_ = &surface.getClicked(i, &row_index_, &col_index_);
+		reference_ = &surface.getClicked(i).getReference();
+		model_ = &surface;
+	}
 } ClickedModel;
 
 inline DrawMode operator|(DrawMode a, DrawMode b) {

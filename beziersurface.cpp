@@ -45,6 +45,7 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		curve->render(projection, view);
 	}
 	for(auto& strip : triangle_strips_) {
+		strip->showNormals(this->show_normals_);
 		strip->setModelMatrix(this->model_);
 		strip->render(projection, view);
 	}
@@ -152,8 +153,8 @@ void BezierSurface::addVerticalCoordinates(QVector<QVector4D> &coordinates) {
 
 
 void BezierSurface::setCoordinates(QVector4DMatrix& coordinates) {
-	recalculateSize();
 	this->coordinates_ = coordinates;
+	recalculateSize();
 }
 
 QVector4DMatrix& BezierSurface::getCoordinates() {
@@ -178,6 +179,14 @@ QVector4D& BezierSurface::setClicked(int index) const {
 
 Clickable& BezierSurface::getClicked(int index) {
 	return *this->base_points_[index];
+}
+
+Clickable& BezierSurface::getClicked(int index, int* row, int* col) {
+		if(row && col) {
+			*row = horizontal_size_ ? index / horizontal_size_ : 0;
+			*col = vertical_size_ ?  index % vertical_size_ : 0;
+		}
+		return getClicked(index);
 }
 
 void BezierSurface::degreeElevationUV() {
@@ -207,6 +216,27 @@ void BezierSurface::showDerivate(bool state) {
 	if(!derivate_) {
 		this->derivate_line_ = nullptr;
 	}
+}
+
+void BezierSurface::removeRow(int row) {
+	if (row >= 0 || row < this->coordinates_.size()) {
+		coordinates_.removeAt(row);
+		recalculateSize();
+	}
+}
+
+void BezierSurface::removeCol(int col) {
+	if(!coordinates_.isEmpty() && (col >= 0 || col < this->coordinates_[0].size())) {
+		for(int i = 0; i < coordinates_.size(); i++) {
+			coordinates_[i].removeAt(col);
+		}
+		recalculateSize();
+	}
+}
+
+void BezierSurface::removeRowAndCol(int row, int col) {
+	removeRow(row);
+	removeCol(col);
 }
 
 void BezierSurface::createSubModels() {

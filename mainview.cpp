@@ -30,6 +30,8 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.draw_surface_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawSurface()));
 	QObject::connect(ui.draw_coons_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawCoonspatch()));
 	QObject::connect(ui.edit_model_, SIGNAL(pressed()), ui.glview_, SLOT(modeSelect()));
+	QObject::connect(ui.glview_, SIGNAL(clickedSurface(Model*)), this, SLOT(clickedSurface(Model*)));
+	QObject::connect(ui.show_normals_, SIGNAL(toggled(bool)), this, SLOT(showNormals(bool)));
 	ui.dock_vertex_data_->hide();
 	//ui.dock_surface_data_->hide();
 }
@@ -57,7 +59,6 @@ void MainView::sliderToSLabel(int i) const {
 void MainView::deCasteljau(bool state) const {
 	this->ui.glview_->toggleSublineMode(state);
 	toggleSlider();
-	
 }
 
 void MainView::derivate(bool state) const {
@@ -145,6 +146,13 @@ void MainView::editClickedVertex() const {
 	this->clicked->setZ(ui.z_coordinate_->value() * w);
 	this->clicked->setW(w);
 	this->ui.glview_->editClickedVertex();
+}
+
+void MainView::clickedSurface(Model*) {
+}
+
+void MainView::showNormals(bool state) {
+	this->ui.glview_->toggleNormals(state);
 }
 
 void MainView::toggleSlider() const {

@@ -123,7 +123,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		clicked.model_ = ptr.get();
 		clicked_.push_back(clicked);
 		this->current_selected_ = &clicked_[clicked_.size() - 1];
-		glview_->curves_.push_back(ptr);
+		glview_->surfaces_.push_back(ptr);
 		glview_->initModel(*ptr.get(), nullptr);
 		glview_->current_surface_ = ptr.get();
 	} else {
@@ -222,10 +222,7 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		//float thc = sqrt(radius2 - d2);
 		//auto t_drag = tca - thc;
 		
-		ClickedModel clicked;
-		clicked.clickable_ = &surface.getClicked(i);
-		clicked.reference_ = &surface.getClicked(i).getReference();
-		clicked.model_ = &surface;
+		ClickedModel clicked(surface, i);
 		clicked.offset_ = coord.toVector3DAffine() - begin;
 		clicked_.push_back(clicked);
 		this->current_selected_ = &clicked_[clicked_.size() - 1];

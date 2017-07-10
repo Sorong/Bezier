@@ -39,8 +39,6 @@ void TriangleStrip::init(QVector4D* position) {
 	
 	}
 
-
-
 	QVector<QVector4D> vertices = this->vertices_;
 	for (auto& vertex : vertices) {
 		if (vertex.w() == 0) {
@@ -62,7 +60,7 @@ void TriangleStrip::init(QVector4D* position) {
 void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	auto mvp = projection * view  * (this->model_);
 	QMatrix3x3 nm = this->model_.normalMatrix();
-	if (!normals_.isEmpty() && normal_shader_) {
+	if (show_normals_ && !normals_.isEmpty() && normal_shader_) {
 		normal_shader_->bind();
 		normal_shader_->setUniformValue("mvp", mvp);
 		normal_shader_->setUniformValue("nm", nm);
