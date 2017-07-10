@@ -69,7 +69,7 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		QVector<QVector<QVector4D>> surface = { {coords[0], coords[1]}, {coords[2], coords[3]} };
 		QMatrix4x4 mat;
 		mat.setToIdentity();
-		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
+		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }, glview_->light));
 		ptr->setCoordinates(surface);
 		ptr->setDefaultShader(*glview_->prog_);
 		ptr->addNormalShader(*glview_->normal_prog_);
@@ -116,7 +116,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		clicked.offset_ = { 0,0,0 };
 		QMatrix4x4 mat;
 		mat.setToIdentity();
-		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
+		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }, glview_->light));
 		ptr->addHorizontalCoordinates(coord);
 		ptr->setDefaultShader(*glview_->prog_);
 		ptr->addNormalShader(*glview_->normal_prog_);

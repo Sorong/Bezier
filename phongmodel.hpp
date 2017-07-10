@@ -1,5 +1,6 @@
 #pragma once
 #include <QVector4D>
+
 typedef struct Light {
 	QVector4D pos;
 	QVector4D ambient;
@@ -18,9 +19,10 @@ class PhongModel
 {
 public:
 	explicit PhongModel(Light& light);
-	~PhongModel();
+	virtual ~PhongModel();
 	void setLight(Light& light);
 	void setMaterial(Material& material);
+	void setMaterial(QVector4D& material);
 protected:
 	Light *light_;
 	Material material_;

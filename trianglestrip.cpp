@@ -1,13 +1,13 @@
 #include "trianglestrip.hpp"
 
-TriangleStrip::TriangleStrip(QMatrix4x4& model, BezierCurve* first_curve, BezierCurve* second_curve)
-	: Model(model),
+TriangleStrip::TriangleStrip(QMatrix4x4& model, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
+	: Model(model), PhongModel(light),
 	first_curve_(first_curve),
 	second_curve_(second_curve) {
 }
 
-TriangleStrip::TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve)
-	: Model(model, pos),
+TriangleStrip::TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
+	: Model(model, pos), PhongModel(light),
 	first_curve_(first_curve),
 	second_curve_(second_curve) {
 }
@@ -19,6 +19,7 @@ void TriangleStrip::init(QVector4D* position) {
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
 		QVector4D current_first = first_curve_->at(f_i);
 		QVector4D current_second = second_curve_->at(f_i);
+		//TODO: Normalisierung entfernen?!
 		if (current_first.w() != 0) {
 			current_first /= current_first.w();
 		}

@@ -3,16 +3,17 @@
 #include "beziercalculator.hpp"
 #include "clickable.hpp"
 #include <memory>
+#include "phongmodel.hpp"
 
 class Line;
 class BezierCurve;
 class Icosahedron;
 class TriangleStrip;
 
-class BezierSurface : public Model
+class BezierSurface : public Model, public PhongModel
 {
 public:
-	BezierSurface(QMatrix4x4& model, const QVector4D &pos);
+	BezierSurface(QMatrix4x4& model, const QVector4D &pos, Light& light);
 	~BezierSurface();
 	void init(QVector4D *pos = nullptr) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;

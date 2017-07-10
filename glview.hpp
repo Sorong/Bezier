@@ -9,8 +9,7 @@
 #include "beziersurfacecalculator.hpp"
 #include "beziersurface.hpp"
 #include "glviewcontroller.hpp"
-
-
+#include "phongmodel.hpp"
 
 
 class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
@@ -69,6 +68,7 @@ private:
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
 	QVector<std::shared_ptr<BezierSurface>> curves_;
 	std::shared_ptr<Model> temp_model_;
+	Light light;
 };
 
 #endif // BEZIERSCREEN_H

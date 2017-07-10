@@ -9,10 +9,12 @@
 #define SHADERPATH "/shader/"
 #define ZNEAR 0.1f
 #define ZFAR 100.0f
-#define EYE 0.0f, 0.0f, 10.0f
+#define EYEZ 10.0f
+#define EYE 0.0f, 0.0f, EYEZ
 #define CENTER 0.0f, 0.0f, 0.0f
 #define UP 0.0f, 1.0f, 0.0f
-#define INITPOS 0.0f, 0.0f, -10.0f, 1.0f
+#define INITPOS -EYE, 1.0f
+#define INITLIGHT 0.0f, 10.0f, EYEZ, 1.0f
 
 #define BLACK 0.0f, 0.0f, 0.0f
 #define BLUE 0.0f, 0.0f, 1.0f
@@ -36,7 +38,11 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), eye(EYE), current_surface_(nullptr) {
+	zoom_factor_(1.0f), current_surface_(nullptr), eye(EYE) {
+	this->light.pos = { INITLIGHT };
+	this->light.ambient = { WHITE,1.0f };
+	this->light.diffuse = { GRAY, 1.0f };
+	this->light.specular = { WHITE, 1.0f };
 	this->prog_ = new QOpenGLShaderProgram;
 	this->normal_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
@@ -60,7 +66,7 @@ void GLView::initializeGL() {
 	}
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
-	this->view_.lookAt(eye, {CENTER}, {UP});
+	this->view_.lookAt(eye, { CENTER }, { UP });
 }
 
 void GLView::paintGL() {
@@ -80,7 +86,7 @@ void GLView::paintGL() {
 	for (auto& surface : surfaces_) {
 		surface->render(projection_, view_);
 	}
-	for(auto& curve : curves_) {
+	for (auto& curve : curves_) {
 		curve->render(projection_, view_);
 	}
 	update();
@@ -119,7 +125,7 @@ void GLView::removeCoordinateByIndex(int i) {
 
 //Todo: Add for surface_
 bool GLView::addCoordinate(float x, float y) {
-	return this->addCoordinate({x,y,0,1});
+	return this->addCoordinate({ x,y,0,1 });
 }
 
 //Todo: Add for surface_
@@ -133,7 +139,7 @@ bool GLView::addCoordinate(QVector4D xyzw) {
 
 //Todo: GetCoordinateByIndex for surface_
 QVector4D GLView::getCoordinateByIndex(int i) const {
-	return {0,0,0,0};
+	return { 0,0,0,0 };
 }
 
 //TODO: Kamerazoom instead, ObjectZoom
@@ -143,42 +149,42 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 	}
 	QMatrix4x4 mat;
 	switch (event->key()) {
-		case Qt::Key_Plus:
-			if(eye.z() != 0) {
-				eye -= {0.0f, 0.0f, 1};
-			}
-			this->view_.setToIdentity();
-			this->view_.lookAt(eye, { CENTER }, { UP });
-			break;
-		case Qt::Key_Minus:
-			eye += {0.0f, 0.0f, 1};
-			this->view_.setToIdentity();
-			this->view_.lookAt(eye, { CENTER }, { UP });
-			break;
-		case Qt::Key_Left: 
-		case Qt::Key_A:
-			current_surface_->rotate(1, 0, -1, 0);
-			break;
-		case Qt::Key_Right:
-		case Qt::Key_D:
-			current_surface_->rotate(1, 0, 1, 0);
-			break;
-		case Qt::Key_Up:
-		case Qt::Key_W:
-			current_surface_->rotate(1, -1, 0, 0);
-			break;
-		case Qt::Key_Down:
-		case Qt::Key_S:
-			current_surface_->rotate(1, 1, 0, 0);
-			break;
-		case Qt::Key_Q:
-			current_surface_->rotate(1, 0, 0, -1);
-			break;
-		case Qt::Key_E:
-			current_surface_->rotate(1, 0, 0, 1);
-			break;
-		default:
-			break;
+	case Qt::Key_Plus:
+		if (eye.z() != 0) {
+			eye -= {0.0f, 0.0f, 1};
+		}
+		this->view_.setToIdentity();
+		this->view_.lookAt(eye, { CENTER }, { UP });
+		break;
+	case Qt::Key_Minus:
+		eye += {0.0f, 0.0f, 1};
+		this->view_.setToIdentity();
+		this->view_.lookAt(eye, { CENTER }, { UP });
+		break;
+	case Qt::Key_Left:
+	case Qt::Key_A:
+		current_surface_->rotate(1, 0, -1, 0);
+		break;
+	case Qt::Key_Right:
+	case Qt::Key_D:
+		current_surface_->rotate(1, 0, 1, 0);
+		break;
+	case Qt::Key_Up:
+	case Qt::Key_W:
+		current_surface_->rotate(1, -1, 0, 0);
+		break;
+	case Qt::Key_Down:
+	case Qt::Key_S:
+		current_surface_->rotate(1, 1, 0, 0);
+		break;
+	case Qt::Key_Q:
+		current_surface_->rotate(1, 0, 0, -1);
+		break;
+	case Qt::Key_E:
+		current_surface_->rotate(1, 0, 0, 1);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -198,7 +204,7 @@ void GLView::mouseReleaseEvent(QMouseEvent* event) {
 }
 
 QVector<QVector4D> GLView::getBasePoints() const {
-	return {{}};
+	return { {} };
 }
 
 
@@ -284,7 +290,7 @@ void GLView::initModel(Model& model, QVector4D* pos) {
 }
 
 void GLView::reinitCurrentSurface() {
-	if(!current_surface_) {
+	if (!current_surface_) {
 		return;
 	}
 	makeCurrent();
@@ -296,10 +302,10 @@ bool GLView::initShader() const {
 	QString path = QDir::currentPath() + SHADERPATH;
 	QString vert = ".vert";
 	QString frag = ".frag";
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, {path + "simple" + vert})) {
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "simple" + vert })) {
 		return false;
 	}
-	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, {path + "simple" + frag})) {
+	if (!this->prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "simple" + frag })) {
 		return false;
 	}
 	return this->prog_->link();

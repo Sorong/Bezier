@@ -200,5 +200,11 @@
     <None Include="shader\normal.vert">
       <Filter>Shader</Filter>
     </None>
+    <None Include="shader\phong.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\phong.vert">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>
