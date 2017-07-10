@@ -1,11 +1,13 @@
 #pragma once
 #include "model.hpp"
-#include "icosahedron.hpp"
+#include "beziercalculator.hpp"
+#include "clickable.hpp"
 #include <memory>
-#include "beziercurve.hpp"
-#include "trianglestrip.hpp"
-#include "line.hpp"
-#include "types.hpp"
+
+class Line;
+class BezierCurve;
+class Icosahedron;
+class TriangleStrip;
 
 class BezierSurface : public Model
 {

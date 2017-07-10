@@ -123,6 +123,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		this->current_selected_ = &clicked_[clicked_.size() - 1];
 		glview_->curves_.push_back(ptr);
 		glview_->initModel(*ptr.get(), nullptr);
+		glview_->current_surface_ = ptr.get();
 	} else {
 		try {
 			dynamic_cast<BezierSurface*>(current_selected_->model_)->addHorizontalCoordinates(coord);

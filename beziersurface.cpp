@@ -1,5 +1,9 @@
 #include "beziersurface.hpp"
 #include "beziersurfacecalculator.hpp"
+#include "line.hpp"
+#include "beziercurve.hpp"
+#include "trianglestrip.hpp"
+#include "icosahedron.hpp"
 
 #define VERTEXPOINTSCALE 0.2f
 

@@ -1,3 +1,4 @@
+#pragma once
 #include "model.hpp"
 
 #ifndef LINES_H

@@ -66,7 +66,19 @@ bool BezierCalculator::bezierCurve(QVector<QVector4D>& src_coordinates, QVector<
 
 QVector4D BezierCalculator::derivate(const QVector<QVector4D>& src_coordinates, float t) const {
 	QVector<float> bernsteinpolynoms;
-
+	if(src_coordinates.size() >= BERNSTEINLIMIT) {
+		QVector4DMatrix mat;
+		deCasteljau(src_coordinates, mat, t);
+		QVector4D derivate;
+		if (t <= 0) {
+			derivate = mat[0][1] - mat.last().last();
+		} else if(t >= 1) {
+			derivate = mat.last().last() - mat[mat.size() - 2][0];
+		} else {
+			derivate = mat[mat.size() - 2].last() - mat.last().last();
+		}
+		return derivate;
+	}
 	auto n = src_coordinates.size() - 1;
 	for (auto j = 0; j < n; j++) {
 		auto polynom = binominal((n - 1), j) * pow(t, j) * pow(1 - t, (n - 1) - j);
@@ -77,7 +89,6 @@ QVector4D BezierCalculator::derivate(const QVector<QVector4D>& src_coordinates, 
 	for (auto j = 0; j < src_coordinates.size() - 1; j++) {
 		auto b1 = src_coordinates.at(j + 1);
 		auto b2 = src_coordinates.at(j);
-		//auto current = (b1 / b1.w()) - (b2 / b2.w());
 		auto current = b1 - b2;
 		derivate += current * bernsteinpolynoms.at(j);
 	}
@@ -89,7 +100,6 @@ void BezierCalculator::degreeElevation(QVector<QVector4D>& src_coordinates) cons
 	new_coordinates.push_back(src_coordinates.at(0));
 	for (int i = 1, n = src_coordinates.size() - 1; i < src_coordinates.size(); i++) {
 		QVector4D new_b = static_cast<float>(i) / (n + 1) * src_coordinates.at(i - 1) + (1 - static_cast<float>(i) / (n + 1)) * src_coordinates.at(i);
-		//new_b /= new_b.w();
 		new_coordinates.push_back(new_b);
 	}
 	new_coordinates.push_back(src_coordinates.at(src_coordinates.size() - 1));

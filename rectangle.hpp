@@ -1,7 +1,6 @@
 #pragma once
 #include "model.hpp"
 #include "icosahedron.hpp"
-#include <memory>
 namespace Rect {
 
 

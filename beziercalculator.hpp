@@ -1,8 +1,8 @@
 #pragma once
 #include <QVector>
 #include <QVector4D>
-#include "types.hpp"
 
+using QVector4DMatrix = QVector<QVector<QVector4D>>;
 class BezierCalculator
 {
 public:

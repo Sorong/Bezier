@@ -36,7 +36,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), eye(EYE) {
+	zoom_factor_(1.0f), eye(EYE), current_surface_(nullptr) {
 	this->prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
