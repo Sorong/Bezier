@@ -2,13 +2,11 @@
 #include <QVector3D>
 
 
-BezierSurfaceCalculator::BezierSurfaceCalculator()
-{
+BezierSurfaceCalculator::BezierSurfaceCalculator() {
 }
 
 
-BezierSurfaceCalculator::~BezierSurfaceCalculator()
-{
+BezierSurfaceCalculator::~BezierSurfaceCalculator() {
 }
 
 void BezierSurfaceCalculator::deCasteljauSurface(const QVector4DMatrix& base_coordinates, QVector4DMatrix& dest_coordinates, float u, float v) const {
@@ -110,7 +108,7 @@ void BezierSurfaceCalculator::degreeElevationSurface(QVector4DMatrix& src_coordi
 	}
 	
 	QVector4DMatrix vertical_elevation;
-	degreeElevationVSurface(src_coordinates, &vertical_elevation);
+	degreeElevationVSurface(horizontal_elevation, &vertical_elevation);
 	src_coordinates = vertical_elevation;
 }
 
@@ -148,6 +146,21 @@ void BezierSurfaceCalculator::degreeElevationVSurface(QVector4DMatrix& src_coodi
 			}
 
 		}
+	}
+}
+
+void BezierSurfaceCalculator::normalsSurface(const QVector4DMatrix& src_coordinates, QVector4DMatrix& dest_normals, float precision_u, float precision_v) const {
+	if(src_coordinates.size() <= 1) {
+		return;
+	}
+	for (auto tAsInt = 0; tAsInt <= 100; tAsInt += (precision_u * 100)) {
+		QVector<QVector4D> u_dir_normals;
+		for(auto vAsInt = 0; vAsInt <= 100; vAsInt += (precision_v * 100)) {
+			QVector<QVector4D> derivate = derivateSurface(src_coordinates, tAsInt / 100.0f, vAsInt / 100.0f);
+			QVector3D normal = QVector3D::crossProduct(derivate[1].toVector3D(), derivate[0].toVector3D()).normalized();
+			u_dir_normals.push_back({ normal });
+		}
+		dest_normals.push_back(u_dir_normals);
 	}
 }
 

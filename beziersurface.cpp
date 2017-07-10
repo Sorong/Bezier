@@ -67,10 +67,15 @@ void BezierSurface::reinit(QVector4D* pos) {
 		base_points_[i]->reinit(pos);
 	}
 	QVector<QVector<QVector4D>> dest;
+	QVector<QVector<QVector4D>> normals;
 	BezierSurfaceCalculator calc;
 	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
+	calc.normalsSurface(this->coordinates_, normals, 0.05, 0.05);
 	for(int i = 0; i < this->curves_.size(); i++) {
 		this->curves_[i]->setBaseCoordinates(dest[i]);
+		if (normals.size() >= coordinates_.size()) {
+			curves_[i]->setNormals(normals[i]);
+		}
 		curves_[i]->reinit(pos);
 	}
 	for(auto& strip : this->triangle_strips_) {
@@ -206,10 +211,12 @@ void BezierSurface::showDerivate(bool state) {
 
 void BezierSurface::createSubModels() {
 	createBasePoints();
-	QVector<QVector<QVector4D>> dest;
+	QVector4DMatrix dest;
+	QVector4DMatrix normals;
 	BezierSurfaceCalculator calc;
 	calc.bezierSurface(this->coordinates_, dest, 0.05, 0.05);
-	createCurves(dest);
+	calc.normalsSurface(this->coordinates_, normals, 0.05, 0.05);
+	createCurves(dest, normals);
 	for (auto& ico : base_points_) {
 		ico->addShader(*this->programs_.at(0));
 		//ico->setColor({ 1,1,1,1 });
@@ -218,10 +225,12 @@ void BezierSurface::createSubModels() {
 	for (auto& curve : curves_) {
 		curve->setColor({ 1,0,0,1 });
 		curve->addShader(*this->programs_.at(0));
+		curve->addNormalShader(*this->normal_shader_);
 		curve->init();
 	}
 	for (auto& strip : triangle_strips_) {
 		strip->addShader(*this->programs_.at(0));
+		strip->addNormalShader(*this->normal_shader_);
 		strip->init(nullptr);
 	} 
 }
@@ -274,10 +283,13 @@ void BezierSurface::createBasePoints() {
 	this->colors_.fill({ 0,1,0,1 }, this->vertices_.size());
 }
 
-void BezierSurface::createCurves(QVector4DMatrix& coordinates) {
+void BezierSurface::createCurves(QVector4DMatrix& coordinates, QVector4DMatrix& normals) {
 	for (int i = 0; i < coordinates.size(); i++) {
 		std::shared_ptr<BezierCurve> curve = std::make_shared<BezierCurve>(model_, pos_);
 		curve->setBaseCoordinates(coordinates[i]);
+		if(normals.size() >= coordinates.size()) {
+			curve->setNormals(normals[i]);
+		}	
 		curves_.push_back(curve);
 	}
 	for (int i = 0; i < curves_.size() - 1; i++) {
@@ -287,7 +299,7 @@ void BezierSurface::createCurves(QVector4DMatrix& coordinates) {
 
 void BezierSurface::createCasteljauLines() {
 	lines_.clear();
-	QVector<QVector<QVector4D>> base;
+	QVector4DMatrix base;
 	BezierSurfaceCalculator calc;
 	calc.deCasteljauSurface(coordinates_, base, u_, v_);
 	for(auto& coordinate : base) {

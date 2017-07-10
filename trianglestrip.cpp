@@ -32,6 +32,11 @@ void TriangleStrip::init(QVector4D* position) {
 		}
 		vertices_.push_back(first_curve_->at(f_i));
 		vertices_.push_back(second_curve_->at(f_i));
+		if (first_curve_->normalsSet() && second_curve_->normalsSet()) {
+			normals_.push_back(first_curve_->normalAt(f_i));
+			normals_.push_back(second_curve_->normalAt(f_i));
+		}
+	
 	}
 
 
@@ -56,6 +61,16 @@ void TriangleStrip::init(QVector4D* position) {
 
 void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	auto mvp = projection * view  * (this->model_);
+	QMatrix3x3 nm = this->model_.normalMatrix();
+	if (!normals_.isEmpty() && normal_shader_) {
+		normal_shader_->bind();
+		normal_shader_->setUniformValue("mvp", mvp);
+		normal_shader_->setUniformValue("nm", nm);
+		normal_shader_->setUniformValue("projection", projection);
+		glBindVertexArray(this->vertexarrayobject_);
+		glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+		glBindVertexArray(0);
+	}
 	for (auto& program : programs_) {
 		program->bind();
 		program->setUniformValue("mvp", mvp);
@@ -63,11 +78,13 @@ void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 		glBindVertexArray(0);
 	}
+	
 
 }
 
 void TriangleStrip::reinit(QVector4D* pos) {
 	this->vertices_.clear();
+	this->normals_.clear();
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
 		QVector4D current_first = first_curve_->at(f_i);
 		QVector4D current_second = second_curve_->at(f_i);
@@ -85,6 +102,10 @@ void TriangleStrip::reinit(QVector4D* pos) {
 		}
 		vertices_.push_back(first_curve_->at(f_i));
 		vertices_.push_back(second_curve_->at(f_i));
+		if (first_curve_->normalsSet() && second_curve_->normalsSet()) {
+			normals_.push_back(first_curve_->normalAt(f_i));
+			normals_.push_back(second_curve_->normalAt(f_i));
+		}
 	}
 
 	if(this->vertices_.size() != this->indices_.size()) {

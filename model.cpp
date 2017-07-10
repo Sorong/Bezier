@@ -1,28 +1,28 @@
 #include "model.hpp"
 
 
-Model::Model(): vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
+Model::Model() : normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
 	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
 }
 
 Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
 }
 
-Model::Model(QMatrix4x4& model, const QVector4D& pos) : vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
+Model::Model(QMatrix4x4& model, const QVector4D& pos) : normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
 	this->model_ = model;
 	setPosition(pos);
 	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
 }
 
 Model::~Model()
-{	
-	if(this->vertexarrayobject_) {
+{
+	if (this->vertexarrayobject_) {
 		glDeleteVertexArrays(1, &this->vertexarrayobject_);
 		glDeleteBuffers(1, &index_buffer_);
 		glDeleteBuffers(1, &color_buffer_);
 		glDeleteBuffers(1, &position_buffer_);
 	}
-	
+
 }
 
 void Model::setPosition(const QVector4D& position) {
@@ -45,13 +45,19 @@ void Model::reinit(QVector4D* position) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->index_buffer_);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
 	glBindVertexArray(0);
-	if(position) {
+	if(!normals_.isEmpty()) {
+		glBindVertexArray(this->vertexarrayobject_);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->normal_buffer_);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, normals_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
+		glBindVertexArray(0);
+	}
+	if (position) {
 		model_.translate(position->toVector3DAffine());
 	}
 }
 
 QVector4D Model::at(int index) const {
-	if(index < 0 || index >= size()) {
+	if (index < 0 || index >= size()) {
 		throw std::out_of_range("Index out of Bounds");
 	}
 	return vertices_.at(index);
@@ -99,9 +105,10 @@ void Model::scale(qreal factor) {
 void Model::setColor(QVector4D color) {
 	if (this->vertices_.isEmpty()) {
 		this->colors_.fill(color, 1);
-	} else {
+	}
+	else {
 		this->colors_.fill(color, this->vertices_.size());
-		if(vertexarrayobject_) {
+		if (vertexarrayobject_) {
 			glBindVertexArray(this->vertexarrayobject_);
 			glBindBuffer(GL_ARRAY_BUFFER, this->color_buffer_);
 			glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(QVector4D), colors_.data(), GL_STATIC_DRAW);
@@ -112,6 +119,14 @@ void Model::setColor(QVector4D color) {
 
 QMatrix4x4& Model::getModelMatrix() {
 	return model_;
+}
+
+void Model::addNormalShader(QOpenGLShaderProgram & prog) {
+	this->normal_shader_ = &prog;
+}
+
+void Model::showNormals(bool show) {
+	this->show_normals_ = show;
 }
 
 void Model::initBuffer() {
@@ -141,8 +156,27 @@ void Model::initBuffer() {
 	glEnableVertexAttribArray(pos);
 	glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+
+	// Step 3: Normale
+	glGenBuffers(1, &this->normal_buffer_);
+	glBindBuffer(GL_ARRAY_BUFFER, this->normal_buffer_);
+	glBufferData(GL_ARRAY_BUFFER, normals_.size() * sizeof(QVector3D), normals_.data(), GL_STATIC_DRAW);
+
+	pos = glGetAttribLocation(progId, "normal");
+	glEnableVertexAttribArray(pos);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+
+
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
 	glGenBuffers(1, &this->index_buffer_);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->index_buffer_);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLushort), indices_.data(), GL_STATIC_DRAW);
+}
+
+QVector4D Model::calculateNormals(QVector4D origin, QVector4D v2, QVector4D v3) {
+	const QVector4D a = v2 - origin;
+	const QVector4D b = v3 - origin;
+
+	return QVector3D::crossProduct(a.toVector3D(), b.toVector3D()).normalized();
 }

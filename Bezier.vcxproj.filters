@@ -51,6 +51,9 @@
     <Filter Include="Source Files\Util">
       <UniqueIdentifier>{a2a5b55b-18e3-4e3c-87e4-8a4ac60a9bfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{fdb515af-07db-40bb-8a87-a5505e9d1f29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -130,8 +133,6 @@
     <CustomBuild Include="mainview.hpp">
       <Filter>Header Files\View</Filter>
     </CustomBuild>
-    <CustomBuild Include="shader\simple.frag" />
-    <CustomBuild Include="shader\simple.vert" />
     <CustomBuild Include="beziercurve.hpp">
       <Filter>Header Files\Model</Filter>
     </CustomBuild>
@@ -162,6 +163,12 @@
     <CustomBuild Include="glviewcontroller.hpp">
       <Filter>Header Files\View</Filter>
     </CustomBuild>
+    <CustomBuild Include="shader\simple.frag">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="shader\simple.vert">
+      <Filter>Shader</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="beziercalculator.hpp">
@@ -176,5 +183,16 @@
     <ClInclude Include="rectangle.hpp">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\normal.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\normal.geom">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\normal.vert">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

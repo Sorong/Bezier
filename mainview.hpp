@@ -18,8 +18,8 @@ public slots:
 	void addCoordinates() const;
 	void keyPressEvent(QKeyEvent* event) override;
 	void degreeElevation() const;
-	void degreeElevationT() const;
-	void degreeElevationS() const;
+	void degreeElevationU() const;
+	void degreeElevationV() const;
 	void clickedVertex(QVector4D*);
 	void editClickedVertex() const;
 private:

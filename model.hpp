@@ -27,17 +27,24 @@ public:
 	void scale(qreal factor);
 	virtual void setColor(QVector4D color);
 	QMatrix4x4& getModelMatrix();
+	void addNormalShader(QOpenGLShaderProgram& prog);
+	void showNormals(bool show);
 protected: 
 	virtual void initBuffer();
+	virtual QVector4D calculateNormals(QVector4D origin, QVector4D v2, QVector4D v3);
 	QMatrix4x4 model_;
 	QVector<QVector4D> vertices_;
 	QVector<QVector4D> colors_;
 	QVector<GLushort> indices_;
+	QVector<QVector4D> normals_;
 	QVector<QOpenGLShaderProgram*> programs_;
+	QOpenGLShaderProgram *normal_shader_;
 	QVector4D pos_;
 	GLuint vertexarrayobject_;
 	GLuint position_buffer_;
 	GLuint color_buffer_;
 	GLuint index_buffer_;
+	GLuint normal_buffer_;
+	bool show_normals_;
 };
 

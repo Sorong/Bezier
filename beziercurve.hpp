@@ -13,6 +13,9 @@ public:
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
 	int size() const override;
 	void setColor(QVector4D color) override;
+	void setNormals(QVector<QVector4D>& normals);
+	QVector4D& normalAt(int i);
+	bool normalsSet() const;
 private:
 	QVector<QVector4D> coordinates_;
 };

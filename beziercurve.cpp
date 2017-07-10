@@ -71,3 +71,18 @@ int BezierCurve::size() const {
 void BezierCurve::setColor(QVector4D color) {
 	this->colors_.fill(color, this->vertices_.size());
 }
+
+void BezierCurve::setNormals(QVector<QVector4D>& normals) {
+	this->normals_ = normals;
+}
+
+QVector4D& BezierCurve::normalAt(int i) {
+	if(i < 0 || i >= normals_.size()) {
+		return normals_[0];
+	} 
+	return normals_[i];
+}
+
+bool BezierCurve::normalsSet() const {
+	return !normals_.isEmpty();
+}

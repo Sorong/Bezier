@@ -17,7 +17,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.raise_elevation_u_, SIGNAL(pressed()), this, SLOT(degreeElevationU()));
 	QObject::connect(ui.raise_elevation_v_, SIGNAL(pressed()), this, SLOT(degreeElevationV()));
 	QObject::connect(ui.glview_, SIGNAL(clickedVertex(QVector4D*)), this, SLOT(clickedVertex(QVector4D*)));
-	QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
+	//QObject::connect(ui.surface_data_content_, SIGNAL(visibilityChanged(bool)), ui.show_surface_data_, SLOT(setChecked(bool)));
 	QObject::connect(ui.dock_surface_data_, SIGNAL(closed()), ui.show_surface_data_, SLOT(toggle()));
 	QObject::connect(ui.show_surface_data_, SIGNAL(toggled(bool)), ui.dock_surface_data_, SLOT(setVisible(bool)));
 	QObject::connect(ui.dock_vertex_data_, SIGNAL(closed()), ui.show_vertex_data_, SLOT(toggle()));
@@ -100,13 +100,13 @@ void MainView::degreeElevation() const {
 	
 }
 
-void MainView::degreeElevationT() const {
+void MainView::degreeElevationU() const {
 	this->ui.glview_->degreeElevationU();
 	this->ui.show_vertex_data_->setChecked(false);
 	this->ui.show_vertex_data_->setEnabled(false);
 
 }
-void MainView::degreeElevationS() const {
+void MainView::degreeElevationV() const {
 	this->ui.glview_->degreeElevationV();
 	this->ui.show_vertex_data_->setChecked(false);
 	this->ui.show_vertex_data_->setEnabled(false);

@@ -38,10 +38,11 @@ private:
 	void clearSubModels();
 	void recalculateSize();
 	void createBasePoints();
-	void createCurves(QVector4DMatrix& coordinates);
+	void createCurves(QVector4DMatrix& coordinates, QVector4DMatrix& normals);
 	void createCasteljauLines();
 	void clearAndReinit(QVector4D *pos = nullptr);
 	QVector4DMatrix coordinates_;
+	QVector4DMatrix normals_;
 	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;

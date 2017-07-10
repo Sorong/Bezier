@@ -15,6 +15,7 @@ public:
 	void degreeElevationSurface(QVector4DMatrix& src_coordinates) const;
 	void degreeElevationUSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix* dest = nullptr) const;
 	void degreeElevationVSurface(QVector4DMatrix& src_coodinates, QVector4DMatrix* dest = nullptr) const;
+	void normalsSurface(const QVector4DMatrix& src_coordinates, QVector4DMatrix &dest_normals, float precision_u, float precision_v) const;
 private:
 	void horizontalToVertical(const QVector4DMatrix& src_coordinates, QVector4DMatrix& dest_coordinates) const;
 	

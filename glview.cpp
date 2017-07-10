@@ -38,6 +38,7 @@ GLView::GLView(QWidget* parent) :
 	z_far_(ZFAR),
 	zoom_factor_(1.0f), eye(EYE), current_surface_(nullptr) {
 	this->prog_ = new QOpenGLShaderProgram;
+	this->normal_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -45,6 +46,7 @@ GLView::GLView(QWidget* parent) :
 GLView::~GLView() {
 	makeCurrent();
 	delete this->prog_;
+	delete this->normal_prog_;
 	delete this->controller_;
 }
 
@@ -52,6 +54,9 @@ void GLView::initializeGL() {
 	initializeOpenGLFunctions();
 	if (!initShader()) {
 		qDebug() << this->prog_->log();
+	}
+	if (!initNormalShader()) {
+		qDebug() << this->normal_prog_->log();
 	}
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
@@ -265,7 +270,6 @@ void GLView::initModel(Model& model, QVector4D* pos) {
 	makeCurrent();
 	model.addShader(*this->prog_);
 	model.init(pos);
-
 	update();
 }
 
@@ -281,3 +285,21 @@ bool GLView::initShader() const {
 	}
 	return this->prog_->link();
 }
+
+bool GLView::initNormalShader() const {
+	QString path = QDir::currentPath() + SHADERPATH;
+	QString vert = ".vert";
+	QString geom = ".geom";
+	QString frag = ".frag";
+	if (!this->normal_prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "normal" + vert })) {
+		return false;
+	}
+	if (!this->normal_prog_->addShaderFromSourceFile(QOpenGLShader::Geometry, { path + "normal" + geom })) {
+		return false;
+	}
+	if (!this->normal_prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "normal" + frag })) {
+		return false;
+	}
+	return this->normal_prog_->link();
+}
+

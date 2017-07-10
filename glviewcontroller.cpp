@@ -72,6 +72,7 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
 		ptr->setCoordinates(surface);
 		ptr->addShader(*glview_->prog_);
+		ptr->addNormalShader(*glview_->normal_prog_);
 		clearClicked();
 		glview_->initModel(*ptr, nullptr);
 		glview_->surfaces_.push_back(ptr);
@@ -118,6 +119,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }));
 		ptr->addHorizontalCoordinates(coord);
 		ptr->addShader(*glview_->prog_);
+		ptr->addNormalShader(*glview_->normal_prog_);
 		clicked.model_ = ptr.get();
 		clicked_.push_back(clicked);
 		this->current_selected_ = &clicked_[clicked_.size() - 1];

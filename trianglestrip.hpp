@@ -8,7 +8,7 @@ public:
 	TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve);
 	void init(QVector4D* position) override;
 	void render(QMatrix4x4& projection, QMatrix4x4& view) override;
-	void reinit(QVector4D* pos);
+	void reinit(QVector4D* pos) override;
 	void setFirstCurve(BezierCurve* first);
 	void setSecondCurve(BezierCurve* second);
 private:

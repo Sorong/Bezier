@@ -3,8 +3,7 @@
 out vec4 fragColor;
 in vec4 fragmentColor;
 
-void main()
-{
+void main() {
 	fragColor = fragmentColor;
 }
 

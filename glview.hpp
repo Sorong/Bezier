@@ -54,9 +54,11 @@ public slots:
 private:
 	void initModel(Model& model, QVector4D *pos);
 	bool initShader() const;
+	bool initNormalShader() const;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4 view_, projection_;
 	QOpenGLShaderProgram* prog_;
+	QOpenGLShaderProgram* normal_prog_;
 	float z_near_, z_far_, zoom_factor_;
 	GLViewController *controller_;
 	BezierSurface *current_surface_;
