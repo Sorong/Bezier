@@ -119,6 +119,9 @@
     <ClCompile Include="rectangle.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="phongmodel.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bezier.ui">
@@ -181,6 +184,9 @@
       <Filter>Header Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="rectangle.hpp">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="phongmodel.hpp">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
