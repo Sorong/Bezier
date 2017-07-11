@@ -82,6 +82,15 @@ void GLView::paintGL() {
 	if (surface_ != nullptr) {
 		surface_->render(projection_, view_);
 	}
+<<<<<<< HEAD
+=======
+	if(temp_model_) {
+		temp_model_->render(projection_, view_);
+	}
+	for(auto& surface : surfaces_) {
+		surface->render(projection_, view_);
+	}
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 	update();
 }
 
@@ -144,6 +153,12 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 	case Qt::Key_Plus:
 		surface_->scale(1.10);
 		click_model_.scale(1.10);
+<<<<<<< HEAD
+=======
+		if(temp_model_) {
+			temp_model_->scale(2);
+		}
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 		break;
 	case Qt::Key_Minus:
 		surface_->scale(0.9);
@@ -181,7 +196,11 @@ void GLView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 void GLView::mouseReleaseEvent(QMouseEvent* event) {
+<<<<<<< HEAD
 
+=======
+	controller_->mouseReleaseEvent(event);
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 }
 
 QVector<QVector4D> GLView::getBasePoints() const {
@@ -257,6 +276,17 @@ void GLView::editClickedVertex() {
 	update();
 }
 
+<<<<<<< HEAD
+=======
+void GLView::initModel(Model& model, QVector4D* pos) {
+	makeCurrent();
+	model.addShader(*this->prog_);
+	model.init(pos);
+
+	update();
+}
+
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 bool GLView::initShader() const {
 	QString path = QDir::currentPath() + SHADERPATH;
 	QString vert = ".vert";

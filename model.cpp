@@ -2,10 +2,17 @@
 
 
 Model::Model(): vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {
+<<<<<<< HEAD
 }
 
 Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
 
+=======
+	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
+}
+
+Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 }
 
 Model::Model(QMatrix4x4& model, const QVector4D& pos) : vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0) {

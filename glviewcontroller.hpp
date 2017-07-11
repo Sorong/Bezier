@@ -57,7 +57,11 @@ private:
 	void moveDrawSurfaceHandler(QMouseEvent* event);
 	void setCurrentUnclicked();
 	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
+<<<<<<< HEAD
 	GLView* view_;
+=======
+	GLView* glview_;
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 	Mode mode_;
 	DrawMode draw_mode_;
 	int click_amount_;
@@ -65,6 +69,10 @@ private:
 	QVector<ClickedModel> clicked_;
 	ClickedModel *current_selected_;
 	QVector4D unclick_color_, click_color_;
+<<<<<<< HEAD
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
 	QVector<std::shared_ptr<BezierSurface>> curves_;
+=======
+
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 };

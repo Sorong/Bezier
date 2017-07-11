@@ -1,14 +1,25 @@
 #include "rectangle.hpp"
 
+<<<<<<< HEAD
 
 Rectangle::Rectangle(QVector4D start, int size): Clickable(start) {
+=======
+using namespace Rect;
+
+Rectangle::Rectangle(QVector4D start, float size): Model(), Clickable(start) {
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 
 	QVector4D right = start;
 	QVector4D botleft = start;
 	QVector4D botright = start;
 	right.setX(right.x() + size);
 	botleft.setY(botleft.y() + size);
+<<<<<<< HEAD
 	botright = right + botleft;
+=======
+	auto start_right_vec = right - start;
+	botright = botleft + start_right_vec;
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 	this->vertices_ = {
 		start, right, botleft, botright
 	};
@@ -24,7 +35,11 @@ void Rectangle::init(QVector4D* position) {
 	if(position) {
 		this->setPosition(*position);
 	}
+<<<<<<< HEAD
 	this->indices_ = { 0,1,0,2,1,3,2,3 };
+=======
+	this->indices_ = { 0,1,3,2,0 };
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 	if (this->colors_.isEmpty()) {
 		this->colors_.push_back({ 0,0,0,1 });
 	}
@@ -43,7 +58,11 @@ void Rectangle::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		prog->bind();
 		prog->setUniformValue("mvp", mvp);
 		glBindVertexArray(this->vertexarrayobject_);
+<<<<<<< HEAD
 		glDrawElements(GL_LINES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+=======
+		glDrawElements(GL_LINE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+>>>>>>> 9d71dd988663019e6bc14f872f8e9ce384796ff9
 		glBindVertexArray(0);
 	}
 }
