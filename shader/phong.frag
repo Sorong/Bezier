@@ -3,7 +3,7 @@ in vec4 fragnormal;
 in vec4 fragcolor;
 in vec4 fragposition;
 
-out vec4 fragmentColor;
+out vec4 fragmentcolor;
 
 struct Material {
 	vec4 diffuse;
@@ -56,14 +56,13 @@ vec3 ads(vec4 pos, vec3 n) {
 	} else {
 		s = normalize(vec3(light.pos-pos));
 	}	
-	return ambient()+ diffus(s, n) + specular(s,n); //+ diffus(s, n); // + specular(s,n);  //pos?
+	return ambient() + diffus(s, n) + specular(s,n); //+ diffus(s, n); // + specular(s,n);  //pos?
 }
 
 void main()
 {	
 	float alpha = fragcolor.w;
-	vec3 normal = vec3(0,0,1);
+	vec3 normal = vec3(fragnormal);
 	vec3 col = ads(fragposition, normal);
-	fragmentColor = vec4(col, alpha);
-	//fragmentColor = fragcolor;
+	fragmentcolor = vec4(col, alpha);
 }

@@ -24,5 +24,5 @@ void main() {
 	gl_Position = pos;
 	//vs_out.normal = normalize(vec3(projection * vec4(nm * vec3(normal), 1.0)));
 	vs_out.normal = vec3(normal);
-	vs_out.color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	vs_out.color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }

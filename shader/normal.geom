@@ -9,11 +9,11 @@ in VS_OUT {
 	vec4 color;
 } gs_in[];
 
-out vec4 fragmentColor;
+out vec4 fragcolor;
 
 void DrawNormals(int index) {
 	gl_Position = mvp * gl_in[index].gl_Position;
-	fragmentColor = gs_in[index].color;
+	fragcolor = gs_in[index].color;
     EmitVertex();
 	vec3 normal =  gs_in[index].normal;
 	gl_Position = mvp * (gl_in[index].gl_Position + vec4(normal,0.0f));
@@ -23,7 +23,7 @@ void DrawNormals(int index) {
 
 void DrawUtilNormals(int index, vec3 in_normal) {
 	gl_Position = mvp * gl_in[index].gl_Position;
-	 fragmentColor = gs_in[index].color;
+	fragcolor = gs_in[index].color;
 	EmitVertex();
 	vec4 normal = vec4(in_normal, 0.0f);
 	gl_Position =  mvp * (gl_in[index].gl_Position + normal);

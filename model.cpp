@@ -158,7 +158,7 @@ void Model::initBuffer() {
 
 		pos = glGetAttribLocation(progId, "normal");
 		glEnableVertexAttribArray(pos);
-		glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+		glVertexAttribPointer(pos, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 	}
 
 	// Step 3: Create vertex buffer object for indices. No binding needed here.
