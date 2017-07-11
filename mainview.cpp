@@ -132,8 +132,6 @@ void MainView::clickedVertex(QVector4D* coordinate) {
 	this->ui.y_coordinate_->blockSignals(false);
 	this->ui.z_coordinate_->blockSignals(false);
 	this->ui.weight_->blockSignals(false);
-
-	qDebug() << "clicked";
 }
 
 void MainView::editClickedVertex() const {

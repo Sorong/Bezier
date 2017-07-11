@@ -51,6 +51,8 @@ void TriangleStrip::init(QVector4D* position) {
 		}
 	}
 	colors_.fill({ 1,0,0,.5f }, this->vertices_.size());
+	QVector4D mat = { 1, 0, 0, .5f };
+	this->setMaterial(mat);
 	for (int i = 0; i < this->vertices_.size(); i++) {
 		this->indices_.push_back(i);
 	}
@@ -64,9 +66,11 @@ void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		return;
 	}
 	auto mvp = projection * view  * (this->model_);
+	auto mv = view * this->model_;
 	QMatrix3x3 nm = this->model_.normalMatrix();
 	if (show_normals_ && !normals_.isEmpty() && normal_shader_) {
 		normal_shader_->bind();
+		auto test = normal_shader_->uniformLocation("mv");
 		normal_shader_->setUniformValue("mvp", mvp);
 		normal_shader_->setUniformValue("nm", nm);
 		normal_shader_->setUniformValue("projection", projection);
@@ -76,6 +80,19 @@ void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	}
 	default_shader_->bind();
 	default_shader_->setUniformValue("mvp", mvp);
+//	if(default_shader_->uniformLocation("mv") != -1) {
+
+		default_shader_->setUniformValue("mv", mv);
+		default_shader_->setUniformValue("light.pos", light_->pos);
+		default_shader_->setUniformValue("light.ambient", light_->ambient);
+		default_shader_->setUniformValue("light.diffuse", light_->diffuse);
+		default_shader_->setUniformValue("light.specular", light_->specular);
+		default_shader_->setUniformValue("material.diffuse", material_.diffuse);
+		default_shader_->setUniformValue("material.ambient", material_.ambient);
+		default_shader_->setUniformValue("material.specular", material_.specular);
+		default_shader_->setUniformValue("material.shininess", material_.shininess);
+//	}
+
 	glBindVertexArray(this->vertexarrayobject_);
 	glDrawElements(GL_TRIANGLE_STRIP, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 	glBindVertexArray(0);

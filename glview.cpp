@@ -45,6 +45,8 @@ GLView::GLView(QWidget* parent) :
 	this->light.specular = { WHITE, 1.0f };
 	this->prog_ = new QOpenGLShaderProgram;
 	this->normal_prog_ = new QOpenGLShaderProgram;
+	this->phong_prog_ = nullptr;
+	//this->phong_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -53,6 +55,9 @@ GLView::~GLView() {
 	makeCurrent();
 	delete this->prog_;
 	delete this->normal_prog_;
+	if(phong_prog_) {
+		delete this->phong_prog_;
+	}
 	delete this->controller_;
 }
 
@@ -63,6 +68,9 @@ void GLView::initializeGL() {
 	}
 	if (!initNormalShader()) {
 		qDebug() << this->normal_prog_->log();
+	}
+	if(phong_prog_ && !initPhongShader()) {
+		qDebug() << this->phong_prog_->log();
 	}
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
@@ -327,4 +335,21 @@ bool GLView::initNormalShader() const {
 	}
 	return this->normal_prog_->link();
 }
+
+bool GLView::initPhongShader() const {
+	if(!phong_prog_) {
+		return false;
+	}
+	QString path = QDir::currentPath() + SHADERPATH;
+	QString vert = ".vert";
+	QString frag = ".frag";
+	if (!this->phong_prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "phong" + vert })) {
+		return false;
+	}
+	if (!this->phong_prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "phong" + frag })) {
+		return false;
+	}
+	return this->phong_prog_->link();
+}
+
 
