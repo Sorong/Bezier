@@ -30,7 +30,7 @@ void BezierCalculator::deCasteljau(const QVector<QVector4D>& base_coordinates, Q
 }
 
 bool BezierCalculator::bezierCurve(QVector<QVector4D>& src_coordinates, QVector<QVector4D>& dest_coordinates, float precision) const {
-	if (src_coordinates.size() <= 2) {
+	if (src_coordinates.size() < 2) {
 		dest_coordinates = src_coordinates;
 		return true;
 	}

@@ -6,6 +6,7 @@ layout (location = 2) in vec4 normal;
 layout(location = 3) uniform mat4 mvp;
 layout(location = 4) uniform mat3 nm;
 layout(location = 5) uniform mat4 projection;
+layout(location = 6) uniform mat4 mv;
 
 
 

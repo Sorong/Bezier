@@ -277,7 +277,7 @@ void BezierSurface::createSubModels() {
 		curve->init();
 	}
 	for (auto& strip : triangle_strips_) {
-		strip->setDefaultShader(*surface_shader_);
+		strip->setDefaultShader(*this->surface_shader_);
 		strip->addNormalShader(*this->normal_shader_);
 		strip->init(nullptr);
 	}

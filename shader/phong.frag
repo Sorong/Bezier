@@ -1,7 +1,7 @@
 #version 430
-in vec4 fragposition;
-in vec4 fragcolor;
 in vec4 fragnormal;
+in vec4 fragcolor;
+in vec4 fragposition;
 
 out vec4 fragmentColor;
 
@@ -36,7 +36,9 @@ vec3 ambient() {
 	return vec3(light.ambient * material.ambient);
 }
 vec3 diffus(vec3 n, vec3 l) {
-	return vec3(light.diffuse * material.diffuse * max(dot(n,l), 0.0f));
+	vec3 l_diff = vec3(light.diffuse);
+	vec3 m_diff = vec3(material.diffuse);
+	return l_diff * m_diff * max(dot(n,l), 0.0f);
 }
 vec3 specular(vec3 s, vec3 n) {
 	vec3 r = reflect(-s,n); //2*(max(dot(n, s),0.0f)) * n - s;
@@ -54,12 +56,14 @@ vec3 ads(vec4 pos, vec3 n) {
 	} else {
 		s = normalize(vec3(light.pos-pos));
 	}	
-	return ambient() + diffus(s, n) + specular(s,n);  //pos?
+	return ambient()+ diffus(s, n) + specular(s,n); //+ diffus(s, n); // + specular(s,n);  //pos?
 }
 
 void main()
 {	
 	float alpha = fragcolor.w;
-	vec3 col = ads(fragposition, vec3(fragnormal));
+	vec3 normal = vec3(0,0,1);
+	vec3 col = ads(fragposition, normal);
 	fragmentColor = vec4(col, alpha);
+	//fragmentColor = fragcolor;
 }

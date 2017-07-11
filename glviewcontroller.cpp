@@ -72,7 +72,9 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }, glview_->light));
 		ptr->setCoordinates(surface);
 		ptr->setDefaultShader(*glview_->prog_);
-		//ptr->setSurfaceShader(*glview_->phong_prog_);
+		if(glview_->phong_prog_) {
+			ptr->setSurfaceShader(*glview_->phong_prog_);
+		}
 		ptr->addNormalShader(*glview_->normal_prog_);
 		clearClicked();
 		glview_->initModel(*ptr, nullptr);
@@ -120,7 +122,9 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }, glview_->light));
 		ptr->addHorizontalCoordinates(coord);
 		ptr->setDefaultShader(*glview_->prog_);
-	//	ptr->setSurfaceShader(*glview_->phong_prog_);
+		if(glview_->phong_prog_) {
+			ptr->setSurfaceShader(*glview_->phong_prog_);
+		}
 		ptr->addNormalShader(*glview_->normal_prog_);
 		clicked.model_ = ptr.get();
 		clicked_.push_back(clicked);
@@ -145,6 +149,7 @@ void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
 	projectMouseEvent(event, &begin, &end, &direction);
 	auto length = (clamped_z_ - begin.z()) / direction.z();
 	auto base = begin + length * direction;
+	std::make_shared<Rect::Rectangle>(QVector4D(base, 1), 0.1);
 	glview_->temp_model_ = std::make_shared<Rect::Rectangle>( QVector4D(base, 1), 0.1);
 	QVector4D initpos = { INITPOS };
 	glview_->initModel(*glview_->temp_model_.get(), &initpos);

@@ -14,7 +14,7 @@
 #define CENTER 0.0f, 0.0f, 0.0f
 #define UP 0.0f, 1.0f, 0.0f
 #define INITPOS -EYE, 1.0f
-#define INITLIGHT 0.0f, 10.0f, EYEZ, 1.0f
+#define INITLIGHT 0.0f, 0.0f, EYEZ, 1.0f
 
 #define BLACK 0.0f, 0.0f, 0.0f
 #define BLUE 0.0f, 0.0f, 1.0f
@@ -46,7 +46,7 @@ GLView::GLView(QWidget* parent) :
 	this->prog_ = new QOpenGLShaderProgram;
 	this->normal_prog_ = new QOpenGLShaderProgram;
 	this->phong_prog_ = nullptr;
-	//this->phong_prog_ = new QOpenGLShaderProgram;
+	this->phong_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
