@@ -206,5 +206,20 @@
     <None Include="shader\phong.vert">
       <Filter>Shader</Filter>
     </None>
+    <None Include="shader\click.vert">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\click.geom">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\click.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\click.tcs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="shader\click.tes">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

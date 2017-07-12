@@ -621,6 +621,11 @@
     <ClInclude Include="types.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\click.frag" />
+    <None Include="shader\click.geom" />
+    <None Include="shader\click.tes" />
+    <None Include="shader\click.tcs" />
+    <None Include="shader\click.vert" />
     <None Include="shader\normal.frag" />
     <None Include="shader\normal.geom" />
     <None Include="shader\normal.vert" />

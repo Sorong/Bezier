@@ -267,7 +267,6 @@ void BezierSurface::createSubModels() {
 	createCurves(dest, normals);
 	for (auto& ico : base_points_) {
 		ico->setDefaultShader(*default_shader_);
-		//ico->setColor({ 1,1,1,1 });
 		ico->init();
 	}
 	for (auto& curve : curves_) {

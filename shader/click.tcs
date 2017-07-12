@@ -1,0 +1,15 @@
+﻿#version 430
+
+layout (vertices = 3) out;
+const float tesslevel = 3;
+
+void main() {
+
+	gl_out[gl_InvocationID] = gl_in[gl_InvocationID];
+	if(gl_InvocationID == 0) {
+		gl_TessLevelInner[0] = tesslevel;
+		gl_TessLevelOuter[0] = tesslevel;
+		gl_TessLevelOuter[1] = tesslevel;
+		gl_TessLevelOuter[2] = tesslevel;
+	}
+}

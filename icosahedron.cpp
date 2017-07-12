@@ -6,8 +6,7 @@ Icosahedron::Icosahedron(QMatrix4x4& model, QVector4D& reference_vertex) : Model
 	this->colors_.push_back({ 1,1,1,1 });
 }
 
-Icosahedron::~Icosahedron()
-{
+Icosahedron::~Icosahedron() {
 }
 
 void Icosahedron::init(QVector4D *position) {
@@ -42,11 +41,15 @@ void Icosahedron::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	}
 	auto mvp = projection * view * model_;
 	default_shader_->bind();
-	default_shader_->setUniformValue("mvp", mvp);
-	default_shader_->uniformLocation("mvp");
-	glBindVertexArray(this->vertexarrayobject_);
-	glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
-	glBindVertexArray(0);
+	if(!click_shader_) {
+		default_shader_->setUniformValue("mvp", mvp);
+		glBindVertexArray(this->vertexarrayobject_);
+		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+		glBindVertexArray(0);
+	} else {
+		
+	}
+	
 }
 
 
@@ -84,4 +87,9 @@ void Icosahedron::setClicked(QVector4D& color) {
 
 void Icosahedron::setUnclicked(QVector4D& color) {
 	this->setColor(color);
+}
+
+void Icosahedron::setClickShader(QOpenGLShaderProgram& shader) {
+	this->default_shader_ = &shader;
+	Clickable::setClickShader(shader);
 }

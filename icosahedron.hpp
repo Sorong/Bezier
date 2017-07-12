@@ -16,6 +16,7 @@ public:
 	void translateToReference() override;
 	void setClicked(QVector4D& color) override;
 	void setUnclicked(QVector4D& color) override;
+	void setClickShader(QOpenGLShaderProgram &shader) override;
 private:
 	float radius_;
 };

@@ -1,8 +1,8 @@
 #pragma once
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 #include <QOpenGLShaderProgram>
 
-class Model : protected QOpenGLFunctions_3_3_Core
+class Model : protected QOpenGLFunctions_4_3_Core
 {
 public:
 	Model();

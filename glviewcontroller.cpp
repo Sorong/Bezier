@@ -209,6 +209,10 @@ void GLViewController::clearClicked() {
 	this->clicked_.clear();
 }
 
+void GLViewController::setClampedZ(float f) {
+	this->clamped_z_ = f;
+}
+
 bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius) {
 	QVector4D * prev_selected = nullptr;
 	if(current_selected_) {

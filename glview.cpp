@@ -47,6 +47,7 @@ GLView::GLView(QWidget* parent) :
 	this->normal_prog_ = new QOpenGLShaderProgram;
 	this->phong_prog_ = nullptr;
 	this->phong_prog_ = new QOpenGLShaderProgram;
+	this->tess_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -58,6 +59,7 @@ GLView::~GLView() {
 	if(phong_prog_) {
 		delete this->phong_prog_;
 	}
+	delete this->tess_prog_;
 	delete this->controller_;
 }
 
@@ -71,6 +73,9 @@ void GLView::initializeGL() {
 	}
 	if(phong_prog_ && !initPhongShader()) {
 		qDebug() << this->phong_prog_->log();
+	}
+	if(!initTessShader()) {
+		qDebug() << this->tess_prog_->log();
 	}
 	glClearColor(GRAY, 0.0);
 	this->view_.setToIdentity();
@@ -285,6 +290,10 @@ void GLView::modeDrawCoonspatch() const {
 	this->controller_->setMode(DRAWCOONS);
 }
 
+void GLView::setClampedZ(double z) const {
+	this->controller_->setClampedZ(z);
+}
+
 
 void GLView::editClickedVertex() {
 	reinitCurrentSurface();
@@ -350,6 +359,36 @@ bool GLView::initPhongShader() const {
 		return false;
 	}
 	return this->phong_prog_->link();
+}
+
+bool GLView::initTessShader() const {
+
+	if (!tess_prog_) {
+		return false;
+	}
+	QString path = QDir::currentPath() + SHADERPATH;
+	QString vert = ".vert";
+	QString geom = ".geom";
+	QString tes = ".tes";
+	QString tcs = ".tcs";
+	QString frag = ".frag";
+	if (!this->tess_prog_->addShaderFromSourceFile(QOpenGLShader::Vertex, { path + "click" + vert })) {
+		return false;
+	}
+	if (!this->tess_prog_->addShaderFromSourceFile(QOpenGLShader::TessellationControl, { path + "click" + tcs })) {
+		return false;
+	}
+	if (!this->tess_prog_->addShaderFromSourceFile(QOpenGLShader::TessellationEvaluation, { path + "click" + tes })) {
+		return false;
+	}
+	if (!this->tess_prog_->addShaderFromSourceFile(QOpenGLShader::Geometry, { path + "click" + geom })) {
+		return false;
+	}
+	if (!this->tess_prog_->addShaderFromSourceFile(QOpenGLShader::Fragment, { path + "click" + frag })) {
+		return false;
+	}
+
+	return true;
 }
 
 

@@ -57,6 +57,7 @@ public:
 	void mouseMoveEvent(QMouseEvent* event) const;
 	void mouseReleaseEvent(QMouseEvent* event);
 	void clearClicked();
+	void setClampedZ(float f);
 private:
 	void pressSelectHandler(QMouseEvent* event);
 	void pressDrawCurveHandler(QMouseEvent* event);

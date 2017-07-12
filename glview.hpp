@@ -4,8 +4,6 @@
 #include <memory>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
-#include "line.hpp"
 #include "beziersurfacecalculator.hpp"
 #include "beziersurface.hpp"
 #include "glviewcontroller.hpp"
@@ -47,6 +45,7 @@ public slots:
 	void modeDrawCurve() const;
 	void modeDrawSurface() const;
 	void modeDrawCoonspatch() const;
+	void setClampedZ(double z) const;
 	void editClickedVertex();
 	signals:
 	void clickedVertex(QVector4D*);
@@ -58,11 +57,13 @@ private:
 	bool initShader() const;
 	bool initNormalShader() const;
 	bool initPhongShader() const;
+	bool initTessShader() const;
 	bool show_sublines_, show_derivate_, highest_grade_reached_;
 	QMatrix4x4 view_, projection_;
 	QOpenGLShaderProgram* prog_;
 	QOpenGLShaderProgram* normal_prog_;
 	QOpenGLShaderProgram* phong_prog_;
+	QOpenGLShaderProgram* tess_prog_;
 	float z_near_, z_far_, zoom_factor_;
 	GLViewController *controller_;
 	BezierSurface *current_surface_;

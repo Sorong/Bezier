@@ -76,18 +76,18 @@ public:
     QSlider *v_slider_;
     QPushButton *raise_elevation_v_;
     QCheckBox *show_normals_;
-    QDockWidget *dockWidget;
-    QWidget *dockWidgetContents;
+    QDockWidget *dock_toolbar_;
+    QWidget *dock_toolbar_widget_;
     QWidget *verticalLayoutWidget;
-    QVBoxLayout *verticalLayout_2;
-    QHBoxLayout *tool_buttons_2;
+    QVBoxLayout *dock_toolbar_mainlayout_;
+    QHBoxLayout *toolbar_buttonarea_;
     QToolButton *edit_model_;
     QToolButton *draw_curve_;
     QToolButton *draw_surface_;
     QToolButton *draw_coons_;
-    QHBoxLayout *horizontalLayout;
-    QLabel *label;
-    QDoubleSpinBox *doubleSpinBox;
+    QHBoxLayout *toolbar_parameterarea_;
+    QLabel *z_clamped_label_;
+    QDoubleSpinBox *z_clamped_;
 
     void setupUi(QMainWindow *BezierClass)
     {
@@ -365,24 +365,24 @@ public:
 
         dock_surface_data_->setWidget(surface_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
-        dockWidget = new QDockWidget(BezierClass);
-        dockWidget->setObjectName(QStringLiteral("dockWidget"));
-        dockWidget->setMinimumSize(QSize(150, 100));
-        dockWidget->setFeatures(QDockWidget::DockWidgetMovable);
-        dockWidget->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
-        dockWidgetContents = new QWidget();
-        dockWidgetContents->setObjectName(QStringLiteral("dockWidgetContents"));
-        verticalLayoutWidget = new QWidget(dockWidgetContents);
+        dock_toolbar_ = new QDockWidget(BezierClass);
+        dock_toolbar_->setObjectName(QStringLiteral("dock_toolbar_"));
+        dock_toolbar_->setMinimumSize(QSize(150, 100));
+        dock_toolbar_->setFeatures(QDockWidget::DockWidgetMovable);
+        dock_toolbar_->setAllowedAreas(Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea);
+        dock_toolbar_widget_ = new QWidget();
+        dock_toolbar_widget_->setObjectName(QStringLiteral("dock_toolbar_widget_"));
+        verticalLayoutWidget = new QWidget(dock_toolbar_widget_);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
         verticalLayoutWidget->setGeometry(QRect(0, 0, 250, 89));
-        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
-        verticalLayout_2->setSpacing(0);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 5);
-        tool_buttons_2 = new QHBoxLayout();
-        tool_buttons_2->setSpacing(6);
-        tool_buttons_2->setObjectName(QStringLiteral("tool_buttons_2"));
+        dock_toolbar_mainlayout_ = new QVBoxLayout(verticalLayoutWidget);
+        dock_toolbar_mainlayout_->setSpacing(0);
+        dock_toolbar_mainlayout_->setContentsMargins(11, 11, 11, 11);
+        dock_toolbar_mainlayout_->setObjectName(QStringLiteral("dock_toolbar_mainlayout_"));
+        dock_toolbar_mainlayout_->setContentsMargins(0, 0, 0, 5);
+        toolbar_buttonarea_ = new QHBoxLayout();
+        toolbar_buttonarea_->setSpacing(6);
+        toolbar_buttonarea_->setObjectName(QStringLiteral("toolbar_buttonarea_"));
         edit_model_ = new QToolButton(verticalLayoutWidget);
         edit_model_->setObjectName(QStringLiteral("edit_model_"));
         edit_model_->setMinimumSize(QSize(32, 32));
@@ -392,7 +392,7 @@ public:
         edit_model_->setIcon(icon);
         edit_model_->setIconSize(QSize(32, 32));
 
-        tool_buttons_2->addWidget(edit_model_);
+        toolbar_buttonarea_->addWidget(edit_model_);
 
         draw_curve_ = new QToolButton(verticalLayoutWidget);
         draw_curve_->setObjectName(QStringLiteral("draw_curve_"));
@@ -404,7 +404,7 @@ public:
         draw_curve_->setIconSize(QSize(32, 32));
         draw_curve_->setAutoRaise(false);
 
-        tool_buttons_2->addWidget(draw_curve_);
+        toolbar_buttonarea_->addWidget(draw_curve_);
 
         draw_surface_ = new QToolButton(verticalLayoutWidget);
         draw_surface_->setObjectName(QStringLiteral("draw_surface_"));
@@ -414,7 +414,7 @@ public:
         draw_surface_->setIcon(icon2);
         draw_surface_->setIconSize(QSize(32, 32));
 
-        tool_buttons_2->addWidget(draw_surface_);
+        toolbar_buttonarea_->addWidget(draw_surface_);
 
         draw_coons_ = new QToolButton(verticalLayoutWidget);
         draw_coons_->setObjectName(QStringLiteral("draw_coons_"));
@@ -425,34 +425,35 @@ public:
         draw_coons_->setIcon(icon3);
         draw_coons_->setIconSize(QSize(32, 32));
 
-        tool_buttons_2->addWidget(draw_coons_);
+        toolbar_buttonarea_->addWidget(draw_coons_);
 
 
-        verticalLayout_2->addLayout(tool_buttons_2);
+        dock_toolbar_mainlayout_->addLayout(toolbar_buttonarea_);
 
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalLayout->setContentsMargins(-1, -1, 15, -1);
-        label = new QLabel(verticalLayoutWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setAlignment(Qt::AlignCenter);
-        label->setMargin(5);
+        toolbar_parameterarea_ = new QHBoxLayout();
+        toolbar_parameterarea_->setSpacing(6);
+        toolbar_parameterarea_->setObjectName(QStringLiteral("toolbar_parameterarea_"));
+        toolbar_parameterarea_->setContentsMargins(-1, -1, 15, -1);
+        z_clamped_label_ = new QLabel(verticalLayoutWidget);
+        z_clamped_label_->setObjectName(QStringLiteral("z_clamped_label_"));
+        z_clamped_label_->setAlignment(Qt::AlignCenter);
+        z_clamped_label_->setMargin(5);
 
-        horizontalLayout->addWidget(label);
+        toolbar_parameterarea_->addWidget(z_clamped_label_);
 
-        doubleSpinBox = new QDoubleSpinBox(verticalLayoutWidget);
-        doubleSpinBox->setObjectName(QStringLiteral("doubleSpinBox"));
-        doubleSpinBox->setBaseSize(QSize(0, 0));
-        doubleSpinBox->setMinimum(-10);
+        z_clamped_ = new QDoubleSpinBox(verticalLayoutWidget);
+        z_clamped_->setObjectName(QStringLiteral("z_clamped_"));
+        z_clamped_->setBaseSize(QSize(0, 0));
+        z_clamped_->setMinimum(-50);
+        z_clamped_->setMaximum(10);
 
-        horizontalLayout->addWidget(doubleSpinBox);
+        toolbar_parameterarea_->addWidget(z_clamped_);
 
 
-        verticalLayout_2->addLayout(horizontalLayout);
+        dock_toolbar_mainlayout_->addLayout(toolbar_parameterarea_);
 
-        dockWidget->setWidget(dockWidgetContents);
-        BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dockWidget);
+        dock_toolbar_->setWidget(dock_toolbar_widget_);
+        BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(4), dock_toolbar_);
 
         menu_bar_->addAction(menu_view_->menuAction());
         menu_view_->addAction(show_vertex_data_);
@@ -486,7 +487,7 @@ public:
         raise_elevation_v_->setText(QApplication::translate("BezierClass", "Gradanhebung V", 0));
         show_normals_->setText(QApplication::translate("BezierClass", "Normalen \n"
 "anzeigen", 0));
-        dockWidget->setWindowTitle(QApplication::translate("BezierClass", "Werkzeuge", 0));
+        dock_toolbar_->setWindowTitle(QApplication::translate("BezierClass", "Werkzeuge", 0));
 #ifndef QT_NO_TOOLTIP
         edit_model_->setToolTip(QApplication::translate("BezierClass", "Bearbeitungsmodus", 0));
 #endif // QT_NO_TOOLTIP
@@ -503,9 +504,9 @@ public:
         draw_coons_->setToolTip(QApplication::translate("BezierClass", "Zeichnet Coonspatch", 0));
 #endif // QT_NO_TOOLTIP
         draw_coons_->setText(QApplication::translate("BezierClass", "...", 0));
-        label->setText(QApplication::translate("BezierClass", "Z-Achse:", 0));
+        z_clamped_label_->setText(QApplication::translate("BezierClass", "Z-Achse:", 0));
 #ifndef QT_NO_TOOLTIP
-        doubleSpinBox->setToolTip(QApplication::translate("BezierClass", "Z-Achse wird \"festgesetzt\" anhand des eigegebenen Wertes.", 0));
+        z_clamped_->setToolTip(QApplication::translate("BezierClass", "Z-Achse wird \"festgesetzt\" anhand des eigegebenen Wertes.", 0));
 #endif // QT_NO_TOOLTIP
     } // retranslateUi
 

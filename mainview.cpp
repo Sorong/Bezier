@@ -32,6 +32,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.edit_model_, SIGNAL(pressed()), ui.glview_, SLOT(modeSelect()));
 	QObject::connect(ui.glview_, SIGNAL(clickedSurface(Model*)), this, SLOT(clickedSurface(Model*)));
 	QObject::connect(ui.show_normals_, SIGNAL(toggled(bool)), this, SLOT(showNormals(bool)));
+	QObject::connect(ui.z_clamped_, SIGNAL(valueChanged(double)), ui.glview_, SLOT(setClampedZ(double)));
 	ui.dock_vertex_data_->hide();
 	//ui.dock_surface_data_->hide();
 }

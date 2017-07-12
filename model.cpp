@@ -2,7 +2,7 @@
 
 
 Model::Model() : default_shader_(nullptr), normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
-	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
+	QOpenGLFunctions_4_3_Core::initializeOpenGLFunctions();
 }
 
 Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
@@ -11,7 +11,7 @@ Model::Model(QMatrix4x4& model) : Model(model, { 0,0,0,0 }) {
 Model::Model(QMatrix4x4& model, const QVector4D& pos) : default_shader_(nullptr), normal_shader_(nullptr), vertexarrayobject_(0), position_buffer_(0), color_buffer_(0), index_buffer_(0), show_normals_(false) {
 	this->model_ = model;
 	setPosition(pos);
-	QOpenGLFunctions_3_3_Core::initializeOpenGLFunctions();
+	QOpenGLFunctions_4_3_Core::initializeOpenGLFunctions();
 }
 
 Model::~Model()

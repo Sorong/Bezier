@@ -597,7 +597,7 @@ anzeigen</string>
     </widget>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dock_toolbar_">
    <property name="minimumSize">
     <size>
      <width>150</width>
@@ -616,7 +616,7 @@ anzeigen</string>
    <attribute name="dockWidgetArea">
     <number>4</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QWidget" name="dock_toolbar_widget_">
     <widget class="QWidget" name="verticalLayoutWidget">
      <property name="geometry">
       <rect>
@@ -626,7 +626,7 @@ anzeigen</string>
        <height>89</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="dock_toolbar_mainlayout_">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -634,7 +634,7 @@ anzeigen</string>
        <number>5</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="tool_buttons_2">
+       <layout class="QHBoxLayout" name="toolbar_buttonarea_">
         <item>
          <widget class="QToolButton" name="edit_model_">
           <property name="minimumSize">
@@ -754,7 +754,7 @@ anzeigen</string>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="toolbar_parameterarea_">
         <property name="spacing">
          <number>6</number>
         </property>
@@ -762,7 +762,7 @@ anzeigen</string>
          <number>15</number>
         </property>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="z_clamped_label_">
           <property name="text">
            <string>Z-Achse:</string>
           </property>
@@ -775,7 +775,7 @@ anzeigen</string>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox">
+         <widget class="QDoubleSpinBox" name="z_clamped_">
           <property name="baseSize">
            <size>
             <width>0</width>
@@ -786,7 +786,10 @@ anzeigen</string>
            <string>Z-Achse wird &quot;festgesetzt&quot; anhand des eigegebenen Wertes.</string>
           </property>
           <property name="minimum">
-           <double>-10.000000000000000</double>
+           <double>-50.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
           </property>
          </widget>
         </item>
