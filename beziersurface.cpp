@@ -254,7 +254,13 @@ void BezierSurface::setDefaultShader(QOpenGLShaderProgram& prog) {
 	this->default_shader_ = &prog;
 	if (!surface_shader_) {
 		surface_shader_ = default_shader_;
+	} if(!click_shader_) {
+		click_shader_ = default_shader_;
 	}
+}
+
+void BezierSurface::setClickShader(QOpenGLShaderProgram& prog) {
+	this->click_shader_ = &prog;
 }
 
 void BezierSurface::createSubModels() {
@@ -267,6 +273,7 @@ void BezierSurface::createSubModels() {
 	createCurves(dest, normals);
 	for (auto& ico : base_points_) {
 		ico->setDefaultShader(*default_shader_);
+	//	ico->setClickShader(*this->click_shader_);
 		ico->init();
 	}
 	for (auto& curve : curves_) {

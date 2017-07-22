@@ -74,6 +74,9 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		ptr->setDefaultShader(*glview_->prog_);
 		if(glview_->phong_prog_) {
 			ptr->setSurfaceShader(*glview_->phong_prog_);
+		} 
+		if(glview_->tess_prog_) {
+			ptr->setClickShader(*glview_->tess_prog_);
 		}
 		ptr->addNormalShader(*glview_->normal_prog_);
 		clearClicked();
@@ -124,6 +127,9 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		ptr->setDefaultShader(*glview_->prog_);
 		if(glview_->phong_prog_) {
 			ptr->setSurfaceShader(*glview_->phong_prog_);
+		}
+		if (glview_->tess_prog_) {
+			ptr->setClickShader(*glview_->tess_prog_);
 		}
 		ptr->addNormalShader(*glview_->normal_prog_);
 		clicked.model_ = ptr.get();

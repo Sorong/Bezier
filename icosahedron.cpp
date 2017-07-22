@@ -40,14 +40,23 @@ void Icosahedron::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		return;
 	}
 	auto mvp = projection * view * model_;
-	default_shader_->bind();
+
 	if(!click_shader_) {
+		default_shader_->bind();
 		default_shader_->setUniformValue("mvp", mvp);
 		glBindVertexArray(this->vertexarrayobject_);
 		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
 		glBindVertexArray(0);
 	} else {
-		
+		QMatrix3x3 nm = this->model_.normalMatrix();
+		auto test0 = click_shader_->uniformLocation("mvp");
+		auto test1 = click_shader_->uniformLocation("nm");
+		click_shader_->bind();
+		click_shader_->setUniformValue("mvp", mvp);
+		click_shader_->setUniformValue("nm", nm);
+		glBindVertexArray(this->vertexarrayobject_);
+		glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_SHORT, nullptr);
+		glBindVertexArray(0);
 	}
 	
 }

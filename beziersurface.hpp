@@ -40,6 +40,7 @@ public:
 	void removeRowAndCol(int row, int col);
 	void setSurfaceShader(QOpenGLShaderProgram& surface_shader);
 	void setDefaultShader(QOpenGLShaderProgram &prog) override;
+	void setClickShader(QOpenGLShaderProgram &prog);
 private:
 	void createSubModels();
 	void clearSubModels();
@@ -56,6 +57,7 @@ private:
 	QVector<std::shared_ptr<Line>> lines_;
 	std::shared_ptr<Line> derivate_line_;
 	QOpenGLShaderProgram *surface_shader_;
+	QOpenGLShaderProgram *click_shader_;
 
 	float u_, v_;
 	int horizontal_size_;

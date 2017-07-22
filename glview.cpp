@@ -47,7 +47,8 @@ GLView::GLView(QWidget* parent) :
 	this->normal_prog_ = new QOpenGLShaderProgram;
 	this->phong_prog_ = nullptr;
 	this->phong_prog_ = new QOpenGLShaderProgram;
-	this->tess_prog_ = new QOpenGLShaderProgram;
+	this->tess_prog_ = nullptr;
+//	this->tess_prog_ = new QOpenGLShaderProgram;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -74,7 +75,7 @@ void GLView::initializeGL() {
 	if(phong_prog_ && !initPhongShader()) {
 		qDebug() << this->phong_prog_->log();
 	}
-	if(!initTessShader()) {
+	if(tess_prog_ && !initTessShader()) {
 		qDebug() << this->tess_prog_->log();
 	}
 	glClearColor(GRAY, 0.0);
@@ -388,7 +389,7 @@ bool GLView::initTessShader() const {
 		return false;
 	}
 
-	return true;
+	return this->tess_prog_->link();
 }
 
 

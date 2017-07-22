@@ -1,11 +1,14 @@
-﻿#version 430
+#version 430
 
 layout (vertices = 3) out;
 const float tesslevel = 3;
 
+layout(location = 3) uniform mat4 mvp;
+layout(location = 4) uniform mat3 nm;
+
 void main() {
 
-	gl_out[gl_InvocationID] = gl_in[gl_InvocationID];
+	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 	if(gl_InvocationID == 0) {
 		gl_TessLevelInner[0] = tesslevel;
 		gl_TessLevelOuter[0] = tesslevel;

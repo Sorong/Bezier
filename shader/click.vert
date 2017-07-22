@@ -1,8 +1,9 @@
-﻿#version 400
+#version 430
 layout (location = 0 ) in vec4 position;
 layout (location = 1 ) in vec4 color;
 
 layout(location = 3) uniform mat4 mvp;
+layout(location = 4) uniform mat3 nm;
 
 out vec4 fragmentColor;
 
