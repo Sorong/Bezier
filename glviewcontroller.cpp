@@ -35,7 +35,7 @@ void GLViewController::mousePressEvent(QMouseEvent* event) {
 		BezierSurface *ptr = nullptr;
 		try {
 			ptr = dynamic_cast<BezierSurface*>(current_selected_->model_);
-			this->setClickAmount(std::max(ptr->getUSize(), ptr->getVSize()));
+			this->setClickAmount(ptr->getVSize() > 1 ? 2 : 1);
 		}
 		catch (std::bad_cast) {
 			
@@ -235,10 +235,22 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 	if(current_selected_) {
 		prev_selected = current_selected_->reference_;
 	}
+	auto u = 0;
+	auto v = 0;
 	if(mode_ != C0) {
 		setCurrentUnclicked();
+	} else {
+		u = surface.getUSize();
+		v = surface.getVSize();
 	}
 	for (auto i = 0; i < surface.size(); i++) {
+		if(mode_ == C0) {
+			auto border_test = i % v;
+			if( !(i < u || i + u >= (u*v)) && (border_test != 0 && border_test != u - 1)) {
+				continue;
+			} 
+
+		}
 		QVector4D& coord = surface.get(i);
 		QVector3D L = (coord.toVector3DAffine() - begin);
 		float tca = QVector3D::dotProduct(L, direction);
@@ -249,9 +261,6 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		if (d2 > radius) {
 			continue;
 		}
-		//float thc = sqrt(radius2 - d2);
-		//auto t_drag = tca - thc;
-		
 		ClickedModel clicked(surface, i);
 		clicked.offset_ = coord.toVector3DAffine() - begin;
 		addClicked(&clicked);
