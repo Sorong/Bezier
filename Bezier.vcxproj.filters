@@ -89,9 +89,6 @@
     <ClCompile Include="beziercurve.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="trianglestrip.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_dockwidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -120,6 +117,9 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="phongmodel.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="beziersurfacestrip.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
@@ -151,9 +151,6 @@
     <CustomBuild Include="icosahedron.hpp">
       <Filter>Header Files\Model</Filter>
     </CustomBuild>
-    <CustomBuild Include="trianglestrip.hpp">
-      <Filter>Header Files\Model</Filter>
-    </CustomBuild>
     <CustomBuild Include="GeneratedFiles\ui_bezier.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
@@ -171,6 +168,9 @@
     </CustomBuild>
     <CustomBuild Include="shader\simple.vert">
       <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="beziersurfacestrip.hpp">
+      <Filter>Header Files\Model</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include "beziersurfacecalculator.hpp"
 #include "line.hpp"
 #include "beziercurve.hpp"
-#include "trianglestrip.hpp"
+#include "beziersurfacestrip.hpp"
 #include "icosahedron.hpp"
 
 #define VERTEXPOINTSCALE 0.2f
@@ -13,10 +13,11 @@ BezierSurface::BezierSurface(QMatrix4x4& model, const QVector4D& pos, Light& lig
 	  surface_shader_(nullptr),
 	  u_(0),
 	  v_(0),
-	  horizontal_size_(0),
-	  vertical_size_(0),
+	  v_size_(0),
+	  u_size_(0),
 	  casteljau_(false),
-	  derivate_(false) {
+	  derivate_(false),
+	  u_curves_(false) {
 }
 
 BezierSurface::~BezierSurface() {
@@ -47,9 +48,11 @@ void BezierSurface::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		ico->scale(VERTEXPOINTSCALE);
 		ico->render(projection, view);
 	}
-	for (auto& curve : curves_) {
-		curve->setModelMatrix(this->model_);
-		curve->render(projection, view);
+	if(curves_.size() == 1 || u_curves_) {
+		for (auto& curve : curves_) {
+			curve->setModelMatrix(this->model_);
+			curve->render(projection, view);
+		}
 	}
 	for (auto& strip : triangle_strips_) {
 		strip->showNormals(this->show_normals_);
@@ -190,8 +193,8 @@ Clickable& BezierSurface::getClicked(int index) {
 
 Clickable& BezierSurface::getClicked(int index, int* row, int* col) {
 	if (row && col) {
-		*row = horizontal_size_ ? index / horizontal_size_ : 0;
-		*col = vertical_size_ ? index % vertical_size_ : 0;
+		*row = v_size_ ? index / v_size_ : 0;
+		*col = u_size_ ? index % u_size_ : 0;
 	}
 	return getClicked(index);
 }
@@ -257,6 +260,13 @@ void BezierSurface::setDefaultShader(QOpenGLShaderProgram& prog) {
 	}
 }
 
+int BezierSurface::getUSize() const {
+	return v_size_;
+}
+int BezierSurface::getVSize() const {
+	return u_size_;
+}
+
 void BezierSurface::createSubModels() {
 	createBasePoints();
 	QVector4DMatrix dest;
@@ -292,18 +302,18 @@ void BezierSurface::clearSubModels() {
 }
 
 void BezierSurface::recalculateSize() {
-	horizontal_size_ = 0;
-	vertical_size_ = 0;
+	v_size_ = 0;
+	u_size_ = 0;
 	if (!this->coordinates_.isEmpty()) {
 		if (!this->coordinates_.at(0).isEmpty()) {
-			horizontal_size_ = this->coordinates_.at(0).size();
+			v_size_ = this->coordinates_.at(0).size();
 			for (auto& horizontal : coordinates_) {
-				if (horizontal_size_ != horizontal.size()) {
+				if (v_size_ != horizontal.size()) {
 					throw std::out_of_range("Invalid size, the surface coordinates cannot be used");
 				}
 			}
 		}
-		vertical_size_ = this->coordinates_.size();
+		u_size_ = this->coordinates_.size();
 	}
 }
 
@@ -340,7 +350,7 @@ void BezierSurface::createCurves(QVector4DMatrix& coordinates, QVector4DMatrix& 
 		curves_.push_back(curve);
 	}
 	for (int i = 0; i < curves_.size() - 1; i++) {
-		triangle_strips_.push_back(std::make_shared<TriangleStrip>(model_, curves_.at(i).get(), curves_.at(i + 1).get(), *light_));
+		triangle_strips_.push_back(std::make_shared<BezierSurfaceStrip>(model_, curves_.at(i).get(), curves_.at(i + 1).get(), *light_));
 	}
 }
 

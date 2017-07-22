@@ -10,6 +10,11 @@ Clickable::Clickable(QVector4D& reference_vertex)
 Clickable::~Clickable() {
 }
 
+void Clickable::setUnclicked() {
+	QVector4D col(1, 1, 1, 1);
+	setUnclicked(col);
+}
+
 QVector4D& Clickable::getReference() const {
 	return *this->reference_vertex_;
 }

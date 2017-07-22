@@ -102,10 +102,10 @@ void BezierSurfaceCalculator::degreeElevationSurface(QVector4DMatrix& src_coordi
 	} 
 	QVector4DMatrix horizontal_elevation;
 	degreeElevationUSurface(src_coordinates, &horizontal_elevation);
-	if(horizontal_elevation.size() <= 1)	{
+	/*if(horizontal_elevation.size() <= 1)	{
 		src_coordinates = horizontal_elevation;
 		return;
-	}
+	}*/
 	
 	QVector4DMatrix vertical_elevation;
 	degreeElevationVSurface(horizontal_elevation, &vertical_elevation);

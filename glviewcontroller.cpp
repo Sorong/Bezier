@@ -4,7 +4,7 @@
 #include "rectangle.hpp"
 #define INITPOS 0.0f, 0.0f, -10.0f, 1.0f
 
-GLViewController::GLViewController(GLView* view) : glview_(view), mode_(SELECT), draw_mode_(NONE), click_amount_(0), clamped_z_(0), current_selected_(nullptr) {
+GLViewController::GLViewController(GLView* view) : glview_(view), mode_(SELECT), draw_mode_(NONE), click_amount_(1), clamped_z_(0), current_selected_(nullptr) {
 	this->click_color_ = {1,0,0,1};
 	this->unclick_color_ = {1,1,1,1};
 }
@@ -18,11 +18,11 @@ void GLViewController::setDrawMode(DrawMode mode) {
 }
 
 void GLViewController::setMode(Mode mode) {
+	
 	if (mode_ == SELECT && mode != SELECT) {
 		setCurrentUnclicked();
 	}
 	this->mode_ = mode;
-	qDebug() << mode;
 }
 
 void GLViewController::setClickAmount(int amount) {
@@ -31,8 +31,19 @@ void GLViewController::setClickAmount(int amount) {
 }
 
 void GLViewController::mousePressEvent(QMouseEvent* event) {
+	if (this->current_selected_ && mode_ == C0) {
+		BezierSurface *ptr = nullptr;
+		try {
+			ptr = dynamic_cast<BezierSurface*>(current_selected_->model_);
+			this->setClickAmount(std::max(ptr->getUSize(), ptr->getVSize()));
+		}
+		catch (std::bad_cast) {
+			
+		}
+	}
 	switch (mode_) {
 		case SELECT:
+		case C0:
 			pressSelectHandler(event);
 			break;
 		case DRAWCURVE:
@@ -95,14 +106,6 @@ void GLViewController::pressSelectHandler(QMouseEvent* event) {
 			return;
 		}
 	}
-	for (auto& current : glview_->curves_) {
-		projectMouseEvent(event, current->getModelMatrix(), &begin, &end, &direction);
-		if (checkClicked(*current, begin, direction, radius2)) {
-			return;
-		}
-	}
-	
-
 }
 
 void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
@@ -127,8 +130,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		}
 		ptr->addNormalShader(*glview_->normal_prog_);
 		clicked.model_ = ptr.get();
-		clicked_.push_back(clicked);
-		this->current_selected_ = &clicked_[clicked_.size() - 1];
+		addClicked(&clicked);
 		glview_->surfaces_.push_back(ptr);
 		glview_->initModel(*ptr.get(), nullptr);
 		glview_->current_surface_ = ptr.get();
@@ -159,8 +161,8 @@ void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
 	clicked.reference_ = &clicked.clickable_->getReference();
 	clicked.model_ = glview_->temp_model_.get();
 	clicked.offset_ = {0,0,0};
-	clicked_.push_back(clicked);
-	this->current_selected_ = &clicked_[clicked_.size() - 1];
+	this->addClicked(&clicked);
+	
 }
 
 void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) const {
@@ -195,6 +197,21 @@ void GLViewController::moveDrawSurfaceHandler(QMouseEvent* event) const {
 	current_selected_->model_->reinit();
 }
 
+void GLViewController::addClicked(ClickedModel* clicked) {
+	if(clicked == nullptr) {
+		return;
+	}
+	clicked_.push_back(*clicked);
+	this->current_selected_ = &clicked_[clicked_.size() - 1];
+	while (clicked_.size() > click_amount_) {
+		if(clicked_.front().clickable_ != nullptr) {
+			clicked_.front().clickable_->setUnclicked();
+		}
+		clicked_.pop_front();
+	}
+	qDebug() << "Clickedsize:" << clicked_.size();
+}
+
 void GLViewController::setCurrentUnclicked() {
 	if (current_selected_ != nullptr) {
 		if(current_selected_->clickable_) {
@@ -218,7 +235,9 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 	if(current_selected_) {
 		prev_selected = current_selected_->reference_;
 	}
-	setCurrentUnclicked();
+	if(mode_ != C0) {
+		setCurrentUnclicked();
+	}
 	for (auto i = 0; i < surface.size(); i++) {
 		QVector4D& coord = surface.get(i);
 		QVector3D L = (coord.toVector3DAffine() - begin);
@@ -235,8 +254,7 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		
 		ClickedModel clicked(surface, i);
 		clicked.offset_ = coord.toVector3DAffine() - begin;
-		clicked_.push_back(clicked);
-		this->current_selected_ = &clicked_[clicked_.size() - 1];
+		addClicked(&clicked);
 		this->current_selected_->clickable_->setClicked(click_color_);
 		emit glview_->clickedVertex(clicked.reference_);
 		glview_->current_surface_ = &surface;

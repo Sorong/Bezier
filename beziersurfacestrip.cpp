@@ -1,18 +1,18 @@
-#include "trianglestrip.hpp"
+#include "beziersurfacestrip.hpp"
 
-TriangleStrip::TriangleStrip(QMatrix4x4& model, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
+BezierSurfaceStrip::BezierSurfaceStrip(QMatrix4x4& model, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
 	: Model(model), PhongModel(light),
 	first_curve_(first_curve),
 	second_curve_(second_curve) {
 }
 
-TriangleStrip::TriangleStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
+BezierSurfaceStrip::BezierSurfaceStrip(QMatrix4x4& model, const QVector4D& pos, BezierCurve* first_curve, BezierCurve* second_curve, Light& light)
 	: Model(model, pos), PhongModel(light),
 	first_curve_(first_curve),
 	second_curve_(second_curve) {
 }
 
-void TriangleStrip::init(QVector4D* position) {
+void BezierSurfaceStrip::init(QVector4D* position) {
 	if (!default_shader_ || first_curve_->size() != second_curve_->size()) {
 		return;
 	}
@@ -61,7 +61,7 @@ void TriangleStrip::init(QVector4D* position) {
 	glBindVertexArray(0);
 }
 
-void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
+void BezierSurfaceStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 	if (!default_shader_) {
 		return;
 	}
@@ -100,7 +100,7 @@ void TriangleStrip::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		glBindVertexArray(0);
 }
 
-void TriangleStrip::reinit(QVector4D* pos) {
+void BezierSurfaceStrip::reinit(QVector4D* pos) {
 	this->vertices_.clear();
 	this->normals_.clear();
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
@@ -136,10 +136,10 @@ void TriangleStrip::reinit(QVector4D* pos) {
 
 }
 
-void TriangleStrip::setFirstCurve(BezierCurve* first) {
+void BezierSurfaceStrip::setFirstCurve(BezierCurve* first) {
 	this->first_curve_ = first;
 }
 
-void TriangleStrip::setSecondCurve(BezierCurve* second) {
+void BezierSurfaceStrip::setSecondCurve(BezierCurve* second) {
 	this->second_curve_ = second;
 }

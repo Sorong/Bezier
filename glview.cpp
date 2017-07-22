@@ -45,9 +45,9 @@ GLView::GLView(QWidget* parent) :
 	this->light.specular = { WHITE, 1.0f };
 	this->prog_ = new QOpenGLShaderProgram;
 	this->normal_prog_ = new QOpenGLShaderProgram;
-	this->phong_prog_ = nullptr;
 	this->phong_prog_ = new QOpenGLShaderProgram;
-	this->tess_prog_ = new QOpenGLShaderProgram;
+	//this->tess_prog_ = new QOpenGLShaderProgram;
+	this->tess_prog_ = nullptr;
 	this->controller_ = new GLViewController(this);
 	setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 }
@@ -74,7 +74,7 @@ void GLView::initializeGL() {
 	if(phong_prog_ && !initPhongShader()) {
 		qDebug() << this->phong_prog_->log();
 	}
-	if(!initTessShader()) {
+	if(tess_prog_ && !initTessShader()) {
 		qDebug() << this->tess_prog_->log();
 	}
 	glClearColor(GRAY, 0.0);
@@ -98,9 +98,6 @@ void GLView::paintGL() {
 	}
 	for (auto& surface : surfaces_) {
 		surface->render(projection_, view_);
-	}
-	for (auto& curve : curves_) {
-		curve->render(projection_, view_);
 	}
 	update();
 }
@@ -155,12 +152,11 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 	return { 0,0,0,0 };
 }
 
-//TODO: Kamerazoom instead, ObjectZoom
+
 void GLView::keyPressEvent(QKeyEvent* event) {
 	if (!current_surface_) {
 		return;
 	}
-	QMatrix4x4 mat;
 	switch (event->key()) {
 	case Qt::Key_Plus:
 		if (eye.z() != 0) {
@@ -288,6 +284,10 @@ void GLView::modeDrawSurface() const {
 
 void GLView::modeDrawCoonspatch() const {
 	this->controller_->setMode(DRAWCOONS);
+}
+
+void GLView::modeC0() const {
+	this->controller_->setMode(C0);
 }
 
 void GLView::setClampedZ(double z) const {

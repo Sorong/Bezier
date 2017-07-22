@@ -8,7 +8,7 @@
 class Line;
 class BezierCurve;
 class Icosahedron;
-class TriangleStrip;
+class BezierSurfaceStrip;
 
 class BezierSurface : public Model, public PhongModel
 {
@@ -40,6 +40,8 @@ public:
 	void removeRowAndCol(int row, int col);
 	void setSurfaceShader(QOpenGLShaderProgram& surface_shader);
 	void setDefaultShader(QOpenGLShaderProgram &prog) override;
+	int getUSize() const;
+	int getVSize() const;
 private:
 	void createSubModels();
 	void clearSubModels();
@@ -50,7 +52,7 @@ private:
 	void clearAndReinit(QVector4D *pos = nullptr);
 	QVector4DMatrix coordinates_;
 	QVector4DMatrix normals_;
-	QVector<std::shared_ptr<TriangleStrip>> triangle_strips_;
+	QVector<std::shared_ptr<BezierSurfaceStrip>> triangle_strips_;
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;
 	QVector<std::shared_ptr<Line>> lines_;
@@ -58,9 +60,10 @@ private:
 	QOpenGLShaderProgram *surface_shader_;
 
 	float u_, v_;
-	int horizontal_size_;
-	int vertical_size_;
+	int v_size_;
+	int u_size_;
 	bool casteljau_;
 	bool derivate_;
+	bool u_curves_;
 };
 

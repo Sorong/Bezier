@@ -65,6 +65,7 @@ private:
 	void pressDrawCoonspatchHandler(QMouseEvent* event) const;
 	void moveSelectHandler(QMouseEvent* event) const;
 	void moveDrawSurfaceHandler(QMouseEvent* event) const;
+	void addClicked(ClickedModel *clicked);
 	void setCurrentUnclicked();
 	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
 	void projectMouseEvent(QMouseEvent* event, QVector3D *begin, QVector3D *end, QVector3D *direction) const;

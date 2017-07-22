@@ -30,9 +30,11 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.draw_surface_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawSurface()));
 	QObject::connect(ui.draw_coons_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawCoonspatch()));
 	QObject::connect(ui.edit_model_, SIGNAL(pressed()), ui.glview_, SLOT(modeSelect()));
+	QObject::connect(ui.c0_, SIGNAL(pressed()), ui.glview_, SLOT(modeC0()));
 	QObject::connect(ui.glview_, SIGNAL(clickedSurface(Model*)), this, SLOT(clickedSurface(Model*)));
 	QObject::connect(ui.show_normals_, SIGNAL(toggled(bool)), this, SLOT(showNormals(bool)));
 	QObject::connect(ui.z_clamped_, SIGNAL(valueChanged(double)), ui.glview_, SLOT(setClampedZ(double)));
+	
 	ui.dock_vertex_data_->hide();
 	//ui.dock_surface_data_->hide();
 }

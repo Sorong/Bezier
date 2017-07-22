@@ -183,7 +183,7 @@
     <ClCompile Include="icosahedron.cpp" />
     <ClCompile Include="phongmodel.cpp" />
     <ClCompile Include="rectangle.cpp" />
-    <ClCompile Include="trianglestrip.cpp" />
+    <ClCompile Include="beziersurfacestrip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainview.hpp">
@@ -406,7 +406,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </AdditionalInputs>
     </CustomBuild>
-    <CustomBuild Include="trianglestrip.hpp">
+    <CustomBuild Include="beziersurfacestrip.hpp">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Tools</Message>

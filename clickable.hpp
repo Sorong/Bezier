@@ -10,6 +10,7 @@ public:
 	virtual void translateToReference() = 0;
 	virtual void setClicked(QVector4D& color) = 0;
 	virtual void setUnclicked(QVector4D& color) = 0;
+	virtual void setUnclicked();
 	virtual QVector4D& getReference() const;
 	virtual void setClickShader(QOpenGLShaderProgram &shader);
 protected:

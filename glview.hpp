@@ -45,6 +45,7 @@ public slots:
 	void modeDrawCurve() const;
 	void modeDrawSurface() const;
 	void modeDrawCoonspatch() const;
+	void modeC0() const;
 	void setClampedZ(double z) const;
 	void editClickedVertex();
 	signals:
@@ -69,7 +70,6 @@ private:
 	BezierSurface *current_surface_;
 	QVector3D eye;
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
-	QVector<std::shared_ptr<BezierSurface>> curves_;
 	std::shared_ptr<Model> temp_model_;
 	Light light;
 };
