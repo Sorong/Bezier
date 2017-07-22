@@ -307,7 +307,7 @@ QVector4DMatrix BezierSurface::c0PrependV() {
 
 QVector4DMatrix BezierSurface::c0AppendV() {
 	if (v_size_ < 2) {
-		return {};
+		return c0AppendU();
 	}
 	QVector4DMatrix c0;
 	for (int i = 0; i < coordinates_.size(); i++) {
@@ -323,7 +323,7 @@ QVector4DMatrix BezierSurface::c0AppendV() {
 
 QVector4DMatrix BezierSurface::c0PrependU() {
 	if (u_size_ < 2) {
-		return {};
+		return c0PrependV();
 	}
 	QVector4DMatrix c0;
 	for (int i = 0; i < coordinates_[0].size(); i++) {

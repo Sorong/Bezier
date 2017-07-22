@@ -17,10 +17,12 @@ ControlGrid::ControlGrid(QVector4D start, QVector4DMatrix start_mat)
 		}
 		prepend.push_back(start + distance_.last());
 	}
-	for(int j = 0; j < start_mat.size(); j++) {
-		start_mat[j].push_back(prepend[j]);
-	}
+	start_mat.push_back(prepend);
+	//for(int j = 0; j < start_mat.size(); j++) {
+	//
+	//}
 	this->coordinates_ = start_mat;
+	this->setReference(coordinates_.last().front());
 }
 
 ControlGrid::~ControlGrid() {
@@ -62,8 +64,18 @@ void ControlGrid::init(QVector4D* position) {
 }
 
 void ControlGrid::reinit(QVector4D* position) {
-	for(int i = 0; i < coordinates_.size(); i++) {
-			coordinates_[i][0] = *this->reference_vertex_ + distance_[i];
+	qDebug() << "ref" << *this->reference_vertex_;
+	for(int i = 1; i < coordinates_.last().size(); i++) {
+			coordinates_.last()[i] = *this->reference_vertex_ + distance_[i-1];
+	}
+	this->vertices_.clear();
+	auto horizonal_length = this->coordinates_.at(0).size();
+	auto vertical_length = this->coordinates_.size();
+	for (auto m = 0; m < vertical_length; m++) {
+		auto n = 0;
+		for (; n < horizonal_length; n++) {
+			this->vertices_.push_back(this->coordinates_[m][n]);
+		}
 	}
 	glBindVertexArray(this->vertexarrayobject_);
 	glBindBuffer(GL_ARRAY_BUFFER, this->position_buffer_);

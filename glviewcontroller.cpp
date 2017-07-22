@@ -68,7 +68,8 @@ void GLViewController::mouseMoveEvent(QMouseEvent* event) const {
 			moveSelectHandler(event);
 			break;
 		case C0:
-			if(event->button() == Qt::RightButton) {
+			if(event->buttons() & Qt::RightButton) {
+				qDebug() << "Move c0";
 				moveC0Handler(event);
 			} 
 			break;
@@ -99,7 +100,7 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		glview_->surfaces_.push_back(ptr);
 		glview_->temp_model_.reset();
 		glview_->current_surface_ = ptr.get();
-	} else if(mode_ == C0 && event->button() == Qt::RightButton) {
+	} else if(mode_ == C0 && event->buttons() & Qt::RightButton) {
 		clearClicked();
 	}
 }
@@ -204,6 +205,8 @@ void GLViewController::pressC0Handler(QMouseEvent* event) {
 		} else {
 			mat = surface->c0AppendU();
 		}
+	} else if(row == 0 && col == 0) {
+		mat = surface->c0AppendV();
 	} else {
 		return;
 	}
@@ -212,7 +215,6 @@ void GLViewController::pressC0Handler(QMouseEvent* event) {
 	projectMouseEvent(event, &begin, &end, &direction);
 	auto length = (clamped_z_ - begin.z()) / direction.z();
 	auto base = begin + length * direction;
-	std::make_shared<Rect::Rectangle>(QVector4D(base, 1), 0.1);
 	glview_->temp_model_ = std::make_shared<ControlGrid>(QVector4D(base, 1), mat);
 	QVector4D initpos = { INITPOS };
 	glview_->initModel(*glview_->temp_model_.get(), &initpos);
@@ -245,15 +247,23 @@ void GLViewController::moveC0Handler(QMouseEvent* event) const {
 	if (current_selected_ == nullptr) {
 		return;
 	}
+	//QVector3D begin, end, direction;
+	//projectMouseEvent(event, current_selected_->model_->getModelMatrix(), &begin, &end, &direction);
+	//auto length = current_selected_->offset_.length();
+	//float w = current_selected_->reference_->w();
+	//*current_selected_->reference_ = (begin + length * direction);
+	//current_selected_->reference_->setW(1);
+	//*current_selected_->reference_ *= w;
+	//glview_->makeCurrent();
+	//emit glview_->clickedVertex(current_selected_->reference_);
+	//current_selected_->model_->reinit();
+	//qDebug() << *current_selected_->reference_;
 	QVector3D begin, end, direction;
-	projectMouseEvent(event, current_selected_->model_->getModelMatrix(), &begin, &end, &direction);
-	auto length = current_selected_->offset_.length();
-	float w = current_selected_->reference_->w();
+	projectMouseEvent(event, &begin, &end, &direction);
+	auto length = (clamped_z_ - begin.z()) / direction.z();
 	*current_selected_->reference_ = (begin + length * direction);
 	current_selected_->reference_->setW(1);
-	*current_selected_->reference_ *= w;
 	glview_->makeCurrent();
-	emit glview_->clickedVertex(current_selected_->reference_);
 	current_selected_->model_->reinit();
 
 }
