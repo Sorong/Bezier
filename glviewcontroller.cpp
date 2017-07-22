@@ -2,6 +2,7 @@
 #include "glview.hpp"
 #include <QKeyEvent>
 #include "rectangle.hpp"
+#include "controlgrid.hpp"
 #define INITPOS 0.0f, 0.0f, -10.0f, 1.0f
 
 GLViewController::GLViewController(GLView* view) : glview_(view), mode_(SELECT), draw_mode_(NONE), click_amount_(1), clamped_z_(0), current_selected_(nullptr) {
@@ -18,33 +19,34 @@ void GLViewController::setDrawMode(DrawMode mode) {
 }
 
 void GLViewController::setMode(Mode mode) {
-	
 	if (mode_ == SELECT && mode != SELECT) {
 		setCurrentUnclicked();
 	}
+	if (mode == C0) {
+		this->setClickAmount(2);
+	} else if(mode == SELECT) {
+		this->setClickAmount(1);
+	}
+
 	this->mode_ = mode;
 }
 
 void GLViewController::setClickAmount(int amount) {
+	this->clicked_.clear();
 	this->click_amount_ = amount;
-	this->clicked_.resize(amount);
 }
 
 void GLViewController::mousePressEvent(QMouseEvent* event) {
-	if (this->current_selected_ && mode_ == C0) {
-		BezierSurface *ptr = nullptr;
-		try {
-			ptr = dynamic_cast<BezierSurface*>(current_selected_->model_);
-			this->setClickAmount(ptr->getVSize() > 1 ? 2 : 1);
-		}
-		catch (std::bad_cast) {
-			
-		}
-	}
 	switch (mode_) {
 		case SELECT:
-		case C0:
 			pressSelectHandler(event);
+			break;
+		case C0:
+			if (event->button() == Qt::RightButton) {
+				pressC0Handler(event);
+			} else {
+				pressSelectHandler(event);
+			}				
 			break;
 		case DRAWCURVE:
 			pressDrawCurveHandler(event);
@@ -64,6 +66,11 @@ void GLViewController::mouseMoveEvent(QMouseEvent* event) const {
 	switch (mode_) {
 		case SELECT:
 			moveSelectHandler(event);
+			break;
+		case C0:
+			if(event->button() == Qt::RightButton) {
+				moveC0Handler(event);
+			} 
 			break;
 		case DRAWSURFACE:
 			moveDrawSurfaceHandler(event);
@@ -92,6 +99,8 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		glview_->surfaces_.push_back(ptr);
 		glview_->temp_model_.reset();
 		glview_->current_surface_ = ptr.get();
+	} else if(mode_ == C0 && event->button() == Qt::RightButton) {
+		clearClicked();
 	}
 }
 
@@ -123,7 +132,7 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		QMatrix4x4 mat;
 		mat.setToIdentity();
 		std::shared_ptr<BezierSurface> ptr(new BezierSurface(mat, { INITPOS }, glview_->light));
-		ptr->addHorizontalCoordinates(coord);
+		ptr->appendVCoordinates(coord);
 		ptr->setDefaultShader(*glview_->prog_);
 		if(glview_->phong_prog_) {
 			ptr->setSurfaceShader(*glview_->phong_prog_);
@@ -136,11 +145,11 @@ void GLViewController::pressDrawCurveHandler(QMouseEvent* event) {
 		glview_->current_surface_ = ptr.get();
 	} else {
 		try {
-			dynamic_cast<BezierSurface*>(current_selected_->model_)->addHorizontalCoordinates(coord);
+			dynamic_cast<BezierSurface*>(current_selected_->model_)->appendVCoordinates(coord);
 			glview_->makeCurrent();
 			dynamic_cast<BezierSurface*>(current_selected_->model_)->reinit(nullptr, true);
 		} catch(std::bad_cast) {
-			//TODO: What?
+
 		}
 
 	}
@@ -168,6 +177,54 @@ void GLViewController::pressDrawSurfaceHandler(QMouseEvent* event) {
 void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) const {
 }
 
+void GLViewController::pressC0Handler(QMouseEvent* event) {
+	int row = clicked_.front().row_index_;
+	int col = clicked_.front().col_index_;
+	for (int i = 1; i < clicked_.size(); i++) {
+		row = clicked_[i].row_index_ == row ? row : -1;
+		col = clicked_[i].col_index_ == col ? col : -1;
+	}
+	QVector4DMatrix mat;
+	BezierSurface *surface;
+	try {
+		surface = dynamic_cast<BezierSurface*>(current_selected_->model_);
+	} catch (std::bad_cast) {
+		return;
+	}
+
+	if(row == -1) {
+		if(col == 0) {
+			mat = surface->c0PrependV();
+		} else {
+			mat = surface->c0AppendV();
+		}
+	} else if(col == -1) {
+		if(row == 0) {
+			mat = surface->c0PrependU();
+		} else {
+			mat = surface->c0AppendU();
+		}
+	} else {
+		return;
+	}
+
+	QVector3D begin, end, direction;
+	projectMouseEvent(event, &begin, &end, &direction);
+	auto length = (clamped_z_ - begin.z()) / direction.z();
+	auto base = begin + length * direction;
+	std::make_shared<Rect::Rectangle>(QVector4D(base, 1), 0.1);
+	glview_->temp_model_ = std::make_shared<ControlGrid>(QVector4D(base, 1), mat);
+	QVector4D initpos = { INITPOS };
+	glview_->initModel(*glview_->temp_model_.get(), &initpos);
+
+	ClickedModel clicked;
+	clicked.clickable_ = static_cast<ControlGrid*>(glview_->temp_model_.get());
+	clicked.reference_ = &clicked.clickable_->getReference();
+	clicked.model_ = glview_->temp_model_.get();
+	clicked.offset_ = { 0,0,0 };
+	this->addClicked(&clicked);
+}
+
 void GLViewController::moveSelectHandler(QMouseEvent* event) const {
 	if (current_selected_ == nullptr) {
 		return;
@@ -182,6 +239,23 @@ void GLViewController::moveSelectHandler(QMouseEvent* event) const {
 	glview_->makeCurrent();
 	emit glview_->clickedVertex(current_selected_->reference_);
 	current_selected_->model_->reinit();
+}
+
+void GLViewController::moveC0Handler(QMouseEvent* event) const {
+	if (current_selected_ == nullptr) {
+		return;
+	}
+	QVector3D begin, end, direction;
+	projectMouseEvent(event, current_selected_->model_->getModelMatrix(), &begin, &end, &direction);
+	auto length = current_selected_->offset_.length();
+	float w = current_selected_->reference_->w();
+	*current_selected_->reference_ = (begin + length * direction);
+	current_selected_->reference_->setW(1);
+	*current_selected_->reference_ *= w;
+	glview_->makeCurrent();
+	emit glview_->clickedVertex(current_selected_->reference_);
+	current_selected_->model_->reinit();
+
 }
 
 void GLViewController::moveDrawSurfaceHandler(QMouseEvent* event) const {
@@ -223,6 +297,11 @@ void GLViewController::setCurrentUnclicked() {
 
 void GLViewController::clearClicked() {
 	setCurrentUnclicked();
+	for(auto& clicked : clicked_) {
+		if(clicked.clickable_) {
+			clicked.clickable_->setUnclicked();
+		}
+	}
 	this->clicked_.clear();
 }
 

@@ -21,8 +21,10 @@ public:
 	void reinit(QVector4D *pos, bool hardreset);
 	void setU(float u);
 	void setV(float v);
-	void addHorizontalCoordinates(QVector<QVector4D> &coordinates);
-	void addVerticalCoordinates(QVector<QVector4D> &coordinates);
+	void appendVCoordinates(QVector<QVector4D> &coordinates);
+	void prependVCoordinates(QVector<QVector4D> &coordinates);
+	void appendUCoordinates(QVector<QVector4D> &coordinates);
+	void prependUCoordinates(QVector<QVector4D> &coordinates);
 	void setCoordinates(QVector4DMatrix& coordinates);
 	QVector4DMatrix& getCoordinates();
 	QVector4D& get(int index) const;
@@ -42,6 +44,10 @@ public:
 	void setDefaultShader(QOpenGLShaderProgram &prog) override;
 	int getUSize() const;
 	int getVSize() const;
+	QVector4DMatrix c0PrependV();
+	QVector4DMatrix c0AppendV();
+	QVector4DMatrix c0PrependU();
+	QVector4DMatrix c0AppendU();
 private:
 	void createSubModels();
 	void clearSubModels();

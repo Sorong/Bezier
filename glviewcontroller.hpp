@@ -63,7 +63,9 @@ private:
 	void pressDrawCurveHandler(QMouseEvent* event);
 	void pressDrawSurfaceHandler(QMouseEvent* event);
 	void pressDrawCoonspatchHandler(QMouseEvent* event) const;
+	void pressC0Handler(QMouseEvent* event);
 	void moveSelectHandler(QMouseEvent* event) const;
+	void moveC0Handler(QMouseEvent* event) const;
 	void moveDrawSurfaceHandler(QMouseEvent* event) const;
 	void addClicked(ClickedModel *clicked);
 	void setCurrentUnclicked();

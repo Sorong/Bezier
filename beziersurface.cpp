@@ -139,9 +139,9 @@ void BezierSurface::setV(float v) {
 	}
 }
 
-void BezierSurface::addHorizontalCoordinates(QVector<QVector4D>& coordinates) {
+void BezierSurface::appendVCoordinates(QVector<QVector4D>& coordinates) {
 	if (coordinates_.isEmpty()) {
-		addVerticalCoordinates(coordinates);
+		appendUCoordinates(coordinates);
 		return;
 	}
 	if (coordinates.size() != this->coordinates_.size()) {
@@ -153,11 +153,33 @@ void BezierSurface::addHorizontalCoordinates(QVector<QVector4D>& coordinates) {
 	recalculateSize();
 }
 
-void BezierSurface::addVerticalCoordinates(QVector<QVector4D>& coordinates) {
+void BezierSurface::prependVCoordinates(QVector<QVector4D>& coordinates) {
+	if (coordinates_.isEmpty()) {
+		appendUCoordinates(coordinates);
+		return;
+	}
+	if (coordinates.size() != this->coordinates_.size()) {
+		throw std::out_of_range("Invalid size, the surface cannot be increased");
+	}
+	for (auto i = 0; i < coordinates.size(); i++) {
+		this->coordinates_[i].push_front(coordinates.at(i));
+	}
+	recalculateSize();
+}
+
+void BezierSurface::appendUCoordinates(QVector<QVector4D>& coordinates) {
 	if (!coordinates_.isEmpty() && coordinates.size() != this->coordinates_.at(0).size()) {
 		throw std::out_of_range("Invalid size, the surface cannot be increased");
 	}
 	this->coordinates_.push_back(coordinates);
+	recalculateSize();
+}
+
+void BezierSurface::prependUCoordinates(QVector<QVector4D>& coordinates) {
+	if (!coordinates_.isEmpty() && coordinates.size() != this->coordinates_.at(0).size()) {
+		throw std::out_of_range("Invalid size, the surface cannot be increased");
+	}
+	this->coordinates_.push_front(coordinates);
 	recalculateSize();
 }
 
@@ -265,6 +287,70 @@ int BezierSurface::getUSize() const {
 }
 int BezierSurface::getVSize() const {
 	return u_size_;
+}
+
+QVector4DMatrix BezierSurface::c0PrependV() {
+	if(v_size_ < 2) {
+		return {};
+	}
+	QVector4DMatrix c0;
+	for(int i = 0; i  < coordinates_.size(); i++) {
+		QVector<QVector4D> c0_v;
+		QVector4D start = coordinates_[i][0];
+		QVector4D end = start - (coordinates_[i][1] - start);
+		c0_v.push_back(start);
+		c0_v.push_back(end);
+		c0.push_back(c0_v);
+	}
+	return c0;
+}
+
+QVector4DMatrix BezierSurface::c0AppendV() {
+	if (v_size_ < 2) {
+		return {};
+	}
+	QVector4DMatrix c0;
+	for (int i = 0; i < coordinates_.size(); i++) {
+		QVector<QVector4D> c0_v;
+		QVector4D start = coordinates_[i].last();
+		QVector4D end = start - (coordinates_[i][coordinates_[i].size() - 2] - start);
+		c0_v.push_back(start);
+		c0_v.push_back(end);
+		c0.push_back(c0_v);
+	}
+	return c0;
+}
+
+QVector4DMatrix BezierSurface::c0PrependU() {
+	if (u_size_ < 2) {
+		return {};
+	}
+	QVector4DMatrix c0;
+	for (int i = 0; i < coordinates_[0].size(); i++) {
+		QVector<QVector4D> c0_v;
+		QVector4D start = coordinates_[0][i];
+		QVector4D end = start - (coordinates_[1][i] - start);
+		c0_v.push_back(start);
+		c0_v.push_back(end);
+		c0.push_back(c0_v);
+	}
+	return c0;
+}
+
+QVector4DMatrix BezierSurface::c0AppendU() {
+	if (u_size_ < 2) {
+		return {};
+	}
+	QVector4DMatrix c0;
+	for (int i = 0; i < coordinates_[0].size(); i++) {
+		QVector<QVector4D> c0_v;
+		QVector4D start = coordinates_.last()[i];
+		QVector4D end = start - (coordinates_[coordinates_[i].size() - 2][i] - start);
+		c0_v.push_back(start);
+		c0_v.push_back(end);
+		c0.push_back(c0_v);
+	}
+	return c0;
 }
 
 void BezierSurface::createSubModels() {

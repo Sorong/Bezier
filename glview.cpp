@@ -14,7 +14,7 @@
 #define CENTER 0.0f, 0.0f, 0.0f
 #define UP 0.0f, 1.0f, 0.0f
 #define INITPOS -EYE, 1.0f
-#define INITLIGHT 0.0f, 0.0f, EYEZ, 1.0f
+#define INITLIGHT 0.0f, 0.0f, EYEZ, 0.0f
 
 #define BLACK 0.0f, 0.0f, 0.0f
 #define BLUE 0.0f, 0.0f, 1.0f

@@ -143,6 +143,7 @@
     <ClCompile Include="beziercurve.cpp" />
     <ClCompile Include="beziersurface.cpp" />
     <ClCompile Include="clickable.cpp" />
+    <ClCompile Include="controlgrid.cpp" />
     <ClCompile Include="dockwidget.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_dockwidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -616,6 +617,7 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="clickable.hpp" />
+    <ClInclude Include="controlgrid.hpp" />
     <ClInclude Include="phongmodel.hpp" />
     <ClInclude Include="rectangle.hpp" />
     <ClInclude Include="types.hpp" />

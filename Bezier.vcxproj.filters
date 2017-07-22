@@ -122,6 +122,9 @@
     <ClCompile Include="beziersurfacestrip.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="controlgrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bezier.ui">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="phongmodel.hpp">
       <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="controlgrid.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -112,7 +112,7 @@ void BezierSurfaceCalculator::degreeElevationSurface(QVector4DMatrix& src_coordi
 	src_coordinates = vertical_elevation;
 }
 
-void BezierSurfaceCalculator::degreeElevationUSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix* dest) const {
+void BezierSurfaceCalculator::degreeElevationVSurface(QVector4DMatrix& src_coordinates, QVector4DMatrix* dest) const {
 	if(!dest) {
 		dest = &src_coordinates;
 	}
@@ -128,7 +128,7 @@ void BezierSurfaceCalculator::degreeElevationUSurface(QVector4DMatrix& src_coord
 	}
 }
 
-void BezierSurfaceCalculator::degreeElevationVSurface(QVector4DMatrix& src_coodinates, QVector4DMatrix* dest) const {
+void BezierSurfaceCalculator::degreeElevationUSurface(QVector4DMatrix& src_coodinates, QVector4DMatrix* dest) const {
 	if(!dest) {
 		dest = &src_coodinates;
 	}
