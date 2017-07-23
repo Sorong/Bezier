@@ -388,8 +388,6 @@ public:
         surface_data_layout_->addWidget(c0_label_, 10, 0, 1, 1);
 
         dock_surface_data_->setWidget(surface_data_content_);
-        gridLayoutWidget_2->raise();
-        glview_->raise();
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
         dock_toolbar_ = new QDockWidget(BezierClass);
         dock_toolbar_->setObjectName(QStringLiteral("dock_toolbar_"));
@@ -442,7 +440,7 @@ public:
 
         draw_coons_ = new QToolButton(verticalLayoutWidget);
         draw_coons_->setObjectName(QStringLiteral("draw_coons_"));
-        draw_coons_->setEnabled(false);
+        draw_coons_->setEnabled(true);
         draw_coons_->setMinimumSize(QSize(32, 32));
         QIcon icon3;
         icon3.addFile(QStringLiteral("res/layer-shape-polygon.png"), QSize(), QIcon::Normal, QIcon::Off);

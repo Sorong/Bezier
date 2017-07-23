@@ -125,6 +125,9 @@
     <ClCompile Include="controlgrid.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="coonspatch.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="bezier.ui">
@@ -193,6 +196,9 @@
       <Filter>Header Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="controlgrid.hpp">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="coonspatch.hpp">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>

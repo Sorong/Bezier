@@ -639,8 +639,6 @@ Fortsetzung</string>
       </item>
      </layout>
     </widget>
-    <zorder>gridLayoutWidget_2</zorder>
-    <zorder>glview_</zorder>
    </widget>
   </widget>
   <widget class="QDockWidget" name="dock_toolbar_">
@@ -771,7 +769,7 @@ Fortsetzung</string>
         <item>
          <widget class="QToolButton" name="draw_coons_">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimumSize">
            <size>

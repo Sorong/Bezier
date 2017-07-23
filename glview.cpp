@@ -38,7 +38,7 @@ GLView::GLView(QWidget* parent) :
 	highest_grade_reached_(false),
 	z_near_(ZNEAR),
 	z_far_(ZFAR),
-	zoom_factor_(1.0f), current_surface_(nullptr), eye(EYE) {
+	zoom_factor_(1.0f), eye(EYE) {
 	this->light.pos = { INITLIGHT };
 	this->light.ambient = { WHITE,1.0f };
 	this->light.diffuse = { GRAY, 1.0f };
@@ -99,6 +99,9 @@ void GLView::paintGL() {
 	for (auto& surface : surfaces_) {
 		surface->render(projection_, view_);
 	}
+	for(auto& patch : patches_) {
+		patch->render(projection_, view_);
+	}
 	update();
 }
 
@@ -112,16 +115,16 @@ void GLView::resizeGL(int w, int h) {
 
 void GLView::setU(float u) {
 	makeCurrent();
-	if (current_surface_ != nullptr) {
-		this->current_surface_->setU(u);
+	if (controller_->getSelectedSurface() != nullptr) {
+		controller_->getSelectedSurface()->setU(u);
 	}
 	update();
 }
 
 void GLView::setV(float v) {
 	makeCurrent();
-	if (current_surface_ != nullptr) {
-		this->current_surface_->setV(v);
+	if (controller_->getSelectedSurface() != nullptr) {
+		controller_->getSelectedSurface()->setV(v);
 	}
 	update();
 }
@@ -154,9 +157,6 @@ QVector4D GLView::getCoordinateByIndex(int i) const {
 
 
 void GLView::keyPressEvent(QKeyEvent* event) {
-	if (!current_surface_) {
-		return;
-	}
 	switch (event->key()) {
 	case Qt::Key_Plus:
 		if (eye.z() != 0) {
@@ -170,27 +170,34 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 		this->view_.setToIdentity();
 		this->view_.lookAt(eye, { CENTER }, { UP });
 		break;
+		default: 
+		break;
+	}
+	if (!controller_->getSelectedSurface()) {
+		return;
+	}
+	switch (event->key()) {
 	case Qt::Key_Left:
 	case Qt::Key_A:
-		current_surface_->rotate(1, 0, -1, 0);
+		controller_->getSelectedSurface()->rotate(1, 0, -1, 0);
 		break;
 	case Qt::Key_Right:
 	case Qt::Key_D:
-		current_surface_->rotate(1, 0, 1, 0);
+		controller_->getSelectedSurface()->rotate(1, 0, 1, 0);
 		break;
 	case Qt::Key_Up:
 	case Qt::Key_W:
-		current_surface_->rotate(1, -1, 0, 0);
+		controller_->getSelectedSurface()->rotate(1, -1, 0, 0);
 		break;
 	case Qt::Key_Down:
 	case Qt::Key_S:
-		current_surface_->rotate(1, 1, 0, 0);
+		controller_->getSelectedSurface()->rotate(1, 1, 0, 0);
 		break;
 	case Qt::Key_Q:
-		current_surface_->rotate(1, 0, 0, -1);
+		controller_->getSelectedSurface()->rotate(1, 0, 0, -1);
 		break;
 	case Qt::Key_E:
-		current_surface_->rotate(1, 0, 0, 1);
+		controller_->getSelectedSurface()->rotate(1, 0, 0, 1);
 		break;
 	default:
 		break;
@@ -218,55 +225,58 @@ QVector<QVector4D> GLView::getBasePoints() const {
 
 
 void GLView::degreeElevation() {
-	if (current_surface_ != nullptr) {
+	BezierSurface * ptr = controller_->getSelectedSurface();
+	if (ptr != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevationUV();
+		ptr->degreeElevationUV();	
 	}
 }
 
 void GLView::degreeElevationU() {
-	if (current_surface_ != nullptr) {
+	BezierSurface * ptr = controller_->getSelectedSurface();
+	if (ptr != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevationU();
+		ptr->degreeElevationU();
 	}
 }
 
 void GLView::degreeElevationV() {
-	if (current_surface_ != nullptr) {
+	BezierSurface * ptr = controller_->getSelectedSurface();
+	if (ptr != nullptr) {
 		controller_->clearClicked();
 		makeCurrent();
 		update();
-		current_surface_->degreeElevationV();
+		ptr->degreeElevationV();
 	}
 }
 
 void GLView::toggleSublineMode(bool state) {
-	if (!current_surface_) {
+	if (!controller_->getSelectedSurface()) {
 		return;
 	}
 	this->show_sublines_ = state;
-	current_surface_->showCasteljau(state);
+	controller_->getSelectedSurface()->showCasteljau(state);
 	reinitCurrentSurface();
 }
 
 void GLView::toggleDerivateMode(bool state) {
-	if (!current_surface_) {
+	if (!controller_->getSelectedSurface()) {
 		return;
 	}
 	this->show_derivate_ = state;
-	current_surface_->showDerivate(state);
+	controller_->getSelectedSurface()->showDerivate(state);
 	reinitCurrentSurface();
 }
 
 void GLView::toggleNormals(bool show) {
-	if (current_surface_ != nullptr) {
+	if (controller_->getSelectedSurface() != nullptr) {
 		makeCurrent();
 		update();
-		current_surface_->showNormals(show);
+		controller_->getSelectedSurface()->showNormals(show);
 	}
 }
 
@@ -307,11 +317,11 @@ void GLView::initModel(Model& model, QVector4D* pos) {
 }
 
 void GLView::reinitCurrentSurface() {
-	if (!current_surface_) {
+	if (!controller_->getSelectedSurface()) {
 		return;
 	}
 	makeCurrent();
-	current_surface_->reinit();
+	controller_->getSelectedSurface()->reinit();
 	update();
 }
 

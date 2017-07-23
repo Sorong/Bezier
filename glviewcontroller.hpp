@@ -4,6 +4,7 @@
 #include <memory>
 #include "model.hpp"
 #include "beziersurface.hpp"
+#include "coonspatch.hpp"
 
 class QMouseEvent;
 class GLView;
@@ -16,20 +17,31 @@ typedef enum {
 	NONE = 0, CASTELJAU = 1, DERIVATE = 2
 } DrawMode;
 
+typedef enum {
+	UNKNOWN, SURFACE, COONS
+} ModelType;
+
 typedef struct Clicked {
+	ModelType type;
 	Clickable *clickable_;
 	Model *model_;
 	QVector4D *reference_;
 	QVector3D offset_;
 	int row_index_ = -1;
 	int col_index_ = -1;
-	Clicked(): clickable_(nullptr), model_(nullptr), reference_(nullptr) {
+	Clicked(): type(UNKNOWN), clickable_(nullptr), model_(nullptr), reference_(nullptr) {
 	}
 
-	Clicked(BezierSurface& surface, int i) {
+	Clicked(BezierSurface& surface, int i)
+		: type(SURFACE) {
 		clickable_ = &surface.getClicked(i, &row_index_, &col_index_);
 		reference_ = &surface.getClicked(i).getReference();
 		model_ = &surface;
+	}
+	Clicked(CoonsPatch& patch, int i) : type(COONS) {
+		clickable_ = &patch.getClicked(i);
+		reference_ = &patch.getClicked(i).getReference();
+		model_ = &patch;
 	}
 } ClickedModel;
 
@@ -58,11 +70,12 @@ public:
 	void mouseReleaseEvent(QMouseEvent* event);
 	void clearClicked();
 	void setClampedZ(float f);
+	BezierSurface* getSelectedSurface();
 private:
 	void pressSelectHandler(QMouseEvent* event);
 	void pressDrawCurveHandler(QMouseEvent* event);
 	void pressDrawSurfaceHandler(QMouseEvent* event);
-	void pressDrawCoonspatchHandler(QMouseEvent* event) const;
+	void pressDrawCoonspatchHandler(QMouseEvent* event);
 	void pressC0Handler(QMouseEvent* event);
 	void moveSelectHandler(QMouseEvent* event) const;
 	void moveC0Handler(QMouseEvent* event) const;
@@ -70,6 +83,7 @@ private:
 	void addClicked(ClickedModel *clicked);
 	void setCurrentUnclicked();
 	bool checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius);
+	bool checkClicked(CoonsPatch& patch, const QVector3D& begin, const QVector3D& direction, const float radius);
 	void projectMouseEvent(QMouseEvent* event, QVector3D *begin, QVector3D *end, QVector3D *direction) const;
 	void projectMouseEvent(QMouseEvent* event, const QMatrix4x4 model, QVector3D *begin, QVector3D *end, QVector3D * direction) const;
 	GLView* glview_;

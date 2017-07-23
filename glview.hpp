@@ -8,6 +8,7 @@
 #include "beziersurface.hpp"
 #include "glviewcontroller.hpp"
 #include "phongmodel.hpp"
+#include "coonspatch.hpp"
 
 
 class GLView : public QOpenGLWidget, protected QOpenGLFunctions {
@@ -67,9 +68,10 @@ private:
 	QOpenGLShaderProgram* tess_prog_;
 	float z_near_, z_far_, zoom_factor_;
 	GLViewController *controller_;
-	BezierSurface *current_surface_;
+//	BezierSurface *current_surface_;
 	QVector3D eye;
 	QVector<std::shared_ptr<BezierSurface>> surfaces_;
+	QVector<std::shared_ptr<CoonsPatch>> patches_;
 	std::shared_ptr<Model> temp_model_;
 	Light light;
 };

@@ -76,4 +76,4 @@ private:
 	bool derivate_;
 	bool u_curves_;
 };
-
+ 
