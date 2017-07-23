@@ -3,6 +3,7 @@
 
 
 #define VERTEXPOINTSCALE 0.2f
+#define DEGREEELEVATIONS 3
 
 CoonsPatch::CoonsPatch(QMatrix4x4& model, const QVector4D& pos)
 	: Model(model, pos),
@@ -18,7 +19,10 @@ void CoonsPatch::init(QVector4D* position) {
 	if (!default_shader_ || coordinates_.isEmpty()) {
 		return;
 	}
-	degreeElevation();
+	for(int i = 0; i < DEGREEELEVATIONS; i++) {
+		degreeElevation();
+	}
+	
 	createSubModels();
 	patch->setCoordinates(this->patch_);
 	patch->setDefaultShader(*default_shader_);
