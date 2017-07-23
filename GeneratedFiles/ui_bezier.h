@@ -66,19 +66,20 @@ public:
     QWidget *surface_data_content_;
     QWidget *gridLayoutWidget_2;
     QGridLayout *surface_data_layout_;
-    QLabel *v_label_;
+    QPushButton *raise_elevation_u_;
+    QCheckBox *show_normals_;
+    QLabel *u_label_;
     QCheckBox *show_derivation_;
+    QToolButton *c0_;
+    QLabel *v_label_;
+    QSlider *v_slider_;
+    QPushButton *raise_elevation_v_;
+    QCheckBox *show_curves_;
+    QLabel *c0_label_;
     QSlider *u_slider_;
     QPushButton *raise_elevation_;
-    QSlider *v_slider_;
     QCheckBox *show_sublines_;
-    QPushButton *raise_elevation_v_;
-    QCheckBox *show_normals_;
-    QPushButton *raise_elevation_u_;
-    QLabel *u_label_;
-    QCheckBox *show_curves_;
-    QToolButton *c0_;
-    QLabel *c0_label_;
+    QPushButton *delete_button_;
     QDockWidget *dock_toolbar_;
     QWidget *dock_toolbar_widget_;
     QWidget *verticalLayoutWidget;
@@ -262,16 +263,56 @@ public:
         surface_data_layout_->setContentsMargins(11, 11, 11, 11);
         surface_data_layout_->setObjectName(QStringLiteral("surface_data_layout_"));
         surface_data_layout_->setContentsMargins(20, 0, 20, 0);
+        raise_elevation_u_ = new QPushButton(gridLayoutWidget_2);
+        raise_elevation_u_->setObjectName(QStringLiteral("raise_elevation_u_"));
+
+        surface_data_layout_->addWidget(raise_elevation_u_, 6, 1, 1, 1);
+
+        show_normals_ = new QCheckBox(gridLayoutWidget_2);
+        show_normals_->setObjectName(QStringLiteral("show_normals_"));
+        show_normals_->setTristate(false);
+
+        surface_data_layout_->addWidget(show_normals_, 8, 1, 1, 1);
+
+        u_label_ = new QLabel(gridLayoutWidget_2);
+        u_label_->setObjectName(QStringLiteral("u_label_"));
+        u_label_->setEnabled(false);
+        u_label_->setMinimumSize(QSize(75, 0));
+        u_label_->setMaximumSize(QSize(150, 16777215));
+        u_label_->setBaseSize(QSize(0, 0));
+        QFont font;
+        font.setPointSize(15);
+        font.setBold(false);
+        font.setWeight(50);
+        u_label_->setFont(font);
+        u_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        u_label_->setWordWrap(false);
+        u_label_->setMargin(0);
+        u_label_->setIndent(-1);
+
+        surface_data_layout_->addWidget(u_label_, 2, 0, 1, 1);
+
+        show_derivation_ = new QCheckBox(gridLayoutWidget_2);
+        show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
+
+        surface_data_layout_->addWidget(show_derivation_, 1, 1, 1, 1);
+
+        c0_ = new QToolButton(gridLayoutWidget_2);
+        c0_->setObjectName(QStringLiteral("c0_"));
+        c0_->setMinimumSize(QSize(32, 32));
+        QIcon icon;
+        icon.addFile(QStringLiteral("res/layer-resize-replicate.png"), QSize(), QIcon::Normal, QIcon::Off);
+        c0_->setIcon(icon);
+        c0_->setIconSize(QSize(32, 32));
+
+        surface_data_layout_->addWidget(c0_, 10, 1, 1, 1);
+
         v_label_ = new QLabel(gridLayoutWidget_2);
         v_label_->setObjectName(QStringLiteral("v_label_"));
         v_label_->setEnabled(false);
         v_label_->setMinimumSize(QSize(75, 0));
         v_label_->setMaximumSize(QSize(150, 16777215));
         v_label_->setBaseSize(QSize(0, 0));
-        QFont font;
-        font.setPointSize(15);
-        font.setBold(false);
-        font.setWeight(50);
         v_label_->setFont(font);
         v_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         v_label_->setWordWrap(false);
@@ -280,22 +321,50 @@ public:
 
         surface_data_layout_->addWidget(v_label_, 3, 0, 1, 1);
 
-        show_derivation_ = new QCheckBox(gridLayoutWidget_2);
-        show_derivation_->setObjectName(QStringLiteral("show_derivation_"));
+        v_slider_ = new QSlider(gridLayoutWidget_2);
+        v_slider_->setObjectName(QStringLiteral("v_slider_"));
+        v_slider_->setEnabled(false);
+        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(v_slider_->sizePolicy().hasHeightForWidth());
+        v_slider_->setSizePolicy(sizePolicy2);
+        QFont font1;
+        font1.setBold(false);
+        font1.setWeight(50);
+        v_slider_->setFont(font1);
+        v_slider_->setMaximum(100);
+        v_slider_->setSingleStep(5);
+        v_slider_->setTracking(true);
+        v_slider_->setOrientation(Qt::Horizontal);
+        v_slider_->setInvertedAppearance(false);
+        v_slider_->setInvertedControls(false);
+        v_slider_->setTickPosition(QSlider::NoTicks);
+        v_slider_->setTickInterval(1);
 
-        surface_data_layout_->addWidget(show_derivation_, 1, 1, 1, 1);
+        surface_data_layout_->addWidget(v_slider_, 3, 1, 1, 1);
+
+        raise_elevation_v_ = new QPushButton(gridLayoutWidget_2);
+        raise_elevation_v_->setObjectName(QStringLiteral("raise_elevation_v_"));
+
+        surface_data_layout_->addWidget(raise_elevation_v_, 7, 1, 1, 1);
+
+        show_curves_ = new QCheckBox(gridLayoutWidget_2);
+        show_curves_->setObjectName(QStringLiteral("show_curves_"));
+        show_curves_->setTristate(false);
+
+        surface_data_layout_->addWidget(show_curves_, 9, 1, 1, 1);
+
+        c0_label_ = new QLabel(gridLayoutWidget_2);
+        c0_label_->setObjectName(QStringLiteral("c0_label_"));
+
+        surface_data_layout_->addWidget(c0_label_, 10, 0, 1, 1);
 
         u_slider_ = new QSlider(gridLayoutWidget_2);
         u_slider_->setObjectName(QStringLiteral("u_slider_"));
         u_slider_->setEnabled(false);
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(u_slider_->sizePolicy().hasHeightForWidth());
         u_slider_->setSizePolicy(sizePolicy2);
-        QFont font1;
-        font1.setBold(false);
-        font1.setWeight(50);
         u_slider_->setFont(font1);
         u_slider_->setMaximum(100);
         u_slider_->setSingleStep(5);
@@ -313,79 +382,16 @@ public:
 
         surface_data_layout_->addWidget(raise_elevation_, 5, 1, 1, 1);
 
-        v_slider_ = new QSlider(gridLayoutWidget_2);
-        v_slider_->setObjectName(QStringLiteral("v_slider_"));
-        v_slider_->setEnabled(false);
-        sizePolicy2.setHeightForWidth(v_slider_->sizePolicy().hasHeightForWidth());
-        v_slider_->setSizePolicy(sizePolicy2);
-        v_slider_->setFont(font1);
-        v_slider_->setMaximum(100);
-        v_slider_->setSingleStep(5);
-        v_slider_->setTracking(true);
-        v_slider_->setOrientation(Qt::Horizontal);
-        v_slider_->setInvertedAppearance(false);
-        v_slider_->setInvertedControls(false);
-        v_slider_->setTickPosition(QSlider::NoTicks);
-        v_slider_->setTickInterval(1);
-
-        surface_data_layout_->addWidget(v_slider_, 3, 1, 1, 1);
-
         show_sublines_ = new QCheckBox(gridLayoutWidget_2);
         show_sublines_->setObjectName(QStringLiteral("show_sublines_"));
         show_sublines_->setTristate(false);
 
         surface_data_layout_->addWidget(show_sublines_, 0, 1, 1, 1);
 
-        raise_elevation_v_ = new QPushButton(gridLayoutWidget_2);
-        raise_elevation_v_->setObjectName(QStringLiteral("raise_elevation_v_"));
+        delete_button_ = new QPushButton(gridLayoutWidget_2);
+        delete_button_->setObjectName(QStringLiteral("delete_button_"));
 
-        surface_data_layout_->addWidget(raise_elevation_v_, 7, 1, 1, 1);
-
-        show_normals_ = new QCheckBox(gridLayoutWidget_2);
-        show_normals_->setObjectName(QStringLiteral("show_normals_"));
-        show_normals_->setTristate(false);
-
-        surface_data_layout_->addWidget(show_normals_, 8, 1, 1, 1);
-
-        raise_elevation_u_ = new QPushButton(gridLayoutWidget_2);
-        raise_elevation_u_->setObjectName(QStringLiteral("raise_elevation_u_"));
-
-        surface_data_layout_->addWidget(raise_elevation_u_, 6, 1, 1, 1);
-
-        u_label_ = new QLabel(gridLayoutWidget_2);
-        u_label_->setObjectName(QStringLiteral("u_label_"));
-        u_label_->setEnabled(false);
-        u_label_->setMinimumSize(QSize(75, 0));
-        u_label_->setMaximumSize(QSize(150, 16777215));
-        u_label_->setBaseSize(QSize(0, 0));
-        u_label_->setFont(font);
-        u_label_->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        u_label_->setWordWrap(false);
-        u_label_->setMargin(0);
-        u_label_->setIndent(-1);
-
-        surface_data_layout_->addWidget(u_label_, 2, 0, 1, 1);
-
-        show_curves_ = new QCheckBox(gridLayoutWidget_2);
-        show_curves_->setObjectName(QStringLiteral("show_curves_"));
-        show_curves_->setTristate(false);
-
-        surface_data_layout_->addWidget(show_curves_, 9, 1, 1, 1);
-
-        c0_ = new QToolButton(gridLayoutWidget_2);
-        c0_->setObjectName(QStringLiteral("c0_"));
-        c0_->setMinimumSize(QSize(32, 32));
-        QIcon icon;
-        icon.addFile(QStringLiteral("res/layer-shape.png"), QSize(), QIcon::Normal, QIcon::Off);
-        c0_->setIcon(icon);
-        c0_->setIconSize(QSize(32, 32));
-
-        surface_data_layout_->addWidget(c0_, 10, 1, 1, 1);
-
-        c0_label_ = new QLabel(gridLayoutWidget_2);
-        c0_label_->setObjectName(QStringLiteral("c0_label_"));
-
-        surface_data_layout_->addWidget(c0_label_, 10, 0, 1, 1);
+        surface_data_layout_->addWidget(delete_button_, 11, 1, 1, 1);
 
         dock_surface_data_->setWidget(surface_data_content_);
         BezierClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dock_surface_data_);
@@ -433,7 +439,9 @@ public:
         draw_surface_ = new QToolButton(verticalLayoutWidget);
         draw_surface_->setObjectName(QStringLiteral("draw_surface_"));
         draw_surface_->setMinimumSize(QSize(32, 32));
-        draw_surface_->setIcon(icon);
+        QIcon icon3;
+        icon3.addFile(QStringLiteral("res/layer-shape.png"), QSize(), QIcon::Normal, QIcon::Off);
+        draw_surface_->setIcon(icon3);
         draw_surface_->setIconSize(QSize(32, 32));
 
         toolbar_buttonarea_->addWidget(draw_surface_);
@@ -442,9 +450,9 @@ public:
         draw_coons_->setObjectName(QStringLiteral("draw_coons_"));
         draw_coons_->setEnabled(true);
         draw_coons_->setMinimumSize(QSize(32, 32));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral("res/layer-shape-polygon.png"), QSize(), QIcon::Normal, QIcon::Off);
-        draw_coons_->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral("res/layer-shape-polygon.png"), QSize(), QIcon::Normal, QIcon::Off);
+        draw_coons_->setIcon(icon4);
         draw_coons_->setIconSize(QSize(32, 32));
 
         toolbar_buttonarea_->addWidget(draw_coons_);
@@ -498,24 +506,24 @@ public:
         weight_label_->setText(QApplication::translate("BezierClass", "Gewichtung", 0));
         x_label_->setText(QApplication::translate("BezierClass", "X-Koordinate", 0));
         dock_surface_data_->setWindowTitle(QApplication::translate("BezierClass", "Fl\303\244chendaten", 0));
-        v_label_->setText(QApplication::translate("BezierClass", "v: 0.00", 0));
-        show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung \n"
-"anzeigen", 0));
-        raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung U/V", 0));
-        show_sublines_->setText(QApplication::translate("BezierClass", "deCasteljau \n"
-"anzeigen", 0));
-        raise_elevation_v_->setText(QApplication::translate("BezierClass", "Gradanhebung V", 0));
+        raise_elevation_u_->setText(QApplication::translate("BezierClass", "Gradanhebung U", 0));
         show_normals_->setText(QApplication::translate("BezierClass", "Normalen \n"
 "anzeigen", 0));
-        raise_elevation_u_->setText(QApplication::translate("BezierClass", "Gradanhebung U", 0));
         u_label_->setText(QApplication::translate("BezierClass", "u: 0.00", 0));
-        show_curves_->setText(QApplication::translate("BezierClass", "Kurven anzeigen", 0));
+        show_derivation_->setText(QApplication::translate("BezierClass", "Ableitung \n"
+"anzeigen", 0));
 #ifndef QT_NO_TOOLTIP
         c0_->setToolTip(QApplication::translate("BezierClass", "Zeichnet Bezierfl\303\244che", 0));
 #endif // QT_NO_TOOLTIP
-        c0_->setText(QApplication::translate("BezierClass", "...", 0));
+        v_label_->setText(QApplication::translate("BezierClass", "v: 0.00", 0));
+        raise_elevation_v_->setText(QApplication::translate("BezierClass", "Gradanhebung V", 0));
+        show_curves_->setText(QApplication::translate("BezierClass", "Kurven anzeigen", 0));
         c0_label_->setText(QApplication::translate("BezierClass", "C0-stetige\n"
 "Fortsetzung", 0));
+        raise_elevation_->setText(QApplication::translate("BezierClass", "Gradanhebung U/V", 0));
+        show_sublines_->setText(QApplication::translate("BezierClass", "deCasteljau \n"
+"anzeigen", 0));
+        delete_button_->setText(QApplication::translate("BezierClass", "L\303\266schen", 0));
         dock_toolbar_->setWindowTitle(QApplication::translate("BezierClass", "Werkzeuge", 0));
 #ifndef QT_NO_TOOLTIP
         edit_model_->setToolTip(QApplication::translate("BezierClass", "Bearbeitungsmodus", 0));

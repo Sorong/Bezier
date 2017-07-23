@@ -312,6 +312,26 @@ void GLView::editClickedVertex() {
 	reinitCurrentSurface();
 }
 
+void GLView::deleteSelected() {
+	Model* selected_model;
+	if (!((selected_model = controller_->getSelectedSurface()))) {
+		if (!((selected_model = controller_->getSelectedCoonsPatch()))) {
+			return;
+		}
+	}
+	controller_->clearClicked();
+	for(int i = 0; i < surfaces_.size(); i++) {
+		if(selected_model == & *(surfaces_[i])) {
+			surfaces_.remove(i);
+		}
+	}
+	for(int j = 0; j < patches_.size(); j++) {
+		if (selected_model == &*(patches_[j])) {
+			patches_.remove(j);
+		}
+	}
+}
+
 void GLView::initModel(Model& model, QVector4D* pos) {
 	makeCurrent();
 	model.setDefaultShader(*this->prog_);
@@ -320,11 +340,14 @@ void GLView::initModel(Model& model, QVector4D* pos) {
 }
 
 void GLView::reinitCurrentSurface() {
-	if (!controller_->getSelectedSurface()) {
-		return;
+	Model* selected_model;
+	if (!((selected_model = controller_->getSelectedSurface()))) {
+		if (!((selected_model = controller_->getSelectedCoonsPatch()))) {
+			return;
+		}
 	}
 	makeCurrent();
-	controller_->getSelectedSurface()->reinit();
+	selected_model->reinit();
 	update();
 }
 

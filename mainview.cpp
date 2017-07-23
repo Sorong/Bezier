@@ -34,6 +34,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.glview_, SIGNAL(clickedSurface(Model*)), this, SLOT(clickedSurface(Model*)));
 	QObject::connect(ui.show_normals_, SIGNAL(toggled(bool)), this, SLOT(showNormals(bool)));
 	QObject::connect(ui.z_clamped_, SIGNAL(valueChanged(double)), ui.glview_, SLOT(setClampedZ(double)));
+	QObject::connect(ui.delete_button_, SIGNAL(pressed()), ui.glview_, SLOT(deleteSelected()));
 	
 	ui.dock_vertex_data_->hide();
 	//ui.dock_surface_data_->hide();
@@ -71,28 +72,9 @@ void MainView::derivate(bool state) const {
 
 //Todo: Remove?
 void MainView::addCoordinates() const {
-/*	QVector4D coordinates = { static_cast<float>(this->ui.x_coord_->value()), static_cast<float>(this->ui.y_coord_->value()), 0, 1};
-	coordinates *= this->ui.weighu_->value();
-	if(this->ui.glview->addCoordinate(coordinates)) {
-		this->addToList(coordinates);
-	} else {
-		QMessageBox messageBox;
-		messageBox.critical(nullptr, "Error", QString("Korrekte Darstellung nicht möglich. Bitte löschen Sie Punkte"));
-		messageBox.setFixedSize(500, 200);
-	}*/
 }
 
 void MainView::keyPressEvent(QKeyEvent* event) {
-	/*if (event->key() == Qt::Key_Delete && !ui.lisu_widgeu_->selectedItems().isEmpty()) {
-		auto selected = ui.lisu_widgeu_->selectionModel()->selectedIndexes();
-		auto i = selected.at(0).row();
-		ui.lisu_widgeu_->takeItem(i);
-		ui.glview->removeCoordinateByIndex(i);
-
-	} else {
-		this->ui.glview->keyPressEvent(event);
-	}*/
-
 	this->ui.glview_->keyPressEvent(event);
 }
 

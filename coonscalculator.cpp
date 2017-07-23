@@ -49,18 +49,20 @@ void CoonsCalculator::getCoonsPatch(QVector4DMatrix& ltrb, QVector4DMatrix* patc
 	for (int uAsInt = 0; uAsInt <= 100; uAsInt += (precision_u * 100)) {
 		double u = uAsInt / 100.f;
 		QVector<QVector4D> row_rc;
-		for (int vAsInt = 0; vAsInt <= 100; vAsInt += (precision_u * 100)) {
+		for (int vAsInt = 0; vAsInt <= 100; vAsInt += (precision_v * 100)) {
 			double v = vAsInt / 100.f;
-			QVector4D curr_rc = ltrb[0][0] * (1 - u) * (1 - v) + ltrb[0].last() * v * (1 - u) + ltrb[2][0] * (1 - v)*u + ltrb[2].last()  * u * v;
+			QVector4D curr_rc = ltrb[0][0] * (1 - u) * (1 - v) + ltrb[1][0] * v * (1 - u) + ltrb[3].last() * (1 - v)*u + ltrb[2].last()  * u * v;
 			row_rc.push_back(curr_rc);
-
 		}
 		rcd.push_back(row_rc);
 	}
 	for(int m = 0; m < rc.size(); m++) {
 		QVector<QVector4D> interpolated_row;
 		for(int n = 0; n < rc[0].size(); n++) {
-			interpolated_row.push_back(rc[m][n] + rd[m][n] - rcd[m][n]);
+			interpolated_row.push_back((rc[m][n] + rd[m][n]) - rcd[m][n]);
+		//	interpolated_row.push_back(rcd[m][n]);
+			//interpolated_row.push_back(rd[m][n]);
+			//interpolated_row.push_back(rc[m][n]);
 		}
 		patch->push_back(interpolated_row);
 	}

@@ -49,6 +49,7 @@ public slots:
 	void modeC0() const;
 	void setClampedZ(double z) const;
 	void editClickedVertex();
+	void deleteSelected();
 	signals:
 	void clickedVertex(QVector4D*);
 	void clickedSurface(Model *);
