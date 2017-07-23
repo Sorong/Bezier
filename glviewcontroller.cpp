@@ -69,7 +69,6 @@ void GLViewController::mouseMoveEvent(QMouseEvent* event) const {
 			break;
 		case C0:
 			if(event->buttons() & Qt::RightButton) {
-				qDebug() << "Move c0";
 				moveC0Handler(event);
 			} 
 			break;
@@ -100,8 +99,45 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		glview_->surfaces_.push_back(ptr);
 		glview_->temp_model_.reset();
 		glview_->current_surface_ = ptr.get();
-	} else if(mode_ == C0 && event->buttons() & Qt::RightButton) {
+	} else if(mode_ == C0 && event->button() == Qt::RightButton) {
+
+		if (clicked_.isEmpty() || clicked_.size() <= 1) {
+			return;
+		}
+		int row = current_selected_->row_index_;
+		int col = current_selected_->col_index_;
+		QVector4DMatrix mat = dynamic_cast<ControlGrid*>(current_selected_->clickable_)->getExtension();
+		BezierSurface *surface;
+		try {
+			surface = dynamic_cast<BezierSurface*>(current_selected_->model_);
+		}
+		catch (std::bad_cast) {
+			return;
+		}
+		if (row == -1) {
+			if (col == 0) {
+				surface->prependVCoordinates(mat);
+			}
+			else {
+				surface->appendVCoordinates(mat);
+			}
+		}
+		else if (col == -1) {
+			if (row == 0) {
+				surface->prependUCoordinates(mat);
+			}
+			else {
+				surface->appendUCoordinates(mat);
+			}
+		} else if (row == 0 && col == 0) {
+			surface->appendVCoordinates(mat);
+		}
+		glview_->makeCurrent();
+	
+		//dynamic_cast<BezierSurface*>(current_selected_->model_)->reinit(nullptr, true);
 		clearClicked();
+		glview_->temp_model_.reset();
+		surface->reinit(nullptr, true);
 	}
 }
 
@@ -179,6 +215,9 @@ void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) const {
 }
 
 void GLViewController::pressC0Handler(QMouseEvent* event) {
+	if(clicked_.isEmpty() || clicked_.size() <= 1) {
+		return;
+	}
 	int row = clicked_.front().row_index_;
 	int col = clicked_.front().col_index_;
 	for (int i = 1; i < clicked_.size(); i++) {
@@ -222,8 +261,10 @@ void GLViewController::pressC0Handler(QMouseEvent* event) {
 	ClickedModel clicked;
 	clicked.clickable_ = static_cast<ControlGrid*>(glview_->temp_model_.get());
 	clicked.reference_ = &clicked.clickable_->getReference();
-	clicked.model_ = glview_->temp_model_.get();
+	clicked.model_ = glview_->current_surface_;
 	clicked.offset_ = { 0,0,0 };
+	clicked.row_index_ = row;
+	clicked.col_index_ = col;
 	this->addClicked(&clicked);
 }
 
@@ -244,27 +285,16 @@ void GLViewController::moveSelectHandler(QMouseEvent* event) const {
 }
 
 void GLViewController::moveC0Handler(QMouseEvent* event) const {
-	if (current_selected_ == nullptr) {
+	if (!current_selected_  || !glview_->temp_model_) {
 		return;
 	}
-	//QVector3D begin, end, direction;
-	//projectMouseEvent(event, current_selected_->model_->getModelMatrix(), &begin, &end, &direction);
-	//auto length = current_selected_->offset_.length();
-	//float w = current_selected_->reference_->w();
-	//*current_selected_->reference_ = (begin + length * direction);
-	//current_selected_->reference_->setW(1);
-	//*current_selected_->reference_ *= w;
-	//glview_->makeCurrent();
-	//emit glview_->clickedVertex(current_selected_->reference_);
-	//current_selected_->model_->reinit();
-	//qDebug() << *current_selected_->reference_;
 	QVector3D begin, end, direction;
 	projectMouseEvent(event, &begin, &end, &direction);
 	auto length = (clamped_z_ - begin.z()) / direction.z();
 	*current_selected_->reference_ = (begin + length * direction);
 	current_selected_->reference_->setW(1);
 	glview_->makeCurrent();
-	current_selected_->model_->reinit();
+	glview_->temp_model_->reinit();
 
 }
 
@@ -293,7 +323,6 @@ void GLViewController::addClicked(ClickedModel* clicked) {
 		}
 		clicked_.pop_front();
 	}
-	qDebug() << "Clickedsize:" << clicked_.size();
 }
 
 void GLViewController::setCurrentUnclicked() {

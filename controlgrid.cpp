@@ -11,18 +11,18 @@ ControlGrid::ControlGrid(QVector4D start, QVector4DMatrix start_mat)
 	QVector<QVector4D> prepend = { start };
 	for(int i = 0; i < start_mat.size() - 1; i++) {
 		if (!start_mat[i].isEmpty() && !start_mat[i+1].isEmpty()) {
-			distance_.push_back(start_mat[i + 1][0] - start);
+			distance_.push_back(start_mat[i + 1].first() - start_mat[i].first());
 		} else {
 			distance_.push_back({ 0,0,0,0 });
 		}
-		prepend.push_back(start + distance_.last());
+		prepend.push_front(start + distance_.last());
 	}
-	start_mat.push_back(prepend);
-	//for(int j = 0; j < start_mat.size(); j++) {
-	//
-	//}
+//	start_mat.push_back(prepend);
+	for(int j = 0; j < start_mat.size(); j++) {
+		start_mat[j].push_back(prepend[j]);
+	}
 	this->coordinates_ = start_mat;
-	this->setReference(coordinates_.last().front());
+	this->setReference(coordinates_[0].last());
 }
 
 ControlGrid::~ControlGrid() {
@@ -64,9 +64,8 @@ void ControlGrid::init(QVector4D* position) {
 }
 
 void ControlGrid::reinit(QVector4D* position) {
-	qDebug() << "ref" << *this->reference_vertex_;
-	for(int i = 1; i < coordinates_.last().size(); i++) {
-			coordinates_.last()[i] = *this->reference_vertex_ + distance_[i-1];
+	for(int i = 1; i < coordinates_.size(); i++) {
+			coordinates_[i].last() = coordinates_[i-1].last() + distance_[i-1];
 	}
 	this->vertices_.clear();
 	auto horizonal_length = this->coordinates_.at(0).size();
@@ -99,4 +98,17 @@ void ControlGrid::setClicked(QVector4D& color) {
 }
 
 void ControlGrid::setUnclicked(QVector4D& color) {
+}
+
+QVector4DMatrix ControlGrid::getExtension() const {
+	QVector4DMatrix mat;
+
+	for(int i = 0; i < coordinates_.size(); i++) {
+		QVector<QVector4D> row;
+		for (int j = 1; j < coordinates_[i].size();j++) {
+			row.push_back(coordinates_[i][j]);
+		}
+		mat.push_back(row);
+	}
+	return mat;
 }

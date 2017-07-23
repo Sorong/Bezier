@@ -14,6 +14,7 @@ public:
 	void translateToReference() override;
 	void setClicked(QVector4D& color) override;
 	void setUnclicked(QVector4D& color) override;
+	QVector4DMatrix getExtension() const;
 private: 
 	QVector4DMatrix coordinates_;
 	QVector<QVector4D> distance_;

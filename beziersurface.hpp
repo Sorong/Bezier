@@ -22,9 +22,13 @@ public:
 	void setU(float u);
 	void setV(float v);
 	void appendVCoordinates(QVector<QVector4D> &coordinates);
+	void appendVCoordinates(const QVector4DMatrix &coordinates);
 	void prependVCoordinates(QVector<QVector4D> &coordinates);
+	void prependVCoordinates(const QVector4DMatrix &coordinates);
 	void appendUCoordinates(QVector<QVector4D> &coordinates);
+	void appendUCoordinates(const QVector4DMatrix &coordinates);
 	void prependUCoordinates(QVector<QVector4D> &coordinates);
+	void prependUCoordinates(const QVector4DMatrix &coordinates);
 	void setCoordinates(QVector4DMatrix& coordinates);
 	QVector4DMatrix& getCoordinates();
 	QVector4D& get(int index) const;
