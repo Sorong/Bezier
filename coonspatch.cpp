@@ -1,17 +1,17 @@
 #include "coonspatch.hpp"
+#include "coonscalculator.hpp"
 
 
 #define VERTEXPOINTSCALE 0.2f
 
-CoonsPatch::CoonsPatch(QMatrix4x4& model, const QVector4D& pos) : Model(model, pos), left_curve_(nullptr),
-right_curve_(nullptr),
-top_curve_(nullptr),
-bot_curve_(nullptr) {
+CoonsPatch::CoonsPatch(QMatrix4x4& model, const QVector4D& pos)
+	: Model(model, pos),
+	  patch(new Patch(model, pos)) {
 }
 
 CoonsPatch::~CoonsPatch()
 {
-
+	delete patch;
 }
 
 void CoonsPatch::init(QVector4D* position) {
@@ -20,6 +20,9 @@ void CoonsPatch::init(QVector4D* position) {
 	}
 	degreeElevation();
 	createSubModels();
+	patch->setCoordinates(this->patch_);
+	patch->setDefaultShader(*default_shader_);
+	patch->init(position);
 	Model::initBuffer();
 	if (position) {
 		this->setPosition(*position);
@@ -43,6 +46,8 @@ void CoonsPatch::render(QMatrix4x4& projection, QMatrix4x4& view) {
 		curve->setModelMatrix(this->model_);
 		curve->render(projection, view);
 	}
+	patch->setModelMatrix(this->model_);
+	patch->render(projection, view);
 }
 
 void CoonsPatch::reinit(QVector4D* pos) {
@@ -60,10 +65,13 @@ void CoonsPatch::reinit(QVector4D* pos) {
 	}
 	this->vertices_.push_back(this->coordinates_[0][0]);
 	this->createCurves();
+	this->createPatch();
+	patch->setCoordinates(this->patch_);
+	patch->reinit();
 	for (auto& curve : curves_) {
 		curve->setDefaultShader(*default_shader_);
 		curve->init();
-	}
+	} 
 	Model::reinit(pos);
 }
 
@@ -110,6 +118,7 @@ int CoonsPatch::size() const {
 void CoonsPatch::createSubModels() {
 	createBasePoints();
 	createCurves();
+	createPatch();
 	for(auto& ico : base_points_) {
 		ico->setDefaultShader(*default_shader_);
 		ico->init();
@@ -149,13 +158,30 @@ void CoonsPatch::createCurves() {
 		QVector<QVector4D> curve;
 		side.clear();
 		for (j = 0; j < coordinates_[i].size(); j++) {
-			side.push_back(this->coordinates_[i][j]);
+				side.push_back(this->coordinates_[i][j]);
 		}
 		side.push_back(this->coordinates_[(i + 1) % this->coordinates_.size()][0]);
+		
+		
 		calc.bezierCurve(side, curve, 0.05);
 		std::shared_ptr<BezierCurve> curr_curve = std::make_shared<BezierCurve>(model_, pos_);
-		curr_curve->setBaseCoordinates(curve);
+		if(i > 1 ) {
+			QVector<QVector4D> curve_reverse;
+			for(int k = curve.size() - 1; k >= 0; k--) {
+				curve_reverse.push_back(curve[k]);
+			}
+			curr_curve->setBaseCoordinates(curve_reverse);
+		} else {
+			curr_curve->setBaseCoordinates(curve);
+		}
 		curr_curve->setColor({ 1,0,0,1 });
 		curves_.push_back(curr_curve);
 	}
+}
+
+void CoonsPatch::createPatch() {
+	QVector4DMatrix ltrb = { curves_[0]->getVertices(), curves_[1]->getVertices(), curves_[2]->getVertices(), curves_[3]->getVertices() };
+	CoonsCalculator calc;
+	this->patch_.clear();
+	calc.getCoonsPatch(ltrb, &patch_, 0.05,0.05);
 }

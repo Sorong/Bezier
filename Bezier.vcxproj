@@ -144,6 +144,7 @@
     <ClCompile Include="beziersurface.cpp" />
     <ClCompile Include="clickable.cpp" />
     <ClCompile Include="controlgrid.cpp" />
+    <ClCompile Include="coonscalculator.cpp" />
     <ClCompile Include="coonspatch.cpp" />
     <ClCompile Include="dockwidget.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_dockwidget.cpp">
@@ -183,6 +184,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="icosahedron.cpp" />
+    <ClCompile Include="patch.cpp" />
     <ClCompile Include="phongmodel.cpp" />
     <ClCompile Include="rectangle.cpp" />
     <ClCompile Include="beziersurfacestrip.cpp" />
@@ -619,7 +621,9 @@
     </CustomBuild>
     <ClInclude Include="clickable.hpp" />
     <ClInclude Include="controlgrid.hpp" />
+    <ClInclude Include="coonscalculator.hpp" />
     <ClInclude Include="coonspatch.hpp" />
+    <ClInclude Include="patch.hpp" />
     <ClInclude Include="phongmodel.hpp" />
     <ClInclude Include="rectangle.hpp" />
     <ClInclude Include="types.hpp" />

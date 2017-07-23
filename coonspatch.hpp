@@ -5,6 +5,7 @@
 #include <memory>
 #include "icosahedron.hpp"
 #include "beziercalculator.hpp"
+#include "patch.hpp"
 
 class CoonsPatch : public Model
 {
@@ -23,9 +24,12 @@ private:
 	void createSubModels();
 	void createBasePoints();
 	void createCurves();
+	void createPatch();
 	QVector<std::shared_ptr<Icosahedron>> base_points_;
 	QVector<std::shared_ptr<BezierCurve>> curves_;
-	std::shared_ptr<BezierCurve> left_curve_, right_curve_, top_curve_, bot_curve_;
+	Patch *patch;
+	QVector4DMatrix patch_;
+
 	QVector4DMatrix coordinates_;
 };
 

@@ -19,19 +19,6 @@ void BezierSurfaceStrip::init(QVector4D* position) {
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
 		QVector4D current_first = first_curve_->at(f_i);
 		QVector4D current_second = second_curve_->at(f_i);
-		//TODO: Normalisierung entfernen?!
-		if (current_first.w() != 0) {
-			current_first /= current_first.w();
-		}
-		else {
-			current_first.setW(1);
-		}
-		if (current_second.w() != 0) {
-			current_second /= current_second.w();
-		}
-		else {
-			current_second.setW(1);
-		}
 		vertices_.push_back(first_curve_->at(f_i));
 		vertices_.push_back(second_curve_->at(f_i));
 		if (first_curve_->normalsSet() && second_curve_->normalsSet()) {
@@ -39,16 +26,6 @@ void BezierSurfaceStrip::init(QVector4D* position) {
 			normals_.push_back(second_curve_->normalAt(f_i));
 		}
 
-	}
-
-	QVector<QVector4D> vertices = this->vertices_;
-	for (auto& vertex : vertices) {
-		if (vertex.w() == 0) {
-			vertex.setW(1);
-		}
-		else {
-			vertex /= vertex.w();
-		}
 	}
 	colors_.fill({ 1,0,0,.5f }, this->vertices_.size());
 	QVector4D mat = { 1, 0, 0.2f, .5f };
@@ -106,18 +83,6 @@ void BezierSurfaceStrip::reinit(QVector4D* pos) {
 	for (int f_i = 0; f_i < first_curve_->size(); f_i++) {
 		QVector4D current_first = first_curve_->at(f_i);
 		QVector4D current_second = second_curve_->at(f_i);
-		if (current_first.w() != 0) {
-			current_first /= current_first.w();
-		}
-		else {
-			current_first.setW(1);
-		}
-		if (current_second.w() != 0) {
-			current_second /= current_second.w();
-		}
-		else {
-			current_second.setW(1);
-		}
 		vertices_.push_back(first_curve_->at(f_i));
 		vertices_.push_back(second_curve_->at(f_i));
 		if (first_curve_->normalsSet() && second_curve_->normalsSet()) {
