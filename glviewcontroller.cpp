@@ -252,8 +252,9 @@ void GLViewController::pressC0Handler(QMouseEvent* event) {
 		row = clicked_[i].row_index_ == row ? row : -1;
 		col = clicked_[i].col_index_ == col ? col : -1;
 	}
-	QVector4DMatrix mat;
+	
 	BezierSurface *surface;
+	QVector4DMatrix mat;
 	try {
 		surface = dynamic_cast<BezierSurface*>(current_selected_->model_);
 	}
@@ -291,6 +292,7 @@ void GLViewController::pressC0Handler(QMouseEvent* event) {
 	glview_->temp_model_ = std::make_shared<ControlGrid>(QVector4D(base, 1), mat);
 	QVector4D initpos = { INITPOS };
 	glview_->initModel(*glview_->temp_model_.get(), &initpos);
+	glview_->temp_model_->setModelMatrix(surface->getModelMatrix());
 
 	ClickedModel clicked;
 	clicked.clickable_ = static_cast<ControlGrid*>(glview_->temp_model_.get());
