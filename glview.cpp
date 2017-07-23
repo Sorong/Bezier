@@ -173,31 +173,34 @@ void GLView::keyPressEvent(QKeyEvent* event) {
 		default: 
 		break;
 	}
-	if (!controller_->getSelectedSurface()) {
-		return;
+	Model* selected_model;
+	if (! ((selected_model = controller_->getSelectedSurface()))) {
+		if(! ((selected_model = controller_->getSelectedCoonsPatch()))) {
+			return;
+		}
 	}
 	switch (event->key()) {
 	case Qt::Key_Left:
 	case Qt::Key_A:
-		controller_->getSelectedSurface()->rotate(1, 0, -1, 0);
+		selected_model->rotate(1, 0, -1, 0);
 		break;
 	case Qt::Key_Right:
 	case Qt::Key_D:
-		controller_->getSelectedSurface()->rotate(1, 0, 1, 0);
+		selected_model->rotate(1, 0, 1, 0);
 		break;
 	case Qt::Key_Up:
 	case Qt::Key_W:
-		controller_->getSelectedSurface()->rotate(1, -1, 0, 0);
+		selected_model->rotate(1, -1, 0, 0);
 		break;
 	case Qt::Key_Down:
 	case Qt::Key_S:
-		controller_->getSelectedSurface()->rotate(1, 1, 0, 0);
+		selected_model->rotate(1, 1, 0, 0);
 		break;
 	case Qt::Key_Q:
-		controller_->getSelectedSurface()->rotate(1, 0, 0, -1);
+		selected_model->rotate(1, 0, 0, -1);
 		break;
 	case Qt::Key_E:
-		controller_->getSelectedSurface()->rotate(1, 0, 0, 1);
+		selected_model->rotate(1, 0, 0, 1);
 		break;
 	default:
 		break;

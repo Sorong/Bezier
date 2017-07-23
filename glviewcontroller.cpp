@@ -19,12 +19,7 @@ void GLViewController::setDrawMode(DrawMode mode) {
 }
 
 void GLViewController::setMode(Mode mode) {
-	if(mode_ == DRAWCURVE && mode != DRAWCURVE) {
-		setCurrentUnclicked();
-	}
-	if (mode_ == SELECT && mode != SELECT) {
-		setCurrentUnclicked();
-	}
+	setCurrentUnclicked();
 	if (mode == C0) {
 		this->setClickAmount(2);
 	}
@@ -122,7 +117,7 @@ void GLViewController::mouseReleaseEvent(QMouseEvent* event) {
 		}
 
 	}
-	else if (mode_ == C0 && event->button() == Qt::RightButton) {
+	else if (mode_ == C0 && event->button() == Qt::RightButton && current_selected_->type != COONS) {
 
 		if (clicked_.isEmpty() || clicked_.size() <= 1) {
 			return;
@@ -248,7 +243,7 @@ void GLViewController::pressDrawCoonspatchHandler(QMouseEvent* event) {
 }
 
 void GLViewController::pressC0Handler(QMouseEvent* event) {
-	if (clicked_.isEmpty() || clicked_.size() <= 1) {
+	if (clicked_.isEmpty() || clicked_.size() <= 1 || current_selected_->type != SURFACE) {
 		return;
 	}
 	int row = clicked_.front().row_index_;
@@ -392,6 +387,13 @@ BezierSurface* GLViewController::getSelectedSurface() {
 		return nullptr;
 	}
 	return static_cast<BezierSurface*>(current_selected_->model_);
+}
+
+CoonsPatch* GLViewController::getSelectedCoonsPatch() {
+	if (!current_selected_ || current_selected_->type != COONS) {
+		return nullptr;
+	}
+	return static_cast<CoonsPatch*>(current_selected_->model_);
 }
 
 bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& begin, const QVector3D& direction, const float radius) {

@@ -129,10 +129,10 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="coonscalculator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Util</Filter>
     </ClCompile>
     <ClCompile Include="patch.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,10 +208,10 @@
       <Filter>Header Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="coonscalculator.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="patch.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

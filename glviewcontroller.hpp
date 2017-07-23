@@ -71,6 +71,7 @@ public:
 	void clearClicked();
 	void setClampedZ(float f);
 	BezierSurface* getSelectedSurface();
+	CoonsPatch* getSelectedCoonsPatch();
 private:
 	void pressSelectHandler(QMouseEvent* event);
 	void pressDrawCurveHandler(QMouseEvent* event);
