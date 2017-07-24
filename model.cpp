@@ -123,6 +123,10 @@ void Model::showNormals(bool show) {
 	this->show_normals_ = show;
 }
 
+bool Model::normalsEnabled() const {
+	return show_normals_;
+}
+
 void Model::initBuffer() {
 	GLuint progId = this->default_shader_->programId();
 	GLuint pos;

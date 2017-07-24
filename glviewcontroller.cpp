@@ -439,6 +439,7 @@ bool GLViewController::checkClicked(BezierSurface& surface, const QVector3D& beg
 		if (prev_selected == clicked.reference_) {
 			continue;
 		}
+		emit glview_->clickedSurface(&surface);
 		return true;
 	}
 	return false;

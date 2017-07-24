@@ -22,7 +22,7 @@ public slots:
 	void degreeElevationV() const;
 	void clickedVertex(QVector4D*);
 	void editClickedVertex() const;
-	void clickedSurface(Model*);
+	void clickedSurface(BezierSurface*);
 	void showNormals(bool state);
 private:
 	void toggleSlider() const;

@@ -52,6 +52,11 @@ public:
 	QVector4DMatrix c0AppendV();
 	QVector4DMatrix c0PrependU();
 	QVector4DMatrix c0AppendU();
+	bool casteljauEnabled() const;
+	bool derivateEnabled() const;
+	bool uCurvesEnabled() const;
+	float getU() const;
+	float getV() const;
 private:
 	void createSubModels();
 	void clearSubModels();

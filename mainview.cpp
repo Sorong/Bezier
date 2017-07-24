@@ -31,7 +31,7 @@ MainView::MainView(QWidget* parent)
 	QObject::connect(ui.draw_coons_, SIGNAL(pressed()), ui.glview_, SLOT(modeDrawCoonspatch()));
 	QObject::connect(ui.edit_model_, SIGNAL(pressed()), ui.glview_, SLOT(modeSelect()));
 	QObject::connect(ui.c0_, SIGNAL(pressed()), ui.glview_, SLOT(modeC0()));
-	QObject::connect(ui.glview_, SIGNAL(clickedSurface(Model*)), this, SLOT(clickedSurface(Model*)));
+	QObject::connect(ui.glview_, SIGNAL(clickedSurface(BezierSurface*)), this, SLOT(clickedSurface(BezierSurface*)));
 	QObject::connect(ui.show_normals_, SIGNAL(toggled(bool)), this, SLOT(showNormals(bool)));
 	QObject::connect(ui.z_clamped_, SIGNAL(valueChanged(double)), ui.glview_, SLOT(setClampedZ(double)));
 	QObject::connect(ui.delete_button_, SIGNAL(pressed()), ui.glview_, SLOT(deleteSelected()));
@@ -46,7 +46,7 @@ MainView::~MainView() {
 
 void MainView::sliderToTLabel(int i) const {
 	const float paramToFloat = i/100.0f;
-	QString floau_av_string;// = QString::number(i / 10.0f, 'g', 4);
+	QString floau_av_string;
 	floau_av_string.sprintf("%.2f", paramToFloat);
 	this->ui.u_label_->setText("u: " + floau_av_string);
 	this->ui.glview_->setU(paramToFloat);
@@ -54,7 +54,7 @@ void MainView::sliderToTLabel(int i) const {
 
 void MainView::sliderToSLabel(int i) const {
 	const float paramToFloat = i / 100.0f;
-	QString floau_av_string;// = QString::number(i / 10.0f, 'g', 4);
+	QString floau_av_string;
 	floau_av_string.sprintf("%.2f", paramToFloat);
 	this->ui.v_label_->setText("v: " + floau_av_string);
 	this->ui.glview_->setV(paramToFloat);
@@ -131,7 +131,18 @@ void MainView::editClickedVertex() const {
 	this->ui.glview_->editClickedVertex();
 }
 
-void MainView::clickedSurface(Model*) {
+void MainView::clickedSurface(BezierSurface* surface) {
+	if(!surface) {
+		return;
+	}
+	this->ui.show_sublines_->setChecked(surface->casteljauEnabled());
+	if(surface->casteljauEnabled()) {
+		surface->setU(0);
+		surface->setV(0);
+	}
+	this->ui.show_curves_->setChecked(surface->uCurvesEnabled());
+	this->ui.show_derivation_->setChecked(surface->derivateEnabled());
+	this->ui.show_normals_->setChecked(surface->normalsEnabled());
 }
 
 void MainView::showNormals(bool state) {

@@ -52,7 +52,7 @@ public slots:
 	void deleteSelected();
 	signals:
 	void clickedVertex(QVector4D*);
-	void clickedSurface(Model *);
+	void clickedSurface(BezierSurface *);
 
 private:
 	void initModel(Model& model, QVector4D *pos);

@@ -408,6 +408,26 @@ QVector4DMatrix BezierSurface::c0AppendU() {
 	return c0;
 }
 
+bool BezierSurface::casteljauEnabled() const {
+	return casteljau_;
+}
+
+bool BezierSurface::derivateEnabled() const {
+	return derivate_;
+}
+
+bool BezierSurface::uCurvesEnabled() const {
+	return u_curves_;
+}
+
+float BezierSurface::getU() const {
+	return u_;
+}
+
+float BezierSurface::getV() const {
+	return v_;
+}
+
 void BezierSurface::createSubModels() {
 	createBasePoints();
 	QVector4DMatrix dest;

@@ -28,6 +28,7 @@ public:
 	QMatrix4x4& getModelMatrix();
 	void addNormalShader(QOpenGLShaderProgram& prog);
 	void showNormals(bool show);
+	bool normalsEnabled() const;
 protected: 
 	virtual void initBuffer();
 	virtual QVector4D calculateNormals(QVector4D origin, QVector4D v2, QVector4D v3);
